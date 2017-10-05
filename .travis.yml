@@ -4,6 +4,9 @@ compiler:
   - clang
   - gcc
 
+script: make
+
+
 # The default is:
 #     GCC 4.8.2 that supports C++11
 #     Clang 3.5.0 taht supports C++11
