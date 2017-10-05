@@ -4,7 +4,10 @@ compiler:
   - clang
   - gcc
 
-script: make
+script: makea
+
+notifications:
+   email: false
 
 
 # The default is:
