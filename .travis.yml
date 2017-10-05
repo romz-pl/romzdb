@@ -4,7 +4,7 @@ compiler:
   - clang
   - gcc
 
-script: makea
+script: make
 
 notifications:
    email: false
