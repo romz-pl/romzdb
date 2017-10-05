@@ -4,7 +4,7 @@
 #
 
 # Name of GNU compiler
-CXX := g++
+# CXX := g++
 
 #Compilation flags
 # CXXFLAGS := -std=c++14 -DNDEBUG -O2 -funroll-all-loops -ffast-math -Wall
