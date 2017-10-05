@@ -7,9 +7,9 @@
 # CXX := g++
 
 #Compilation flags
-# CXXFLAGS := -std=c++14 -DNDEBUG -O2 -funroll-all-loops -ffast-math -Wall
-# CXXFLAGS := -std=c++14 -DNDEBUG -O2 -Wall -mtune=native -march=native
-CXXFLAGS := -std=c++14 -g -O -Wall -D_DEBUG
+# CXXFLAGS := -std=c++11 -DNDEBUG -O2 -funroll-all-loops -ffast-math -Wall
+# CXXFLAGS := -std=c++11 -DNDEBUG -O2 -Wall -mtune=native -march=native
+CXXFLAGS := -std=c++11 -g -O -Wall -D_DEBUG
 
 # Required libraries 
 CXXLIB = 

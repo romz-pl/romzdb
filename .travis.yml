@@ -1,14 +1,27 @@
 language: cpp
 
-script: make
+compiler:
+  - clang
+  - gcc
 
-addons:
-    apt:
-        sources:
-            - ubuntu-toolchain-r-test
-        packages:
-            - g++-7
+# The default is:
+#     GCC 4.8.2 that supports C++11
+#     Clang 3.5.0 taht supports C++11
 
-before_script:
-    - export CXX=g++-7
+#
+# It takes about 6 minutes to install the required packages on Travis Server.
+# 
+#
+# before_script:
+#    - export CXX=g++-7
+#
+#script: make
+#
+#addons:
+#    apt:
+#        sources:
+#            - ubuntu-toolchain-r-test
+#        packages:
+#            - g++-7
+
   
