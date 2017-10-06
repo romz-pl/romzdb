@@ -15,6 +15,7 @@ romzdb :
 clean :
 	cd build && $(MAKE) clean
 	cd tests/build && $(MAKE) clean
+	cd tests/googletest && $(MAKE) clean
 
 test :
 	cd tests/googletest && \

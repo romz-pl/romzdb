@@ -19,17 +19,21 @@ CXXLIB := ${GTEST_DIR}/gtest.a -pthread
 
 # Google Test header files
 CXXFLAGS += -isystem ${GTEST_DIR}/include -I${GTEST_DIR}
+CXXFLAGS += -I../../src
 
 # Name of resulted binaries
 BINOUT := test.x
 
 # Directory with source code
 VPATH := ../src/
+VPATH += ../../src
 
 # Source files (listed in alphabetical order)
 
 SOURCE :=
 SOURCE += main.cpp
+SOURCE += unixfile.cpp
+SOURCE += unixfile_test.cpp
 
 
 #Object files
