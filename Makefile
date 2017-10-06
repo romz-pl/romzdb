@@ -14,5 +14,12 @@ romzdb :
 
 clean :
 	cd build && $(MAKE) clean
+	cd tests/build && $(MAKE) clean
 
+test :
+	cd tests/googletest && \
+	$(MAKE) gtest.a && \
+	cd ../build && \
+	$(MAKE) && \
+	./test.x
 
