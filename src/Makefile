@@ -24,7 +24,7 @@ VPATH := ../src/
 
 SOURCE :=
 SOURCE += main.cpp
-
+SOURCE += unixfile.cpp
 
 #Object files
 OBJECT := $(SOURCE:.cpp=.o)
