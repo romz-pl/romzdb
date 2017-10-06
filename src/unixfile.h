@@ -16,6 +16,8 @@ public:
     void Write( const char* data, size_t nbyte, off_t offset ) const;
     void Read( char* data, size_t nbyte, off_t offset ) const;
 
+    static std::string GetTempPath();
+
 
 private:
     void Open( const std::string& path );

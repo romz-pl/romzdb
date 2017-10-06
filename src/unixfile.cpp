@@ -112,3 +112,24 @@ void UnixFile::Lseek( off_t offset ) const
         throw std::runtime_error( "UnixFile::Lseek." );
     }
 }
+
+//
+// Return temporary path.
+// The returned path can be safely used for creation of temporary file.
+//
+std::string UnixFile::GetTempPath()
+{
+    char dir[] = "/tmp/aaXXXXXXX";
+    char *p = mkdtemp( dir );
+    if( !p )
+    {
+        throw std::runtime_error( "Function 'mkdtemp failed" );
+    }
+
+    std::string path( dir );
+    path += "/";
+    path += "a.dat";
+
+    return path;
+}
+

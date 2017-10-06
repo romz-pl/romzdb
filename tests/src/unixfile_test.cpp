@@ -3,24 +3,10 @@
 #include <cstdlib>
 #include <cassert>
 
-std::string GetTempPath()
-{
-    char dir[] = "/tmp/aaXXXXXXX";
-    char *p = mkdtemp( dir );
-    // Function 'mkdtemp failed!'
-    assert( p ); 
-    
-    std::string path( dir );
-    path += "/";
-    path += "a.dat";
-    // std::cout << path << std::endl;
-
-    return path;
-}
 
 TEST(UnixFile, Open)
 {
-    const std::string path = GetTempPath();
+    const std::string path = UnixFile::GetTempPath();
 
     // The file does not exist. It can not be opened
     EXPECT_ANY_THROW( UnixFile( path, UnixFile::Mode::Open ) );
@@ -47,7 +33,7 @@ std::vector< char > GetData()
 
 TEST(UnixFile, Write)
 {
-    const std::string path = GetTempPath();
+    const std::string path = UnixFile::GetTempPath();
 
     UnixFile uf( path, UnixFile::Mode::Create );
 

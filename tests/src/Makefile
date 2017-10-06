@@ -31,6 +31,8 @@ VPATH += ../../src
 # Source files (listed in alphabetical order)
 
 SOURCE :=
+SOURCE += frame.cpp
+SOURCE += frame_test.cpp
 SOURCE += main.cpp
 SOURCE += page.cpp
 SOURCE += page_test.cpp
