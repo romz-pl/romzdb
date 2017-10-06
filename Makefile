@@ -16,6 +16,6 @@ clean :
 	cd build && $(MAKE) clean
 
 test :
-	cd tests/googletest && $(MAKE) gtest.a
-	cd tests/build && $(MAKE)
+	cd tests/googletest && $(MAKE) gtest.a && \
+	cd tests/build && $(MAKE) && ./test.x
 
