@@ -18,7 +18,7 @@ GTEST_DIR := ../googletest
 CXXLIB := ${GTEST_DIR}/gtest.a -pthread
 
 # Google Test header files
-CXXFLAGS += -isystem ${GTEST_DIR}/include
+CXXFLAGS += -isystem ${GTEST_DIR}/include -I${GTEST_DIR}
 
 # Name of resulted binaries
 BINOUT := test.x
