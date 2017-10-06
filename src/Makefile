@@ -24,6 +24,7 @@ VPATH := ../src/
 
 SOURCE :=
 SOURCE += main.cpp
+SOURCE += page.cpp
 SOURCE += unixfile.cpp
 
 #Object files
