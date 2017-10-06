@@ -32,6 +32,8 @@ VPATH += ../../src
 
 SOURCE :=
 SOURCE += main.cpp
+SOURCE += page.cpp
+SOURCE += page_test.cpp
 SOURCE += unixfile.cpp
 SOURCE += unixfile_test.cpp
 
