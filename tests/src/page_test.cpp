@@ -3,6 +3,7 @@
 #include <unixfile.h>
 #include <cstdlib>
 #include <cassert>
+#include <algorithm>
 
 
 TEST(Page, Compare)
@@ -26,3 +27,27 @@ TEST(Page, IO)
     EXPECT_NO_THROW( pb.Read( &uf, pageId ) );
     EXPECT_TRUE( pa == pb );
 }
+
+TEST(Page, IOsequence)
+{
+    UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
+
+    const PageId maxPageId = 200;
+    std::vector< PageId > seq( 13 );
+
+    std::generate( seq.begin(), seq.end(), []{ return rand() % maxPageId; });
+
+    for( PageId id : seq )
+    {
+	// std::cout << id << " ";
+        std::string txt( "abc-" + std::to_string( id ) );
+        Page pa( txt );
+        
+        EXPECT_NO_THROW( pa.Write( &uf, id ) );
+        
+        Page pb;
+        EXPECT_NO_THROW( pb.Read( &uf, id ) );
+        EXPECT_TRUE( pa == pb );
+    }
+}
+ 
