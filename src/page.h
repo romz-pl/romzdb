@@ -16,8 +16,8 @@ public:
     Page();
     explicit Page( const std::string& v );
 
-    void Write( UnixFile* uf, PageId pageId );
-    void Read( UnixFile* uf, PageId pageId );
+    void Write( const UnixFile& uf, PageId pageId ) const;
+    void Read( const UnixFile& uf, PageId pageId );
 
     bool operator==( const Page& a ) const;
 
