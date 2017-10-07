@@ -3,6 +3,7 @@
 #include <cassert>
 #include <algorithm>
 
+
 //
 //
 //
@@ -16,8 +17,9 @@ Page::Page()
 //
 Page::Page( const std::string& v )
 {
-    const std::size_t len = std::min( m_size, v.size() );
-    std::memcpy( m_data, &( v[ 0 ]), len );
+    const std::size_t len = std::min( static_cast< std::size_t >( PageSize ), v.size() );
+    for( std::size_t i = 0; i < len; i++ )
+        m_data[ i ] = v[ i ];
 }
 
 //
@@ -25,7 +27,7 @@ Page::Page( const std::string& v )
 //
 void Page::Zero( )
 {
-    std::memset( m_data, 0, m_size );
+    std::fill( m_data.begin(), m_data.end(), 0 );
 }
 
 //
@@ -33,8 +35,8 @@ void Page::Zero( )
 //
 void Page::Write( const UnixFile& uf, PageId pageId ) const
 {
-    const off_t offset = pageId * (off_t)m_size;
-    uf.Write( m_data, m_size, offset );
+    const off_t offset = pageId * (off_t)PageSize;
+    uf.Write( m_data.data(), PageSize, offset );
 }
 
 //
@@ -42,8 +44,8 @@ void Page::Write( const UnixFile& uf, PageId pageId ) const
 //
 void Page::Read( const UnixFile &uf, PageId pageId )
 {
-    const off_t offset = pageId * (off_t)m_size;
-    uf.Read( m_data, m_size, offset );
+    const off_t offset = pageId * (off_t)PageSize;
+    uf.Read( m_data.data(), PageSize, offset );
 }
 
 //
@@ -51,5 +53,5 @@ void Page::Read( const UnixFile &uf, PageId pageId )
 //
 bool Page::operator==( const Page& a ) const
 {
-    return std::memcmp( m_data, a.m_data, m_size ) == 0;
+    return m_data == a.m_data;
 }

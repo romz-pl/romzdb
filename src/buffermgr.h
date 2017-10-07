@@ -58,23 +58,27 @@
 
 
 
+#include <map>
 #include <vector>
-#include <list>
+#include <queue>
 #include "frame.h"
 #include "page.h"
-#include "unixfile.h"
-
+#include "diskspacemgr.h"
 
 
 class BufferMgr
 {
 
 public:
-    BufferMgr( std::size_t numPages );
+    BufferMgr( DiskSpaceMgr& ds, std::size_t numPages );
     ~BufferMgr();
 
 
-    Page *GetPage( UnixFile* uf, PageId pageId, bool bMultiplePins );
+    Page *GetPage( PageId pageId, bool multiplePins );
+    void UnpinPage( PageId pageId );
+
+    void FlushPages( );
+
 /*    static Page* AllocatePage( UnixFile* uf, PageId pageNum );
     static void MarkDirty( UnixFile* uf, PageId pageNum );
     static void UnpinPage( UnixFile* uf, PageId pageNum );
@@ -91,14 +95,16 @@ private:
     static bool IsInvariant();
 */
 private:
-    // Pool of pages stored in the buffer manager
-    //std::vector< Page > m_pool;
+    Page* GetPageUsed( PageId pageId, bool multiplePins );
+    Page* GetPageFree( PageId pageId );
 
-    // Holds the used pages in the pool
-    //std::map< Frame, Page* > m_used;
+    Frame* FindFrame( PageId pageId );
 
-    // Stores pointers to free pages in the pool
-    //std::list< Page* > m_free;
+private:
+    DiskSpaceMgr& m_ds;
+
+    // Pool of frames stored in the buffer manager
+    std::vector< Frame > m_pool;
 
 };
 

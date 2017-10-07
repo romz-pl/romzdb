@@ -1,41 +1,44 @@
 #include "frame.h"
+#include <cassert>
+#include <limits>
 
 //
 //
 //
-Frame::Frame( Page* page, PageId pageId, UnixFile* uf )
-    : m_page( page )
-    , m_pageId( pageId )
-    , m_uf( uf )
+Frame::Frame()
+    : m_pageId( std::numeric_limits< PageId >::max() )
     , m_pinCount( 0 )
     , m_dirty( false )
 {
 
 }
 
-//
-//
-//
-void Frame::Write()
+bool Frame::IsEqual( PageId pageId ) const
 {
-/*    if( m_dirty )
-    {
-        m_page->Write( m_uf, m_pageId );
-        m_dirty = false;
-    }
-    */
+    return m_pageId == pageId;
 }
 
 //
 //
 //
-void Frame::Read( )
+void Frame::Read( const DiskSpaceMgr &ds, PageId pageId )
 {
-    /*
-    m_page->Read( m_uf, m_pageId );
-    m_pinCount = 1;
+    m_pageId = pageId;
+    m_page = ds.Read( m_pageId );
     m_dirty = false;
-    */
+}
+
+//
+//
+//
+void Frame::Write( const DiskSpaceMgr &ds )
+{
+    if( m_dirty )
+    {
+        assert( m_pageId != std::numeric_limits< PageId >::max() );
+        ds.Write( m_page, m_pageId );
+        m_dirty = false;
+    }
 }
 
 //
@@ -46,16 +49,26 @@ void Frame::SetDirty( bool dirty )
     m_dirty = dirty;
 }
 
-/*
 //
 //
 //
-void Frame::Init( UnixFile* uf, PageId pageId )
+bool Frame::IsPinned() const
 {
-    m_uf = uf;
-    m_pageId = pageId;
-    m_pinCount = 1;
-    m_dirty = false;
-    m_page.Zero();
+    return m_pinCount > 0;
 }
-*/
+
+
+//
+//
+//
+void Frame::UnpinPage()
+{
+    assert( m_pinCount > 0 );
+    m_pinCount--;
+}
+
+Page* Frame::GetPage()
+{
+    m_pinCount++;
+    return &m_page;
+}

@@ -10,8 +10,8 @@ public:
     DiskSpaceMgr( UnixFile& uf );
     ~DiskSpaceMgr() = default;
 
-    Page Read( PageId id );
-    void Write( const Page& page, PageId id );
+    Page Read( PageId id ) const;
+    void Write( const Page& page, PageId id ) const;
 
 
 private:
