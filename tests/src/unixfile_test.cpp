@@ -46,6 +46,4 @@ TEST(UnixFile, Write)
     EXPECT_NO_THROW( uf.Read( &( tmp[ 0 ] ), tmp.size(), offset ) );
     
     EXPECT_TRUE( data == tmp );
-    
-    EXPECT_ANY_THROW( uf.Read( &( tmp[ 0 ] ), tmp.size(), offset + 1 ) );
 }

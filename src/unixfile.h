@@ -24,6 +24,7 @@ private:
     void Create( const std::string& path );
     void Close( );
     void Lseek( off_t offset ) const;
+    off_t GetSize() const;
 
 
 private:
