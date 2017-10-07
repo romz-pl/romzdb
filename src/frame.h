@@ -14,11 +14,12 @@ class Frame
 public:
     Frame( );
 
+    bool IsEqual( PageId pageId ) const;
+
     void SetDirty( bool dirty );
 
     bool IsPinned() const;
-    void IncPin();
-    void DecPin();
+    void UnpinPage();
 
     void Read( const DiskSpaceMgr& ds, PageId pageId );
     void Write( const DiskSpaceMgr &ds );

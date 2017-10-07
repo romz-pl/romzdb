@@ -106,13 +106,6 @@ private:
     // Pool of frames stored in the buffer manager
     std::vector< Frame > m_pool;
 
-    // Map of used freames from the pool.
-    // At the beginning this map is empty.
-    std::map< PageId, Frame* > m_used;
-
-    // Frames with "pin count" equal zero
-    std::queue< Frame* > m_policy;
-
 };
 
 #endif

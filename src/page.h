@@ -9,6 +9,7 @@
 #include "pageid.h"
 #include "unixfile.h"
 #include <string>
+#include <array>
 
 class Page
 {
@@ -27,10 +28,10 @@ private:
 private:
     // The size of the page in the file.
     // All pages have the same size!
-    static const std::size_t m_size = 4096;
+    enum { PageSize = 4096 };
 
     // Data stored on the page
-    char m_data[ m_size ];
+    std::array< char, PageSize > m_data;
 };
 
 

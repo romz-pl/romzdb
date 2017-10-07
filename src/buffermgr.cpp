@@ -2,6 +2,7 @@
 #include <cassert>
 #include <stdexcept>
 #include <iostream>
+#include <algorithm>
 
 //
 // Constructor
@@ -11,10 +12,6 @@ BufferMgr::BufferMgr( DiskSpaceMgr& ds, std::size_t numPages )
     , m_pool( numPages )
 {
 
-    for( std::size_t i = 0; i < m_pool.size(); i++ )
-    {
-        m_policy.push( &( m_pool[ i ] ) );
-    }
 }
 
 //
@@ -28,51 +25,54 @@ BufferMgr::~BufferMgr()
 //
 // Returns  a pointer to a page pinned in the buffer.
 //
-// If the page is already in the buffer:
-//    a) (re)pin the page,
-//    b) return a pointer to it.
 //
-// If the page is not in the buffer:
-//    a) choose the frame for replacement
-//    a) read it from the file,
-//    b) pin it
-//    c) return a pointer to it.
+// A. Check the buffer pool to see if it contains the requated page.
+//    1. If the page is already in the buffer:
+//        a) (re)pin the page,
+//        b) return a pointer to it.
+//
+//    2. Eitherwise it returns the null pointer
+//
+//
+// B. When the page is not in the buffer pool, do the following:
+//    a) Choose a frame for replacement, using the repacement policy.
+//    b) Increment its "pin count"
+//    c) If its "dirty bit" is on, write the page it contains to disk
+//       (taht is, the disk copy of the page is overwritten with the contents of the frame).
+//    d) Read the requested page into the frame.
+//    e) Return a pointer to it.
+//
 //
 // If the buffer is full, replace an unpinned page.
 //
 Page* BufferMgr::GetPage( PageId pageId, bool multiplePins )
 {
-    Page* page = GetPageUsed( pageId, multiplePins );
-    if( !page )
-    {
-        // page = GetPageFree();
-    }
-
-    return page;
-}
-
-//
-// Check the buffer pool to see if it contains the requated page.
-//
-// 1. If the page is already in the buffer:
-//    a) (re)pin the page,
-//    b) return a pointer to it.
-//
-// 2. Eitherwise it returns the null pointer
-//
-Page* BufferMgr::GetPageUsed( PageId pageId, bool multiplePins )
-{
     Frame* frame = FindFrame( pageId );
 
-    // Error if we don't want to get a pinned page
-    if( !multiplePins && frame->IsPinned() )
+    if( frame )
     {
-        throw std::runtime_error( "BufferMgr::GetPage. Multiple pins not allowed and the page already pinned." );
-    }
-    // Page is alredy in memory, just increment pin count
-    frame->IncPin();
+        // Error if we don't want to get a pinned page
+        if( !multiplePins && frame->IsPinned() )
+        {
+            throw std::runtime_error( "BufferMgr::GetPage. Multiple pins not allowed and the page already pinned." );
+        }
 
-    return frame->GetPage();
+        return frame->GetPage();
+    }
+    else
+    {
+        auto pred = []( const Frame& f ){ return !f.IsPinned(); };
+        auto it = std::find_if( m_pool.begin(), m_pool.end(), pred );
+        if( it == m_pool.end() )
+        {
+            throw std::runtime_error( "BufferMgr::GetPageFree The buffer is full." );
+        }
+        Frame& f = *it;
+        f.Write( m_ds );
+        f.Read( m_ds, pageId );
+        return f.GetPage();
+    }
+
 }
 
 //
@@ -80,39 +80,17 @@ Page* BufferMgr::GetPageUsed( PageId pageId, bool multiplePins )
 //
 Frame* BufferMgr::FindFrame( PageId pageId )
 {
-    auto it = m_used.find( pageId );
-    if( it != m_used.end() )
+    auto pred = [pageId]( const Frame& f ){ return f.IsEqual( pageId ); };
+    auto it = std::find_if( m_pool.begin(), m_pool.end(), pred );
+    if( it != m_pool.end() )
     {
-        return it->second;
+        return &(*it);
     }
 
     return nullptr;
 }
 
-//
-// When the page is not in the buffer pool, do the following:
-//    a) Choose a frame for replacement, using the repacement policy
-//       and increment its "pin count"
-//    b) If the dirty bit for the replacement frame is on, write the page it contains to disk
-//         (taht is, the disk copy of the page is overwritten with the contents of the frame).
-//    c) Read the requested page into the replacement frame.
-//    d) Return a pointer to it.
-//
-Page* BufferMgr::GetPageFree( PageId pageId )
-{
-    if( m_policy.size() == 0 )
-    {
-        throw std::runtime_error( "BufferMgr::GetPageFree The buffer is full." );
-    }
-    Frame* frame = m_policy.front();
-    m_policy.pop();
 
-    frame->Read( m_ds, pageId );
-
-    m_used.insert( std::make_pair( pageId, frame ) );
-
-    return frame->GetPage();
-}
 
 //
 // Unpin a page so that it can be discarded from the buffer.
@@ -130,12 +108,7 @@ void BufferMgr::UnpinPage( PageId pageId )
         throw std::runtime_error( "BufferMgr::UnpinPage: Page is not pinned." );
     }
 
-    frame->DecPin();
-
-    if( !frame->IsPinned() )
-    {
-        m_policy.push( frame );
-    }
+    frame->UnpinPage();
 }
 
 //
@@ -146,14 +119,13 @@ void BufferMgr::UnpinPage( PageId pageId )
 //
 void BufferMgr::FlushPages( )
 {
-    for( auto v : m_used )
+    for( auto& f : m_pool )
     {
-        Frame* frame = v.second;
-        if( frame->IsPinned() > 0 )
+        if( f.IsPinned() > 0 )
         {
             throw std::runtime_error( "BufferMgr::FlushPages. There are pinned pages." );
         }
-        frame->Write( m_ds );
+        f.Write( m_ds );
     }
 }
 
