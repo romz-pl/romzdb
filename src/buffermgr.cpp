@@ -6,14 +6,15 @@
 //
 // Constructor
 //
-BufferMgr::BufferMgr( std::size_t numPages )
-//    : m_pool( numPages )
+BufferMgr::BufferMgr( DiskSpaceMgr& ds, std::size_t numPages )
+    : m_ds( ds )
+    , m_pool( numPages )
 {
-/*    // Initially, the free list contains all pages
-    for( std::size_t i = 0; i < m_pool.size(); i++)
+
+    for( std::size_t i = 0; i < m_pool.size(); i++ )
     {
-        m_free.push_back( &(m_pool[ i ]) );
-    } */
+        m_policy.push( &( m_pool[ i ] ) );
+    }
 }
 
 //
@@ -21,7 +22,7 @@ BufferMgr::BufferMgr( std::size_t numPages )
 //
 BufferMgr::~BufferMgr()
 {
-    // FlushPages();
+    FlushPages();
 }
 
 //
@@ -32,16 +33,128 @@ BufferMgr::~BufferMgr()
 //    b) return a pointer to it.
 //
 // If the page is not in the buffer:
+//    a) choose the frame for replacement
 //    a) read it from the file,
 //    b) pin it
 //    c) return a pointer to it.
 //
 // If the buffer is full, replace an unpinned page.
 //
-Page* BufferMgr::GetPage( UnixFile* uf, PageId pageId, bool bMultiplePins )
+Page* BufferMgr::GetPage( PageId pageId, bool multiplePins )
 {
-    // Page* page = m_used.find( Frame( uf, pageId ) );
+    Page* page = GetPageUsed( pageId, multiplePins );
+    if( !page )
+    {
+        // page = GetPageFree();
+    }
+
+    return page;
+}
+
+//
+// Check the buffer pool to see if it contains the requated page.
+//
+// 1. If the page is already in the buffer:
+//    a) (re)pin the page,
+//    b) return a pointer to it.
+//
+// 2. Eitherwise it returns the null pointer
+//
+Page* BufferMgr::GetPageUsed( PageId pageId, bool multiplePins )
+{
+    Frame* frame = FindFrame( pageId );
+
+    // Error if we don't want to get a pinned page
+    if( !multiplePins && frame->IsPinned() )
+    {
+        throw std::runtime_error( "BufferMgr::GetPage. Multiple pins not allowed and the page already pinned." );
+    }
+    // Page is alredy in memory, just increment pin count
+    frame->IncPin();
+
+    return frame->GetPage();
+}
+
+//
+// Returns the pointer to a frame storing the page with the identyfier "pageId".
+//
+Frame* BufferMgr::FindFrame( PageId pageId )
+{
+    auto it = m_used.find( pageId );
+    if( it != m_used.end() )
+    {
+        return it->second;
+    }
+
     return nullptr;
+}
+
+//
+// When the page is not in the buffer pool, do the following:
+//    a) Choose a frame for replacement, using the repacement policy
+//       and increment its "pin count"
+//    b) If the dirty bit for the replacement frame is on, write the page it contains to disk
+//         (taht is, the disk copy of the page is overwritten with the contents of the frame).
+//    c) Read the requested page into the replacement frame.
+//    d) Return a pointer to it.
+//
+Page* BufferMgr::GetPageFree( PageId pageId )
+{
+    if( m_policy.size() == 0 )
+    {
+        throw std::runtime_error( "BufferMgr::GetPageFree The buffer is full." );
+    }
+    Frame* frame = m_policy.front();
+    m_policy.pop();
+
+    frame->Read( m_ds, pageId );
+
+    m_used.insert( std::make_pair( pageId, frame ) );
+
+    return frame->GetPage();
+}
+
+//
+// Unpin a page so that it can be discarded from the buffer.
+//
+void BufferMgr::UnpinPage( PageId pageId )
+{
+    Frame* frame = FindFrame( pageId );
+    if( !frame )
+    {
+        throw std::runtime_error( "BufferMgr::UnpinPage: Page not in the buffer." );
+    }
+
+    if( !frame->IsPinned() )
+    {
+        throw std::runtime_error( "BufferMgr::UnpinPage: Page is not pinned." );
+    }
+
+    frame->DecPin();
+
+    if( !frame->IsPinned() )
+    {
+        m_policy.push( frame );
+    }
+}
+
+//
+// Release all pages for this file and put them onto the free list
+// Returns a warning if any of the file's pages are pinned.
+// The linear search of the buffer is performed.
+// A better method is not needed because # of buffers are small.
+//
+void BufferMgr::FlushPages( )
+{
+    for( auto v : m_used )
+    {
+        Frame* frame = v.second;
+        if( frame->IsPinned() > 0 )
+        {
+            throw std::runtime_error( "BufferMgr::FlushPages. There are pinned pages." );
+        }
+        frame->Write( m_ds );
+    }
 }
 
 /*

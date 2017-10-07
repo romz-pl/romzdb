@@ -5,33 +5,36 @@
 // It contains the data about a page in the buffer manager.
 //
 
-
-#include "pageid.h"
+#include <cstdint>
 #include "page.h"
-#include "unixfile.h"
+#include "diskspacemgr.h"
 
 class Frame
 {
 public:
-    Frame( Page* page, PageId pageId, UnixFile* uf );
-    void Write();
-    void Read();
-    // void Init( UnixFile* uf, PageId pageId );
+    Frame( );
 
     void SetDirty( bool dirty );
 
-private:
-    // Page contents
-    Page* m_page;
+    bool IsPinned() const;
+    void IncPin();
+    void DecPin();
 
+    void Read( const DiskSpaceMgr& ds, PageId pageId );
+    void Write( const DiskSpaceMgr &ds );
+
+    Page* GetPage();
+
+// private:
     // Page identyfier for this page
     PageId m_pageId;
 
-    // Unix file, where the page is stored
-    UnixFile* m_uf;
+private:
+    // The page stored in the frame
+    Page m_page;
 
     // pin count
-    short int m_pinCount;
+    std::uint8_t m_pinCount;
 
     // true if page is dirty
     bool m_dirty;

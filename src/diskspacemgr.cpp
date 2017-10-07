@@ -12,7 +12,7 @@ DiskSpaceMgr::DiskSpaceMgr( UnixFile& uf )
 //
 //
 //
-Page DiskSpaceMgr::Read( PageId id )
+Page DiskSpaceMgr::Read( PageId id ) const
 {
     Page page;
     page.Read( m_uf, id );
@@ -22,7 +22,7 @@ Page DiskSpaceMgr::Read( PageId id )
 //
 //
 //
-void DiskSpaceMgr::Write( const Page& page, PageId id )
+void DiskSpaceMgr::Write( const Page& page, PageId id ) const
 {
     page.Write( m_uf , id );
 }
