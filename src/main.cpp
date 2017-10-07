@@ -11,7 +11,6 @@ void TestBufferMgr()
     const std::size_t numPages = 10;
     BufferMgr bufferMgr( ds, numPages );
 
-    ds.Write( page, pageId );
     bufferMgr.GetPage( pageId, false );
     bufferMgr.GetPage( pageId, true );
     bufferMgr.UnpinPage( pageId );

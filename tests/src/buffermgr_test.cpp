@@ -13,8 +13,6 @@ TEST(BufferMgr, GetPage)
     const std::size_t numPages = 10;
     BufferMgr bufferMgr( ds, numPages );
 
-    EXPECT_NO_THROW( ds.Write( page, pageId ) );
-
     EXPECT_NO_THROW( bufferMgr.GetPage( pageId, false ) );
     EXPECT_ANY_THROW( bufferMgr.GetPage( pageId, false ) );
     EXPECT_NO_THROW( bufferMgr.GetPage( pageId, true ) );

@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <cassert>
 #include <stdexcept>
+#include <cstring>
 
 //
 //
@@ -89,9 +90,23 @@ void UnixFile::Write( const char* data, size_t nbyte, off_t offset ) const
     }
 }
 
+//
+// Reads data from the file.
+// If the data are read outside the file, file is increased
+// and data is filled with zeros.
+//
 void UnixFile::Read( char* data, size_t nbyte, off_t offset ) const
 {
     assert( m_fd != m_badFd );
+
+    // Reading outsize the file
+    if( GetSize() < offset + static_cast< off_t >( nbyte ) )
+    {
+        Lseek( offset + nbyte );
+        std::memset( data, 0, nbyte );
+        Write( data, nbyte, offset );
+        // return;
+    }
 
     Lseek( offset );
 
@@ -131,5 +146,19 @@ std::string UnixFile::GetTempPath()
     path += "a.dat";
 
     return path;
+}
+
+//
+// Returns size of the file (in bytes)
+//
+off_t UnixFile::GetSize() const
+{
+    struct stat buf;
+    const int rc = fstat( m_fd, &buf );
+    if( rc != 0 )
+    {
+        throw std::runtime_error( "UnixFile::GetSize" );
+    }
+    return buf.st_size;
 }
 
