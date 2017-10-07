@@ -23,6 +23,7 @@ VPATH := ../src/
 # Source files (listed in alphabetical order)
 
 SOURCE :=
+SOURCE += buffermgr.cpp
 SOURCE += frame.cpp
 SOURCE += main.cpp
 SOURCE += page.cpp
