@@ -1,18 +1,26 @@
 #include <gtest/gtest.h>
-#include <diskspacemgr.h>
+#include <frame.h>
 #include <unixfile.h>
 #include <cstdlib>
 
 
-TEST(DiskSpaceMgr, IO)
+TEST(Frame, IO)
 {
-    Page pa( "abc");
+/*    Page pa( "abc");
     const PageId pageId = 0;
     UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
-    DiskSpaceMgr ds( uf );
+    Frame fa( &pa, pageId, &uf );
 
-    EXPECT_NO_THROW( ds.Write( pa, pageId ) );
+    fa.SetDirty( true );
+    EXPECT_NO_THROW( fa.Write( ) );
 
-    EXPECT_NO_THROW( ds.Read( pageId ) );
-    EXPECT_EQ( ds.Read( pageId ), pa );
+    EXPECT_NO_THROW( fa.Read( ) );
+
+    Page pb;
+    EXPECT_FALSE( pa == pb );
+    Frame fb( &pb, pageId, &uf );
+
+    EXPECT_NO_THROW( fb.Read( ) );
+    EXPECT_TRUE( pa == pb );
+    */
 }
