@@ -18,11 +18,12 @@ Frame::Frame( Page* page, PageId pageId, UnixFile* uf )
 //
 void Frame::Write()
 {
-    if( m_dirty )
+/*    if( m_dirty )
     {
         m_page->Write( m_uf, m_pageId );
         m_dirty = false;
     }
+    */
 }
 
 //
@@ -30,9 +31,11 @@ void Frame::Write()
 //
 void Frame::Read( )
 {
+    /*
     m_page->Read( m_uf, m_pageId );
     m_pinCount = 1;
     m_dirty = false;
+    */
 }
 
 //

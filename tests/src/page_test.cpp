@@ -22,9 +22,9 @@ TEST(Page, IO)
     UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
 
     const PageId pageId = 0;
-    EXPECT_NO_THROW( pa.Write( &uf, pageId ) );
+    EXPECT_NO_THROW( pa.Write( uf, pageId ) );
 
-    EXPECT_NO_THROW( pb.Read( &uf, pageId ) );
+    EXPECT_NO_THROW( pb.Read( uf, pageId ) );
     EXPECT_TRUE( pa == pb );
 }
 
@@ -43,10 +43,10 @@ TEST(Page, IOsequence)
         std::string txt( "abc-" + std::to_string( id ) );
         Page pa( txt );
         
-        EXPECT_NO_THROW( pa.Write( &uf, id ) );
+        EXPECT_NO_THROW( pa.Write( uf, id ) );
         
         Page pb;
-        EXPECT_NO_THROW( pb.Read( &uf, id ) );
+        EXPECT_NO_THROW( pb.Read( uf, id ) );
         EXPECT_TRUE( pa == pb );
     }
 }

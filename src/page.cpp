@@ -31,21 +31,19 @@ void Page::Zero( )
 //
 // Writes the page to file on pageId
 //
-void Page::Write( UnixFile* uf, PageId pageId )
+void Page::Write( const UnixFile& uf, PageId pageId ) const
 {
     const off_t offset = pageId * (off_t)m_size;
-    assert( uf );
-    uf->Write( m_data, m_size, offset );
+    uf.Write( m_data, m_size, offset );
 }
 
 //
 // Reads the page from file from pageId
 //
-void Page::Read( UnixFile* uf, PageId pageId )
+void Page::Read( const UnixFile &uf, PageId pageId )
 {
     const off_t offset = pageId * (off_t)m_size;
-    assert( uf );
-    uf->Read( m_data, m_size, offset );
+    uf.Read( m_data, m_size, offset );
 }
 
 //
