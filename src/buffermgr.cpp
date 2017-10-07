@@ -7,13 +7,13 @@
 // Constructor
 //
 BufferMgr::BufferMgr( std::size_t numPages )
-    : m_pool( numPages )
+//    : m_pool( numPages )
 {
-    // Initially, the free list contains all pages
+/*    // Initially, the free list contains all pages
     for( std::size_t i = 0; i < m_pool.size(); i++)
     {
         m_free.push_back( &(m_pool[ i ]) );
-    }
+    } */
 }
 
 //
@@ -24,8 +24,23 @@ BufferMgr::~BufferMgr()
     // FlushPages();
 }
 
-Page* BufferMgr::GetPage( UnixFile* uf, PageId pageNum, bool bMultiplePins )
+//
+// Returns  a pointer to a page pinned in the buffer.
+//
+// If the page is already in the buffer:
+//    a) (re)pin the page,
+//    b) return a pointer to it.
+//
+// If the page is not in the buffer:
+//    a) read it from the file,
+//    b) pin it
+//    c) return a pointer to it.
+//
+// If the buffer is full, replace an unpinned page.
+//
+Page* BufferMgr::GetPage( UnixFile* uf, PageId pageId, bool bMultiplePins )
 {
+    // Page* page = m_used.find( Frame( uf, pageId ) );
     return nullptr;
 }
 

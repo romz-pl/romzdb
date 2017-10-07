@@ -74,7 +74,7 @@ public:
     ~BufferMgr();
 
 
-    Page *GetPage( UnixFile* uf, PageId pageNum, bool bMultiplePins );
+    Page *GetPage( UnixFile* uf, PageId pageId, bool bMultiplePins );
 /*    static Page* AllocatePage( UnixFile* uf, PageId pageNum );
     static void MarkDirty( UnixFile* uf, PageId pageNum );
     static void UnpinPage( UnixFile* uf, PageId pageNum );
@@ -92,13 +92,13 @@ private:
 */
 private:
     // Pool of pages stored in the buffer manager
-    std::vector< Page > m_pool;
+    //std::vector< Page > m_pool;
 
     // Holds the used pages in the pool
-    std::list< Frame > m_used;
+    //std::map< Frame, Page* > m_used;
 
     // Stores pointers to free pages in the pool
-    std::list< Page* > m_free;
+    //std::list< Page* > m_free;
 
 };
 
