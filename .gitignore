@@ -1,0 +1,5 @@
+build/*
+tests/build/*
+tests/googletest/gtest-all.o
+tests/googletest/gtest.a
+
