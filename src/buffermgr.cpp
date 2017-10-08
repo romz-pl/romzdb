@@ -6,6 +6,7 @@
 
 //
 // Constructor
+// numPage - number of pages in the buffer manager.
 //
 BufferMgr::BufferMgr( DiskSpaceMgr& ds, std::size_t numPages )
     : m_ds( ds )
@@ -44,6 +45,8 @@ BufferMgr::~BufferMgr()
 //
 //
 // If the buffer is full, replace an unpinned page.
+// 
+// If multiplePins is true, the page can have "pin_count > 1" 
 //
 Page* BufferMgr::GetPage( PageId pageId, bool multiplePins )
 {
@@ -112,10 +115,7 @@ void BufferMgr::UnpinPage( PageId pageId )
 }
 
 //
-// Release all pages for this file and put them onto the free list
-// Returns a warning if any of the file's pages are pinned.
-// The linear search of the buffer is performed.
-// A better method is not needed because # of buffers are small.
+// Flush all pages hold in the buffer into disk.
 //
 void BufferMgr::FlushPages( )
 {
