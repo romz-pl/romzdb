@@ -52,6 +52,14 @@ void Frame::SetDirty( bool dirty )
 //
 //
 //
+void Frame::MarkDirty( )
+{
+    m_dirty = true;
+}
+
+//
+//
+//
 bool Frame::IsPinned() const
 {
     return m_pinCount > 0;
