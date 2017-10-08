@@ -2,7 +2,7 @@ build/*
 !build/Makefile
 
 tests/build/*
-tests/build/Makefile
+!tests/build/Makefile
 
 tests/googletest/gtest-all.o
 tests/googletest/gtest.a
