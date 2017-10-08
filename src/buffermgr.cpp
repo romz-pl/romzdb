@@ -115,6 +115,28 @@ void BufferMgr::UnpinPage( PageId pageId )
 }
 
 //
+// Mark a page dirty so that when it is discarded from the buffer
+// it will be written back to the file.
+//
+void BufferMgr::MarkDirty( PageId pageId )
+{
+    Frame* frame = FindFrame( pageId );
+    if( !frame )
+    {
+        throw std::runtime_error( "BufferMgr::MarkDirty: Page not in the buffer." );
+    }
+
+    // Page must be pinned to make it diirty
+    if( !frame->IsPinned() )
+    {
+        throw std::runtime_error( "BufferMgr::MarkDirty: Page is not pinned." );
+    }
+
+    frame->MarkDirty();
+
+}
+
+//
 // Flush all pages hold in the buffer into disk.
 //
 void BufferMgr::FlushPages( )

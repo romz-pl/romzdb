@@ -17,6 +17,7 @@ public:
     bool IsEqual( PageId pageId ) const;
 
     void SetDirty( bool dirty );
+    void MarkDirty( );
 
     bool IsPinned() const;
     void UnpinPage();

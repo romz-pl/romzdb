@@ -76,6 +76,7 @@ public:
 
     Page *GetPage( PageId pageId, bool multiplePins );
     void UnpinPage( PageId pageId );
+    void MarkDirty( PageId pageId );
 
     void FlushPages( );
 
