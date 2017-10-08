@@ -8,7 +8,9 @@
 
 
 romzdb :
-	cd build && $(MAKE)
+	cd build && \
+	ln -s ../src/Makefile Makefile && \
+	$(MAKE)
 
 
 
@@ -21,6 +23,7 @@ test :
 	cd tests/googletest && \
 	$(MAKE) gtest.a && \
 	cd ../build && \
+	ln -s ../src/Makefile Makefile && \
 	$(MAKE) && \
 	./test.x
 
