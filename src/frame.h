@@ -16,7 +16,6 @@ public:
 
     bool IsEqual( PageId pageId ) const;
 
-    void SetDirty( bool dirty );
     void MarkDirty( );
 
     bool IsPinned() const;
@@ -27,11 +26,13 @@ public:
 
     Page* GetPage();
 
-// private:
+private:
+    // Resrrved page ID. This page ID cannot be used!
+    static const PageId m_reservedPageId;
+
     // Page identyfier for this page
     PageId m_pageId;
 
-private:
     // The page stored in the frame
     Page m_page;
 

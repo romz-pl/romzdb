@@ -2,11 +2,13 @@
 #include <cassert>
 #include <limits>
 
+const PageId Frame::m_reservedPageId = std::numeric_limits< PageId >::max();
+
 //
 //
 //
 Frame::Frame()
-    : m_pageId( std::numeric_limits< PageId >::max() )
+    : m_pageId( m_reservedPageId )
     , m_pinCount( 0 )
     , m_dirty( false )
 {
@@ -35,18 +37,10 @@ void Frame::Write( const DiskSpaceMgr &ds )
 {
     if( m_dirty )
     {
-        assert( m_pageId != std::numeric_limits< PageId >::max() );
+        assert( m_pageId != m_reservedPageId );
         ds.Write( m_page, m_pageId );
         m_dirty = false;
     }
-}
-
-//
-//
-//
-void Frame::SetDirty( bool dirty )
-{
-    m_dirty = dirty;
 }
 
 //
