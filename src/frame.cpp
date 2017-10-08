@@ -46,14 +46,6 @@ void Frame::Write( const DiskSpaceMgr &ds )
 //
 //
 //
-void Frame::SetDirty( bool dirty )
-{
-    m_dirty = dirty;
-}
-
-//
-//
-//
 void Frame::MarkDirty( )
 {
     m_dirty = true;
