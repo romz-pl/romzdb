@@ -101,7 +101,7 @@ private:
     Page* GetPageUsed( PageId pageId, bool multiplePins );
     Page* GetPageFree( PageId pageId );
 
-    Frame* FindFrame( PageId pageId );
+    Frame& FindFrame( PageId pageId );
     Page* GetPageFromDisk( PageId pageId );
 
 private:

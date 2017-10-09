@@ -48,17 +48,17 @@ BufferMgr::~BufferMgr()
 //
 Page* BufferMgr::GetPage( PageId pageId, bool multiplePins )
 {
-    auto pred = [pageId]( const Frame& f ){ return f.IsEqual( pageId ); };
+    auto pred = [ pageId ]( const Frame& f ){ return f.IsEqual( pageId ); };
     auto it = std::find_if( m_pool.begin(), m_pool.end(), pred );
 
     // The page is already in the buffer
     if( it != m_pool.end() )
     {
         Frame& frame = *it;
-        // Error if we don't want to get a pinned page
+        // Error if we don't want to get already pinned page
         if( !multiplePins && frame.IsPinned() )
         {
-            throw std::runtime_error( "BufferMgr::GetPage. Multiple pins not allowed and the page already pinned." );
+            throw std::runtime_error( "BufferMgr::GetPage. Multiple pins not allowed and the page is already pinned." );
         }
 
         return frame.GetPage();
@@ -87,34 +87,28 @@ Page* BufferMgr::GetPageFromDisk( PageId pageId )
 }
 
 //
-// Returns the pointer to a frame storing the page with the identyfier "pageId".
+// Returns a reference to a frame storing the page with the identyfier "pageId".
 //
-Frame* BufferMgr::FindFrame( PageId pageId )
+Frame& BufferMgr::FindFrame( PageId pageId )
 {
-    auto pred = [pageId]( const Frame& f ){ return f.IsEqual( pageId ); };
+    auto pred = [ pageId ]( const Frame& f ){ return f.IsEqual( pageId ); };
     auto it = std::find_if( m_pool.begin(), m_pool.end(), pred );
-    if( it != m_pool.end() )
+
+    if( it == m_pool.end() )
     {
-        return &(*it);
+        throw std::runtime_error( "BufferMgr::FindFrame: Page not in the buffer." );
     }
 
-    return nullptr;
+    return *it;
 }
-
-
 
 //
 // Unpin a page so that it can be discarded from the buffer.
 //
 void BufferMgr::UnpinPage( PageId pageId )
 {
-    Frame* frame = FindFrame( pageId );
-    if( !frame )
-    {
-        throw std::runtime_error( "BufferMgr::UnpinPage: Page not in the buffer." );
-    }
-
-    frame->UnpinPage();
+    Frame& frame = FindFrame( pageId );
+    frame.UnpinPage();
 }
 
 //
@@ -123,13 +117,17 @@ void BufferMgr::UnpinPage( PageId pageId )
 //
 void BufferMgr::MarkDirty( PageId pageId )
 {
-    Frame* frame = FindFrame( pageId );
-    if( !frame )
-    {
-        throw std::runtime_error( "BufferMgr::MarkDirty: Page not in the buffer." );
-    }
+    Frame& frame = FindFrame( pageId );
+    frame.MarkDirty();
+}
 
-    frame->MarkDirty();
+//
+// Writes the page from the buffer into disk.
+//
+void BufferMgr::WritePage( PageId pageId )
+{
+    Frame& frame = FindFrame( pageId );
+    frame.Write( m_ds );
 }
 
 //
@@ -145,20 +143,6 @@ void BufferMgr::FlushPages( )
         }
         f.Write( m_ds );
     }
-}
-
-//
-// Writes the page from the buffer into disk.
-//
-void BufferMgr::WritePage( PageId pageId )
-{
-    Frame* frame = FindFrame( pageId );
-    if( !frame )
-    {
-        throw std::runtime_error( "BufferMgr::WritePage: Page not in the buffer." );
-    }
-
-    frame->Write( m_ds );
 }
 
 /*
