@@ -106,11 +106,6 @@ void BufferMgr::UnpinPage( PageId pageId )
         throw std::runtime_error( "BufferMgr::UnpinPage: Page not in the buffer." );
     }
 
-    if( !frame->IsPinned() )
-    {
-        throw std::runtime_error( "BufferMgr::UnpinPage: Page is not pinned." );
-    }
-
     frame->UnpinPage();
 }
 
@@ -126,14 +121,7 @@ void BufferMgr::MarkDirty( PageId pageId )
         throw std::runtime_error( "BufferMgr::MarkDirty: Page not in the buffer." );
     }
 
-    // Page must be pinned to make it diirty
-    if( !frame->IsPinned() )
-    {
-        throw std::runtime_error( "BufferMgr::MarkDirty: Page is not pinned." );
-    }
-
     frame->MarkDirty();
-
 }
 
 //

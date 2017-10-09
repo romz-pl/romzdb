@@ -1,6 +1,7 @@
 #include "frame.h"
 #include <cassert>
 #include <limits>
+#include <stdexcept>
 
 const PageId Frame::m_reservedPageId = std::numeric_limits< PageId >::max();
 
@@ -48,6 +49,11 @@ void Frame::Write( const DiskSpaceMgr &ds )
 //
 void Frame::MarkDirty( )
 {
+    // Page must be pinned to make it diirty
+    if( !IsPinned() )
+    {
+        throw std::runtime_error( "Frame::MarkDirty: Page is not pinned." );
+    }
     m_dirty = true;
 }
 
@@ -65,7 +71,10 @@ bool Frame::IsPinned() const
 //
 void Frame::UnpinPage()
 {
-    assert( m_pinCount > 0 );
+    if( !IsPinned() )
+    {
+        throw std::runtime_error( "Frame::UnpinPage: Page is not pinned." );
+    }
     m_pinCount--;
 }
 
