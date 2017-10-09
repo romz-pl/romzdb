@@ -27,8 +27,8 @@ public:
     Page* GetPage();
 
 private:
-    // Resrrved page ID. This page ID cannot be used!
-    static const PageId m_reservedPageId;
+    // Invalid page ID. This page ID must not be used!
+    static const PageId m_invalidPageId;
 
     // Page identyfier for this page
     PageId m_pageId;

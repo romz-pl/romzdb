@@ -4,13 +4,13 @@
 #include <stdexcept>
 
 // Invalid page ID is the maksimum allowed value
-const PageId Frame::m_reservedPageId = std::numeric_limits< PageId >::max();
+const PageId Frame::m_invalidPageId = std::numeric_limits< PageId >::max();
 
 //
 // In the constructor "m_pageId" is initialized to the invalid page ID
 //
 Frame::Frame()
-    : m_pageId( m_reservedPageId )
+    : m_pageId( m_invalidPageId )
     , m_pinCount( 0 )
     , m_dirty( false )
 {
@@ -42,7 +42,7 @@ void Frame::Write( const DiskSpaceMgr &ds )
 {
     if( m_dirty )
     {
-        assert( m_pageId != m_reservedPageId );
+        assert( m_pageId != m_invalidPageId );
         ds.Write( m_page, m_pageId );
         m_dirty = false;
     }
