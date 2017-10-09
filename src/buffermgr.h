@@ -75,10 +75,14 @@ public:
 
 
     Page *GetPage( PageId pageId, bool multiplePins );
+    void WritePage( PageId pageId );
+
     void UnpinPage( PageId pageId );
     void MarkDirty( PageId pageId );
 
     void FlushPages( );
+
+    void Print() const;
 
 /*    static Page* AllocatePage( UnixFile* uf, PageId pageNum );
     static void MarkDirty( UnixFile* uf, PageId pageNum );
@@ -99,7 +103,8 @@ private:
     Page* GetPageUsed( PageId pageId, bool multiplePins );
     Page* GetPageFree( PageId pageId );
 
-    Frame* FindFrame( PageId pageId );
+    Frame& FindFrame( PageId pageId );
+    Page* GetPageFromDisk( PageId pageId );
 
 private:
     DiskSpaceMgr& m_ds;
