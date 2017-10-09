@@ -30,6 +30,14 @@ bool Frame::IsEqual( PageId pageId ) const
 //
 void Frame::Read( const DiskSpaceMgr &ds, PageId pageId )
 {
+    if( pageId == m_invalidPageId )
+    {
+        std::string txt( "Frame::Read: The page ID '" );
+        txt += std::to_string( pageId );
+        txt += "' is not allowed";
+        throw std::runtime_error( txt );
+    }
+
     m_pageId = pageId;
     m_page = ds.Read( m_pageId );
     m_dirty = false;
@@ -42,7 +50,6 @@ void Frame::Write( const DiskSpaceMgr &ds )
 {
     if( m_dirty )
     {
-        assert( m_pageId != m_invalidPageId );
         ds.Write( m_page, m_pageId );
         m_dirty = false;
     }

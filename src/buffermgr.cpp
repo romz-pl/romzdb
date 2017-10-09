@@ -139,6 +139,20 @@ void BufferMgr::FlushPages( )
     }
 }
 
+//
+// Writes the page from the buffer into disk.
+//
+void BufferMgr::WritePage( PageId pageId )
+{
+    Frame* frame = FindFrame( pageId );
+    if( !frame )
+    {
+        throw std::runtime_error( "BufferMgr::WritePage: Page not in the buffer." );
+    }
+
+    frame->Write( m_ds );
+}
+
 /*
 //
 // Get a pointer to a page pinned in the buffer. If the page is

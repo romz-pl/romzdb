@@ -75,6 +75,8 @@ public:
 
 
     Page *GetPage( PageId pageId, bool multiplePins );
+    void WritePage( PageId pageId );
+
     void UnpinPage( PageId pageId );
     void MarkDirty( PageId pageId );
 
