@@ -152,13 +152,14 @@ void BufferMgr::FlushPages( )
 //
 void BufferMgr::Print() const
 {
-    std::cout << "Buffer contains " << m_pool.size() << " pages of size " << Page::PageSize <<".\n";
+    std::cout << "Buffer contains " << m_pool.size()
+              << " pages each of size " << Page::PageSize <<".\n";
 
 
     std::size_t i = 0;
     for( const Frame& frame : m_pool )
     {
-        std:: cout << "Frame " << i << "\n";
+        std:: cout << "Frame " << i << ":";
         frame.Print();
         i++;
     }

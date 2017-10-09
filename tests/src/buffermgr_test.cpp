@@ -19,6 +19,8 @@ TEST(BufferMgr, GetPage)
     EXPECT_NO_THROW( bufferMgr.UnpinPage( pageId ) );
     EXPECT_NO_THROW( bufferMgr.UnpinPage( pageId ) );
     EXPECT_ANY_THROW( bufferMgr.UnpinPage( pageId + 1 ) );
+
+    // bufferMgr.Print();
 }
 
 TEST(BufferMgr, TooLarge)
@@ -35,4 +37,6 @@ TEST(BufferMgr, TooLarge)
 
     for( std::size_t i = 0; i < numPages; i++ )
         EXPECT_NO_THROW( bufferMgr.UnpinPage( i ) );
+
+    // bufferMgr.Print();
 }

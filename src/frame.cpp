@@ -108,8 +108,15 @@ Page* Frame::GetPage()
 //
 void Frame::Print() const
 {
-    std::cout << "  page ID = " << m_pageId << "\n";
-    std::cout << "  is dirty? = " << m_dirty << "\n";
-    std::cout << "  pin count = " << m_pinCount << "\n";
+    if( m_pageId == m_invalidPageId )
+    {
+        std::cout << " Uninitialized frame\n";
+    }
+    else
+    {
+        std::cout << " page-ID = " << m_pageId << ";";
+        std::cout << " is-dirty = " << std::boolalpha << m_dirty << ";";
+        std::cout << " pin-count = " << static_cast< int>( m_pinCount ) << ";\n";
+    }
 }
 
