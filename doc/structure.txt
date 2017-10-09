@@ -1,19 +1,22 @@
 This is the structure of the code.
 
-UnixFile
+Disk: UnixFile
    |
-DiskSpaceMgr, PageId, Page
+Disk space manager: DiskSpaceMgr, PageId, Page
    |
-BufferMgr, Frame
+Buffer manager: BufferMgr, Frame
 
-1. All data are stored in one file. 
+1. Disk
+   All data are stored in one file. 
    The file is implemented in class UnixFile.
 
-2. The data to the UnixFile is tranfered in pages of fixed size.
+2. Disk space manager
+   The data to the UnixFile is tranfered in pages of fixed size.
    The page is represented by Page class.
    Each page has its uniq identyfier represented by PageId type.
 
-3. Buffer magager (implemented in class BufferMgr) is responsible for:
+3. Buffer manager
+   Buffer magager (implemented in class BufferMgr) is responsible for:
      a) tranfering data from disk into memory,
      b) transfering data from memory to disk.
   Pages in the buffer manager are kept in frames (class Frame),
