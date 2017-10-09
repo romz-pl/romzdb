@@ -131,7 +131,7 @@ void BufferMgr::FlushPages( )
 {
     for( auto& f : m_pool )
     {
-        if( f.IsPinned() > 0 )
+        if( f.IsPinned() )
         {
             throw std::runtime_error( "BufferMgr::FlushPages. There are pinned pages." );
         }

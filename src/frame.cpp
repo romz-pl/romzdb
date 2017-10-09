@@ -3,10 +3,11 @@
 #include <limits>
 #include <stdexcept>
 
+// Invalid page ID is the maksimum allowed value
 const PageId Frame::m_reservedPageId = std::numeric_limits< PageId >::max();
 
 //
-//
+// In the constructor "m_pageId" is initialized to the invalid page ID
 //
 Frame::Frame()
     : m_pageId( m_reservedPageId )
@@ -16,13 +17,16 @@ Frame::Frame()
 
 }
 
+//
+// Frames are equal, iff the pages ID are equal
+//
 bool Frame::IsEqual( PageId pageId ) const
 {
     return m_pageId == pageId;
 }
 
 //
-//
+// Reads (from the disk) the page into the frame
 //
 void Frame::Read( const DiskSpaceMgr &ds, PageId pageId )
 {
@@ -32,7 +36,7 @@ void Frame::Read( const DiskSpaceMgr &ds, PageId pageId )
 }
 
 //
-//
+// Writes (to the disk) the page from the frame
 //
 void Frame::Write( const DiskSpaceMgr &ds )
 {
@@ -65,7 +69,6 @@ bool Frame::IsPinned() const
     return m_pinCount > 0;
 }
 
-
 //
 //
 //
@@ -78,6 +81,9 @@ void Frame::UnpinPage()
     m_pinCount--;
 }
 
+//
+// Returns pointer to the holded page
+//
 Page* Frame::GetPage()
 {
     m_pinCount++;
