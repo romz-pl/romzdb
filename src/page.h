@@ -14,6 +14,12 @@
 class Page
 {
 public:
+    // The size of the page in the file.
+    // All pages have the same size!
+    enum { PageSize = 4096 };
+
+
+public:
     Page();
     explicit Page( const std::string& v );
 
@@ -26,10 +32,6 @@ private:
     void Zero( );
 
 private:
-    // The size of the page in the file.
-    // All pages have the same size!
-    enum { PageSize = 4096 };
-
     // Data stored on the page
     std::array< char, PageSize > m_data;
 };

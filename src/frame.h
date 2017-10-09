@@ -26,6 +26,8 @@ public:
 
     Page* GetPage();
 
+    void Print() const;
+
 private:
     // Invalid page ID. This page ID must not be used!
     static const PageId m_invalidPageId;

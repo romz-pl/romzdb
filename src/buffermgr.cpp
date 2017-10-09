@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <algorithm>
+#include <iostream>
 
 //
 // Constructor
@@ -144,6 +145,25 @@ void BufferMgr::FlushPages( )
         f.Write( m_ds );
     }
 }
+
+//
+// Display all information about the pages within the buffer.
+// This routine is for debugging purposes only.
+//
+void BufferMgr::Print() const
+{
+    std::cout << "Buffer contains " << m_pool.size() << " pages of size " << Page::PageSize <<".\n";
+
+
+    std::size_t i = 0;
+    for( const Frame& frame : m_pool )
+    {
+        std:: cout << "Frame " << i << "\n";
+        frame.Print();
+        i++;
+    }
+}
+
 
 /*
 //

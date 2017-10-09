@@ -82,6 +82,8 @@ public:
 
     void FlushPages( );
 
+    void Print() const;
+
 /*    static Page* AllocatePage( UnixFile* uf, PageId pageNum );
     static void MarkDirty( UnixFile* uf, PageId pageNum );
     static void UnpinPage( UnixFile* uf, PageId pageNum );

@@ -2,6 +2,8 @@
 #include <cassert>
 #include <limits>
 #include <stdexcept>
+#include <iostream>
+
 
 // Invalid page ID is the maksimum allowed value
 const PageId Frame::m_invalidPageId = std::numeric_limits< PageId >::max();
@@ -100,3 +102,14 @@ Page* Frame::GetPage()
     m_pinCount++;
     return &m_page;
 }
+
+//
+//
+//
+void Frame::Print() const
+{
+    std::cout << "  page ID = " << m_pageId << "\n";
+    std::cout << "  is dirty? = " << m_dirty << "\n";
+    std::cout << "  pin count = " << m_pinCount << "\n";
+}
+
