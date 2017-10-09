@@ -27,15 +27,13 @@ BufferMgr::~BufferMgr()
 // Returns  a pointer to a page pinned in the buffer.
 //
 //
-// A. Check the buffer pool to see if it contains the requated page.
-//    1. If the page is already in the buffer:
+// 1. Check the buffer pool to see if it contains the requated page.
+//    If the page is already in the buffer:
 //        a) (re)pin the page,
 //        b) return a pointer to it.
 //
-//    2. Eitherwise it returns the null pointer
 //
-//
-// B. When the page is not in the buffer pool, do the following:
+// 2. When the page is not in the buffer pool, do the following:
 //    a) Choose a frame for replacement, using the repacement policy.
 //    b) Increment its "pin count"
 //    c) If its "dirty bit" is on, write the page it contains to disk
@@ -50,32 +48,42 @@ BufferMgr::~BufferMgr()
 //
 Page* BufferMgr::GetPage( PageId pageId, bool multiplePins )
 {
-    Frame* frame = FindFrame( pageId );
+    auto pred = [pageId]( const Frame& f ){ return f.IsEqual( pageId ); };
+    auto it = std::find_if( m_pool.begin(), m_pool.end(), pred );
 
-    if( frame )
+    // The page is already in the buffer
+    if( it != m_pool.end() )
     {
+        Frame& frame = *it;
         // Error if we don't want to get a pinned page
-        if( !multiplePins && frame->IsPinned() )
+        if( !multiplePins && frame.IsPinned() )
         {
             throw std::runtime_error( "BufferMgr::GetPage. Multiple pins not allowed and the page already pinned." );
         }
 
-        return frame->GetPage();
-    }
-    else
-    {
-        auto pred = []( const Frame& f ){ return !f.IsPinned(); };
-        auto it = std::find_if( m_pool.begin(), m_pool.end(), pred );
-        if( it == m_pool.end() )
-        {
-            throw std::runtime_error( "BufferMgr::GetPageFree The buffer is full." );
-        }
-        Frame& f = *it;
-        f.Write( m_ds );
-        f.Read( m_ds, pageId );
-        return f.GetPage();
+        return frame.GetPage();
     }
 
+    return GetPageFromDisk( pageId );
+
+}
+
+//
+// Reads the page from the disk and sotes it in the buffer
+//
+Page* BufferMgr::GetPageFromDisk( PageId pageId )
+{
+    auto pred = []( const Frame& f ){ return !f.IsPinned(); };
+    auto it = std::find_if( m_pool.begin(), m_pool.end(), pred );
+    if( it == m_pool.end() )
+    {
+        throw std::runtime_error( "BufferMgr::GetPageFree: All pages are pinned. The buffer is full." );
+    }
+
+    Frame& f = *it;
+    f.Write( m_ds );
+    f.Read( m_ds, pageId );
+    return f.GetPage();
 }
 
 //

@@ -102,6 +102,7 @@ private:
     Page* GetPageFree( PageId pageId );
 
     Frame* FindFrame( PageId pageId );
+    Page* GetPageFromDisk( PageId pageId );
 
 private:
     DiskSpaceMgr& m_ds;
