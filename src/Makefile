@@ -28,6 +28,7 @@ SOURCE += diskspacemgr.cpp
 SOURCE += frame.cpp
 SOURCE += main.cpp
 SOURCE += page.cpp
+SOURCE += record.cpp
 SOURCE += unixfile.cpp
 
 #Object files
