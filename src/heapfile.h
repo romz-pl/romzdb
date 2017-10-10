@@ -43,10 +43,7 @@
 class HeapFile
 {
 public:
-public:
-    enum class Mode{ Open, Create };
-public:
-    HeapFile( BufferMgr& bufferMgr, PageId headerPage, Mode mode );
+    HeapFile( BufferMgr& bufferMgr, PageId headerPage);
     ~HeapFile() = default;
 
     Record Get( RecordId rid );
@@ -54,10 +51,6 @@ public:
     void Delete( RecordId rid );
     void Update( RecordId rid, const Record& rec );
 
-
-private:
-    void Open( );
-    void Create( );
 
 private:
     // Buffer manager

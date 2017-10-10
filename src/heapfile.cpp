@@ -4,40 +4,13 @@
 //
 //
 //
-HeapFile::HeapFile( BufferMgr& bufferMgr, PageId headerPage, Mode mode )
+HeapFile::HeapFile( BufferMgr& bufferMgr, PageId headerPage )
     : m_bufferMgr( bufferMgr )
     , m_headerPage( headerPage )
 {
-    if( mode == Mode::Open )
-    {
-        Open( );
-        return;
-    }
-
-    if( mode == Mode::Create )
-    {
-        Create( );
-        return;
-    }
-
-    assert( 0 );
-}
-
-//
-//
-//
-void HeapFile::Open( )
-{
 
 }
 
-//
-//
-//
-void HeapFile::Create( )
-{
-
-}
 
 //
 //
