@@ -27,6 +27,7 @@ SOURCE += buffermgr.cpp
 SOURCE += diskspacemgr.cpp
 SOURCE += frame.cpp
 SOURCE += heapfile.cpp
+SOURCE += heappage.cpp
 SOURCE += main.cpp
 SOURCE += page.cpp
 SOURCE += record.cpp
