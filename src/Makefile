@@ -30,6 +30,7 @@ SOURCE += heapfile.cpp
 SOURCE += main.cpp
 SOURCE += page.cpp
 SOURCE += record.cpp
+SOURCE += recordid.cpp
 SOURCE += unixfile.cpp
 
 #Object files
