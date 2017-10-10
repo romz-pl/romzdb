@@ -2,7 +2,7 @@
 #define ROMZDB_PAGEID_H
 
 //
-// Uniquely identifies a page in a file.
+// Uniquely identifies a page on the disk.
 //
 
 #include <cstddef>
