@@ -1,5 +1,5 @@
-#ifndef ROMZDB_RECORDID_H
-#define ROMZDB_RECORDID_H
+#ifndef ROMZDB_SLOTID_H
+#define ROMZDB_SLOTID_H
 
 
 //
