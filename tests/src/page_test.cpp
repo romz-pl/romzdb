@@ -50,4 +50,25 @@ TEST(Page, IOsequence)
         EXPECT_TRUE( pa == pb );
     }
 }
+
+TEST(Page, GetSet)
+{
+    Page pa;
+    int val = 123;
+    PageOffset offset = 1;
+    pa.Set( val, offset );
+    EXPECT_EQ( val, pa.Get< int >( offset ) );
+
+    offset = Page::PageSize;
+    EXPECT_ANY_THROW( pa.Set( val, offset ) );
+    EXPECT_ANY_THROW( pa.Get< int >( offset ) );
+
+    offset = Page::PageSize - sizeof( int );
+    EXPECT_NO_THROW( pa.Set( val, offset ) );
+    EXPECT_NO_THROW( pa.Get< int >( offset ) );
+    EXPECT_EQ( val, pa.Get< int >( offset ) );
+
+    // std::cout << offset << " " << Page::PageSize << " " << sizeof( int );
+
+}
  

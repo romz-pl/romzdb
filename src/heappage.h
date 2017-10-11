@@ -48,9 +48,32 @@
 //  End-of-exerpt
 //
 
+#include "slotid.h"
+#include "page.h"
+#include "record.h"
+#include "heappagehdr.h"
+
 class HeapPage
 {
+private:
+    enum
+    {
+        FreeSpace = Page::PageSize - sizeof( PageOffset ),
+        SlotNo = FreeSpace - sizeof( PageOffset ),
+        SlotDir = SlotNo - sizeof( SlotId )
+    };
+
 public:
+    HeapPage( Page* page );
+
+    Record Get( SlotId slotId );
+    SlotId Insert( const Record& rec );
+    void Delete( SlotId slotId );
+
+private:
+    Page* m_page;
+
+    HeapPageHdr m_hdr;
 
 };
 
