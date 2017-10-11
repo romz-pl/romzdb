@@ -30,7 +30,7 @@
 class HeapPageHdr
 {
 public:
-    HeapPageHdr();
+    HeapPageHdr() = default;
     ~HeapPageHdr() = default;
 
     void ToPage( Page& page ) const;
@@ -39,8 +39,10 @@ public:
     std::size_t GetSlotNo() const;
     Slot GetSlot( SlotId slotId ) const;
 
-    PageOffset Insert( const Record& rec );
+    std::pair<PageOffset, SlotId> Insert( std::size_t recLength );
     void Delete( SlotId slotId );
+
+    std::int32_t GetFreeSpace() const;
 
 
 private:
