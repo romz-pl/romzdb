@@ -5,10 +5,13 @@
 #include <vector>
 #include "slot.h"
 #include "slotid.h"
+#include "record.h"
 
 class HeapPageHdr
 {
 public:
+    HeapPageHdr();
+    ~HeapPageHdr() = default;
 
     void ToPage( Page& page ) const;
     void FromPage( const Page& page );
@@ -16,7 +19,7 @@ public:
     std::size_t GetSlotNo() const;
     Slot GetSlot( SlotId slotId ) const;
 
-    PageOffset Insert( std::size_t length );
+    PageOffset Insert( const Record& rec );
     void Delete( SlotId slotId );
 
 

@@ -1,6 +1,14 @@
 #include "heappagehdr.h"
 #include <cassert>
 
+//
+//
+//
+HeapPageHdr::HeapPageHdr()
+    : m_freeSpace( 0 )
+{
+
+}
 
 //
 //
@@ -79,16 +87,12 @@ Slot HeapPageHdr::GetSlot( SlotId slotId ) const
 //
 //
 //
-PageOffset HeapPageHdr::Insert( std::size_t length )
+PageOffset HeapPageHdr::Insert( const Record &rec )
 {
-    for( Slot& s : m_slot )
-    {
-        if( s.IsFree() )
-            return s.m_offset;
-    }
+    const auto length = rec.GetLength();
     m_slot.push_back( Slot( m_freeSpace, length ) );
     m_freeSpace += length;
-    return m_slot.back().m_offset;
+    return m_freeSpace;
 }
 
 //
@@ -96,6 +100,17 @@ PageOffset HeapPageHdr::Insert( std::size_t length )
 //
 void HeapPageHdr::Delete( SlotId slotId )
 {
-    m_slot[ slotId ].SetFree();
+    assert( slotId < m_slot.size() );
+
+    const auto length = m_slot[ slotId ].m_length;
+    m_slot.erase( m_slot.begin() + slotId );
+
+    while( slotId < m_slot.size() )
+    {
+        m_slot[ slotId ].m_offset -= length;
+    }
+    m_freeSpace -= length;
+
+
 }
 
