@@ -64,14 +64,15 @@ private:
     };
 
 public:
-    HeapPage( Page* page );
+    HeapPage( Page &page );
+    ~HeapPage();
 
     Record Get( SlotId slotId );
     SlotId Insert( const Record& rec );
     void Delete( SlotId slotId );
 
 private:
-    Page* m_page;
+    Page& m_page;
 
     HeapPageHdr m_hdr;
 
