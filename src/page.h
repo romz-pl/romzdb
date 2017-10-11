@@ -34,6 +34,9 @@ public:
 
     bool operator==( const Page& a ) const;
 
+    const char* GetData() const;
+    char* GetData();
+
     template< typename T >
     void Set( T value, PageOffset offset );
 

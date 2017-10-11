@@ -59,4 +59,19 @@ bool Page::operator==( const Page& a ) const
     return m_data == a.m_data;
 }
 
+//
+//
+//
+const char* Page::GetData() const
+{
+    return m_data.data();
+}
+
+//
+//
+//
+char* Page::GetData()
+{
+    return m_data.data();
+}
 

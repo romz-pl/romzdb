@@ -51,6 +51,7 @@
 #include "slotid.h"
 #include "page.h"
 #include "record.h"
+#include "heappagehdr.h"
 
 class HeapPage
 {
@@ -70,6 +71,9 @@ public:
     void Delete( SlotId slotId );
 
 private:
+    Page* m_page;
+
+    HeapPageHdr m_hdr;
 
 };
 
