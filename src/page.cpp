@@ -2,6 +2,9 @@
 #include <cstring>
 #include <cassert>
 #include <algorithm>
+#include <limits>
+
+static_assert( std::numeric_limits< PageOffset >::max() > Page::PageSize, "Two small size" );
 
 
 //
@@ -55,3 +58,5 @@ bool Page::operator==( const Page& a ) const
 {
     return m_data == a.m_data;
 }
+
+
