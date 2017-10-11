@@ -48,9 +48,18 @@
 //  End-of-exerpt
 //
 
+#include "slotid.h"
+#include "page.h"
+#include "record.h"
+
 class HeapPage
 {
 public:
+    HeapPage( Page* page );
+
+    Record Get( SlotIs slotId );
+    SlotId Insert( const Record& rec );
+    void Delete( SlotId slotId );
 
 };
 
