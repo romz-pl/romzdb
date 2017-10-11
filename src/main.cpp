@@ -1,27 +1,35 @@
 #include <iostream>
 
 #include "buffermgr.h"
+#include "heappagehdr.h"
+#include "record.h"
+#include <cassert>
 
-void TestBufferMgr()
+void Test()
 {
-    Page page( "abcd" );
-    const PageId pageId = 0;
-    UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
-    DiskSpaceMgr ds( uf );
-    const std::size_t numPages = 10;
-    BufferMgr bufferMgr( ds, numPages );
+    Page page;
+    HeapPageHdr hdrA, hdrB;
 
-    bufferMgr.GetPage( pageId, false );
-    bufferMgr.GetPage( pageId, true );
-    bufferMgr.UnpinPage( pageId );
-    bufferMgr.UnpinPage( pageId );
-    // bufferMgr.UnpinPage( pageId + 1 );
+    hdrA.Insert( 1 );
+    hdrA.Insert( 11 );
+    hdrA.Insert( 111 );
+    hdrA.ToPage( page );
+
+    hdrB.FromPage( page );
+
+    assert( hdrA.GetSlotNo() == hdrB.GetSlotNo() );
+
+    for( SlotId id = 0; id < hdrA.GetSlotNo(); id ++ )
+    {
+        assert( hdrA.GetSlot( id ).m_length == hdrB.GetSlot( id ).m_length );
+        assert( hdrA.GetSlot( id ).m_offset == hdrB.GetSlot( id ).m_offset );
+    }
 }
 
 
 int main()
 {
-    TestBufferMgr();
+    Test();
     std::cout << "OK\n";
     return 0;
 }

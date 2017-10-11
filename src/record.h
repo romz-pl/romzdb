@@ -18,7 +18,7 @@ public:
 
     void ToPage( char* page ) const;
 
-    std::size_t GetSize() const;
+    std::size_t GetLength() const;
 
 private:
     std::vector< char > m_data;

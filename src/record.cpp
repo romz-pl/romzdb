@@ -30,7 +30,7 @@ void Record::ToPage( char* page ) const
 //
 //
 //
-std::size_t Record::GetSize() const
+std::size_t Record::GetLength() const
 {
     return m_data.size();
 }

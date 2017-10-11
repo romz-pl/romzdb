@@ -15,7 +15,6 @@ HeapPage::HeapPage( Page* page )
 //
 Record HeapPage::Get( SlotId slotId )
 {
-    assert( slotId < m_hdr.GetSlotNo() );
     const Slot slot = m_hdr.GetSlot( slotId );
 
     const char* p = m_page->GetData();
@@ -29,16 +28,14 @@ Record HeapPage::Get( SlotId slotId )
 //
 SlotId HeapPage::Insert( const Record& rec )
 {
-    const PageOffset slotId = m_hdr.Insert( rec.GetSize() );
-    const Slot slot = m_hdr.GetSlot( slotId );
+    const auto ret = m_hdr.Insert( rec.GetLength() );
+    const auto offset = ret.first;
+    const auto slotId = ret.second;
 
-    char* p = m_page->GetData();
-    p += slot.m_offset;
+    char* p = m_page->GetData() + offset;
     rec.ToPage( p );
 
     m_hdr.ToPage( *m_page );
-
-
     return slotId;
 }
 
