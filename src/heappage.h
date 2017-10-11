@@ -54,12 +54,22 @@
 
 class HeapPage
 {
+private:
+    enum
+    {
+        FreeSpace = Page::PageSize - sizeof( PageOffset ),
+        SlotNo = FreeSpace - sizeof( PageOffset ),
+        SlotDir = SlotNo - sizeof( SlotId )
+    };
+
 public:
     HeapPage( Page* page );
 
-    Record Get( SlotIs slotId );
+    Record Get( SlotId slotId );
     SlotId Insert( const Record& rec );
     void Delete( SlotId slotId );
+
+private:
 
 };
 

@@ -1,4 +1,5 @@
 #include "heappage.h"
+#include <cassert>
 
 //
 //
@@ -11,9 +12,10 @@ HeapPage::HeapPage( Page* page )
 //
 //
 //
-Record HeapPage::Get( SlotIs slotId )
+Record HeapPage::Get( SlotId slotId )
 {
-
+    // assert( slotId < GetSlotNo() );
+    // page->Get
 }
 
 //
