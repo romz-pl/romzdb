@@ -29,7 +29,7 @@ Record HeapPage::Get( SlotId slotId )
 //
 SlotId HeapPage::Insert( const Record& rec )
 {
-    const PageOffset slotId = m_hdr.Insert( rec.GetSize() );
+    const PageOffset slotId = m_hdr.Insert( rec );
     const Slot slot = m_hdr.GetSlot( slotId );
 
     char* p = m_page->GetData();

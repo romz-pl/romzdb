@@ -42,6 +42,8 @@ SOURCE += heappagehdr_test.cpp
 SOURCE += main.cpp
 SOURCE += page.cpp
 SOURCE += page_test.cpp
+SOURCE += record.cpp
+SOURCE += slot.cpp
 SOURCE += unixfile.cpp
 SOURCE += unixfile_test.cpp
 
