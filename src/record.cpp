@@ -13,6 +13,15 @@ Record::Record( const std::vector< char >& data )
 //
 //
 //
+Record::Record( const std::string& str )
+    : m_data( str.c_str(), str.c_str() + str.size() )
+{
+
+}
+
+//
+//
+//
 Record::Record( const char* data, std::size_t length )
     : m_data( data, data + length )
 {
@@ -33,4 +42,12 @@ void Record::ToPage( char* page ) const
 std::size_t Record::GetLength() const
 {
     return m_data.size();
+}
+
+//
+//
+//
+bool Record::operator==( const Record& a ) const
+{
+    return m_data == a.m_data;
 }
