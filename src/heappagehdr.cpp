@@ -92,6 +92,7 @@ void HeapPageHdr::Delete( SlotId slotId )
     while( slotId < m_slot.size() )
     {
         m_slot[ slotId ].m_offset -= length;
+        slotId++;
     }
 }
 
