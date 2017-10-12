@@ -9,6 +9,9 @@ public:
     Slot( PageOffset offset, PageOffset length );
     ~Slot() = default;
 
+    void ToPage( char *& dest ) const;
+    static Slot FromPage(const char *& src );
+
 // private:
     // Record offset
     PageOffset m_offset;
