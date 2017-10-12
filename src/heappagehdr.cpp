@@ -14,11 +14,7 @@ void HeapPageHdr::ToPage( Page& page ) const
 
     for( const Slot& s : m_slot )
     {
-        p -= sizeof( s.m_offset );
-        std::memcpy( p, &s.m_offset, sizeof( s.m_offset ) );
-
-        p -= sizeof( s.m_length );
-        std::memcpy( p, &s.m_length, sizeof( s.m_length ) );
+        s.ToPage( p );
     }
 }
 
@@ -35,15 +31,8 @@ void HeapPageHdr::FromPage( const Page& page )
 
     for( std::size_t i = 0; i < size; i++ )
     {
-        PageOffset offset;
-        p -= sizeof( offset );
-        std::memcpy( &offset, p, sizeof( offset ) );
-
-        PageOffset length;
-        p -= sizeof( length );
-        std::memcpy( &length, p, sizeof( length ) );
-
-        m_slot.push_back( Slot( offset, length ) );
+        const Slot slot = Slot::FromPage( p );
+        m_slot.push_back( slot );
     }
 }
 
@@ -83,7 +72,7 @@ std::pair< PageOffset, SlotId > HeapPageHdr::Insert( std::size_t recLength )
         offset += s.m_length;
 
     m_slot.push_back( Slot( offset, recLength ) );
-    return std::make_pair( offset, m_slot.size() );
+    return std::make_pair( offset, m_slot.size() - 1 );
 }
 
 //
@@ -103,6 +92,7 @@ void HeapPageHdr::Delete( SlotId slotId )
     while( slotId < m_slot.size() )
     {
         m_slot[ slotId ].m_offset -= length;
+        slotId++;
     }
 }
 

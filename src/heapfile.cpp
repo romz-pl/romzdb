@@ -23,7 +23,7 @@ Record HeapFile::Get( RecordId /*rid*/ )
 //
 //    return rec;
 
-    return Record( {'a'} );
+    return Record( "a" );
 }
 
 //

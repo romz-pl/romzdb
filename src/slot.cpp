@@ -1,7 +1,6 @@
 #include "slot.h"
-#include <limits>
+#include <cstring>
 
-const PageOffset Slot::m_freeSlot = std::numeric_limits< PageOffset >::max();
 
 //
 //
@@ -16,15 +15,27 @@ Slot::Slot( PageOffset offset, PageOffset length )
 //
 //
 //
-bool Slot::IsFree() const
+void Slot::ToPage( char *& dest ) const
 {
-    return ( m_offset == m_freeSlot );
+    dest -= sizeof( m_offset );
+    std::memcpy( dest, &m_offset, sizeof( m_offset ) );
+
+    dest -= sizeof( m_length );
+    std::memcpy( dest, &m_length, sizeof( m_length ) );
 }
 
 //
 //
 //
-void Slot::SetFree()
+Slot Slot::FromPage( const char *& src )
 {
-    m_offset = m_freeSlot;
+    PageOffset offset;
+    src -= sizeof( offset );
+    std::memcpy( &offset, src, sizeof( offset ) );
+
+    PageOffset length;
+    src -= sizeof( length );
+    std::memcpy( &length, src, sizeof( length ) );
+
+    return Slot( offset, length );
 }

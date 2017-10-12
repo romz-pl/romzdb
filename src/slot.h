@@ -9,8 +9,8 @@ public:
     Slot( PageOffset offset, PageOffset length );
     ~Slot() = default;
 
-    bool IsFree() const;
-    void SetFree();
+    void ToPage( char *& dest ) const;
+    static Slot FromPage(const char *& src );
 
 // private:
     // Record offset
@@ -18,9 +18,6 @@ public:
 
     // Record length
     PageOffset m_length;
-
-private:
-    static const PageOffset m_freeSlot;
 };
 
 #endif
