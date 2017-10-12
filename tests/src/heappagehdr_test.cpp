@@ -2,6 +2,8 @@
 #include <cstdlib>
 #include <heappagehdr.h>
 #include <record.h>
+#include <algorithm>
+#include <random>
 
 TEST(HeapPageHdr, Insert)
 {
@@ -24,6 +26,38 @@ TEST(HeapPageHdr, Delete)
     EXPECT_EQ( hdr.GetSlotNo(), 1 );
 
     hdr.Delete( 0 );
+    EXPECT_EQ( hdr.GetSlotNo(), 0 );
+}
+
+TEST(HeapPageHdr, DeleteMul)
+{
+    HeapPageHdr hdr;
+    EXPECT_EQ( hdr.GetSlotNo(), 0 );
+
+    const std::size_t recLength = 12;
+    const std::size_t slotNo = 23;
+
+    for( std::size_t id = 0; id < slotNo; id++ )
+    {
+        EXPECT_NO_THROW( hdr.Insert( recLength ) );
+        EXPECT_EQ( hdr.GetSlotNo(), id + 1 );
+    }
+
+    EXPECT_TRUE( hdr.GetFreeSpace() > 0 );
+
+    // Delete records in the random order
+    std::random_device rd;
+    std::mt19937 rng( rd() );
+
+    for( std::size_t i = 0; i < slotNo; i++ )
+    {
+        std::uniform_int_distribution< SlotId > uni( 0 , hdr.GetSlotNo() - 1 );
+        SlotId id = uni( rng );
+
+        EXPECT_NO_THROW( hdr.Delete( id ) );
+        EXPECT_EQ( hdr.GetSlotNo(), slotNo - 1 - i );
+    }
+
     EXPECT_EQ( hdr.GetSlotNo(), 0 );
 }
 
