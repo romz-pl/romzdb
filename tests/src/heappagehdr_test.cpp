@@ -10,7 +10,7 @@ TEST(HeapPageHdr, Insert)
     HeapPageHdr hdr;
     EXPECT_EQ( hdr.GetSlotNo(), 0 );
 
-    Record rec( {'a'} );
+    Record rec( std::string("a") );
     const auto pair = hdr.Insert( rec.GetLength() );
 
     const auto offset = pair.first;
@@ -28,7 +28,7 @@ TEST(HeapPageHdr, Delete)
     HeapPageHdr hdr;
     EXPECT_EQ( hdr.GetSlotNo(), 0 );
 
-    Record rec( {'a'} );
+    Record rec( std::string( "a" ) );
     hdr.Insert( rec.GetLength() );
     EXPECT_EQ( hdr.GetSlotNo(), 1 );
 
