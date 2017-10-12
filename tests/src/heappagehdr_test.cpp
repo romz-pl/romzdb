@@ -11,7 +11,14 @@ TEST(HeapPageHdr, Insert)
     EXPECT_EQ( hdr.GetSlotNo(), 0 );
 
     Record rec( {'a'} );
-    hdr.Insert( rec.GetLength() );
+    const auto pair = hdr.Insert( rec.GetLength() );
+
+    const auto offset = pair.first;
+    EXPECT_EQ( offset, 0 );
+
+    const auto slotId = pair.second;
+    EXPECT_EQ( slotId, 0 );
+
     EXPECT_EQ( hdr.GetSlotNo(), 1 );
 
 }
