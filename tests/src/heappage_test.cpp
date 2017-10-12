@@ -15,11 +15,18 @@ TEST(HeapPage, Get)
 
 TEST(HeapPage, Insert)
 {
-    Record rec( {'a', 'b', 'c'} );
     Page page;
     HeapPage hp( page );
 
-    SlotId slotId = hp.Insert( rec );
-    // The page is NOT empty
-    EXPECT_NO_THROW( hp.Get( slotId ) );
+    for( int i = 0; i < 10; i++ )
+    {
+        std::string str( "abc:" );
+        str += std::to_string( i );
+        Record rec( str );
+        SlotId slotId = hp.Insert( rec );
+        // The page is NOT empty
+        EXPECT_NO_THROW( hp.Get( slotId ) );
+        Record ret = hp.Get( slotId );
+        EXPECT_EQ( rec, ret );
+    }
 }
