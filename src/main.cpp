@@ -7,13 +7,6 @@
 
 void Test()
 {
-    Record rec( {'a', 'b', 'c'} );
-    Page page;
-    HeapPage hp( page );
-
-    SlotId slotId = hp.Insert( rec );
-    // The page is NOT empty
-   hp.Get( slotId );
 }
 
 
