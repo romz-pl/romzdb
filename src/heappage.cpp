@@ -53,3 +53,11 @@ void HeapPage::Delete( SlotId slotId )
 {
     m_hdr.Delete( slotId );
 }
+
+//
+//
+//
+std::size_t HeapPage::GetRecordNo() const
+{
+    return  m_hdr.GetSlotNo();
+}

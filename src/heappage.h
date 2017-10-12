@@ -71,6 +71,8 @@ public:
     SlotId Insert( const Record& rec );
     void Delete( SlotId slotId );
 
+    std::size_t GetRecordNo() const;
+
 private:
     Page& m_page;
 
