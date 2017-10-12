@@ -72,7 +72,7 @@ std::pair< PageOffset, SlotId > HeapPageHdr::Insert( std::size_t recLength )
         offset += s.m_length;
 
     m_slot.push_back( Slot( offset, recLength ) );
-    return std::make_pair( offset, m_slot.size() );
+    return std::make_pair( offset, m_slot.size() - 1 );
 }
 
 //
