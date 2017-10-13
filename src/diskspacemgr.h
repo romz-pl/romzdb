@@ -19,6 +19,8 @@ public:
 private:
     UnixFile& m_uf;
 
+    PageId m_curr;
+
 };
 
 #endif

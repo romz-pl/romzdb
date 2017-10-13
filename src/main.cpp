@@ -8,15 +8,23 @@
 
 void Test()
 {
-    Page page;
-    DirPage dpA( page );
+    UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
+    DiskSpaceMgr ds( uf );
+    const std::size_t numPages = 3;
+    BufferMgr bufferMgr( ds, numPages );
+    std::vector< PageId > pageId;
 
-    const PageId pageId = 1;
-    dpA.Insert( pageId );
+    for( std::size_t i = 0; i < numPages; i++ )
+    {
+        auto pair = bufferMgr.GetNewPage( );
+        pageId.push_back( pair.first );
+    }
 
+    // bufferMgr.GetPage( numPages + 1, false );
 
-    DirPage dpB( page );
-    dpB.Insert( pageId );
+    for( auto id : pageId )
+        bufferMgr.UnpinPage( id );
+
 }
 
 

@@ -5,6 +5,7 @@
 #include <cassert>
 #include <stdexcept>
 #include <cstring>
+#include <vector>
 
 //
 //
@@ -27,6 +28,9 @@ UnixFile::UnixFile( const std::string& path, Mode mode )
     assert( 0 );
 }
 
+//
+//
+//
 UnixFile::~UnixFile()
 {
     Close();
@@ -67,6 +71,9 @@ void UnixFile::Create( const std::string& path )
     }
 }
 
+//
+// Closes file
+//
 void UnixFile::Close( )
 {
     if( m_fd != m_badFd )
@@ -76,7 +83,10 @@ void UnixFile::Close( )
     }
 }
 
-
+//
+// Writes "data" of length "nbyte" to file.
+// The data are offset "offset" from the begin.
+//
 void UnixFile::Write( const char* data, size_t nbyte, off_t offset ) const
 {
     assert( m_fd != m_badFd );
@@ -92,21 +102,11 @@ void UnixFile::Write( const char* data, size_t nbyte, off_t offset ) const
 
 //
 // Reads data from the file.
-// If the data are read outside the file, file is increased
-// and data is filled with zeros.
+// If the data are read outside the file, it throws the exeption.
 //
 void UnixFile::Read( char* data, size_t nbyte, off_t offset ) const
 {
     assert( m_fd != m_badFd );
-
-    // Reading outsize the file
-    if( GetSize() < offset + static_cast< off_t >( nbyte ) )
-    {
-        Lseek( offset + nbyte );
-        std::memset( data, 0, nbyte );
-        Write( data, nbyte, offset );
-        // return;
-    }
 
     Lseek( offset );
 
@@ -117,6 +117,20 @@ void UnixFile::Read( char* data, size_t nbyte, off_t offset ) const
     }
 }
 
+//
+// Allocates "nbyte" bytes at the end of the file
+//
+void UnixFile::Allocate( size_t nbyte )
+{
+    const off_t fileEnd = GetSize();
+    Lseek( fileEnd + nbyte );
+    std::vector< char > data( nbyte, 0 );
+    Write( &(data[ 0 ]), nbyte, fileEnd );
+}
+
+//
+// Moves the "current position" to "offset" from the begin
+//
 void UnixFile::Lseek( off_t offset ) const
 {
     assert( m_fd != m_badFd );

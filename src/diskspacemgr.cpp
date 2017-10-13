@@ -5,6 +5,7 @@
 //
 DiskSpaceMgr::DiskSpaceMgr( UnixFile& uf )
     : m_uf( uf )
+    , m_curr( 0 )
 {
 
 }
@@ -32,10 +33,8 @@ void DiskSpaceMgr::Write( const Page& page, PageId id ) const
 //
 PageId DiskSpaceMgr::AllocatePage()
 {
-    static PageId curr = 0;
-    curr++;
+    m_curr++;
 
-    Page page;
-    page.Write( m_uf , curr );
-    return curr;
+    m_uf.Allocate( Page::PageSize );
+    return ( m_curr - 1 );
 }
