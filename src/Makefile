@@ -24,6 +24,8 @@ VPATH := ../src/
 
 SOURCE :=
 SOURCE += buffermgr.cpp
+SOURCE += dir.cpp
+SOURCE += dirpage.cpp
 SOURCE += diskspacemgr.cpp
 SOURCE += frame.cpp
 SOURCE += heapfile.cpp
