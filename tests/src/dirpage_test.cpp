@@ -9,7 +9,7 @@
 TEST(DirPage, Insert)
 {
     Page page;
-    DirPage dp( page );
+    DirPage dp( page, 0 );
 
     const PageId pageId = 1;
     EXPECT_NO_THROW( dp.Insert( pageId ) );
@@ -19,7 +19,7 @@ TEST(DirPage, Insert)
 TEST(DirPage, InsertEx)
 {
     Page page;
-    DirPage dp( page );
+    DirPage dp( page, 0 );
 
     PageId pageId = 1;
     std::vector< PageId > vec;
@@ -44,7 +44,7 @@ TEST(DirPage, InsertEx)
 TEST(DirPage, Delete)
 {
     Page page;
-    DirPage dp( page );
+    DirPage dp( page, 0 );
 
     const PageId pageId = 1;
     EXPECT_NO_THROW( dp.Insert( pageId ) );
