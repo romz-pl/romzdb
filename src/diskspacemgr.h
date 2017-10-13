@@ -13,6 +13,8 @@ public:
     Page Read( PageId id ) const;
     void Write( const Page& page, PageId id ) const;
 
+    PageId AllocatePage();
+
 
 private:
     UnixFile& m_uf;
