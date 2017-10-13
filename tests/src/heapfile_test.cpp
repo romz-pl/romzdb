@@ -1,15 +1,10 @@
-#include <iostream>
+#include <gtest/gtest.h>
+#include <heapfile.h>
+#include <unixfile.h>
 
-#include "buffermgr.h"
-#include "heappage.h"
-#include "record.h"
-#include "dirpage.h"
-#include "dir.h"
-#include <cassert>
-#include <iostream>
-#include "heapfile.h"
 
-void Test()
+
+TEST(HeapFile, Insert)
 {
     UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
     DiskSpaceMgr ds( uf );
@@ -26,7 +21,8 @@ void Test()
 
     Record rec( "0123456789ABC " );
 
-    std::size_t loopSize = 230;
+    // std::size_t loopSize = 230;
+    std::size_t loopSize = 220;
     for( std::size_t i = 0; i < loopSize; i++ )
     {
         // EXPECT_NO_THROW( hf.Insert( rec ) );
@@ -34,13 +30,3 @@ void Test()
     }
 
 }
-
-
-int main()
-{
-    Test();
-    std::cout << "OK\n";
-    return 0;
-}
-
-

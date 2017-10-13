@@ -95,7 +95,7 @@ PageOffset HeapPageHdr::Delete( SlotId slotId )
         slotId++;
     }
 
-    return length;
+    return GetFreeSpace();
 }
 
 //
