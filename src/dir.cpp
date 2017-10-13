@@ -9,14 +9,14 @@
 Dir::Dir( BufferMgr& bufferMgr, PageId headerPage )
     : m_bufferMgr( bufferMgr )
 {
-    PageId nextPage = headerPage;
+    PageId currPage = headerPage;
 
-    while( nextPage != InvalidPageId )
+    while( currPage != InvalidPageId )
     {
-        Page* page = m_bufferMgr.GetPage( nextPage, false );
-        DirPage dp( *page, nextPage );
+        Page* page = m_bufferMgr.GetPage( currPage, false );
+        DirPage dp( *page, currPage );
         m_dirPage.push_back( dp );
-        nextPage = dp.GetNextPage();
+        currPage = dp.GetNextPage();
     }
 }
 
@@ -29,6 +29,26 @@ Dir::~Dir()
     {
         m_bufferMgr.UnpinPage( d.GetPageId() );
     }
+}
+
+
+
+//
+//
+//
+PageId Dir::Insert( std::size_t recLength )
+{
+    for( DirPage& d : m_dirPage )
+    {
+        auto pair = d.InsertRec( recLength );
+        if( pair.first )
+            return pair.second;
+    }
+
+
+    InsertHeapPage();
+
+    return Insert( recLength );
 }
 
 //
@@ -47,7 +67,7 @@ bool Dir::Is( PageId pageId ) const
 //
 //
 //
-PageId Dir::Insert()
+PageId Dir::InsertHeapPage()
 {
     auto pair = m_bufferMgr.GetNewPage( );
     PageId pageId = pair.first;
@@ -57,7 +77,7 @@ PageId Dir::Insert()
     {
         if( !d.IsFull( ) )
         {
-            d.Insert( pageId );
+            d.InsertPage( pageId );
             m_bufferMgr.UnpinPage( pageId );
             return pageId;
         }
@@ -72,7 +92,7 @@ PageId Dir::Insert()
     pair = m_bufferMgr.GetNewPage( );
     pageId = pair.first;
     page = pair.second;
-    m_dirPage.back().Insert( pageId );
+    m_dirPage.back().InsertPage( pageId );
     m_bufferMgr.UnpinPage( pageId );
 
     return pageId;
@@ -81,11 +101,11 @@ PageId Dir::Insert()
 //
 //
 //
-void Dir::Delete( PageId pageId )
+void Dir::Delete( PageId pageId, PageOffset recLength )
 {
     for( DirPage& d : m_dirPage )
     {
-        if( d.Delete( pageId ) )
+        if( d.Delete( pageId, recLength ) )
             return;
     }
 

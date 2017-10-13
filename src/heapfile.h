@@ -39,6 +39,7 @@
 #include "record.h"
 #include "recordid.h"
 #include "buffermgr.h"
+#include "dir.h"
 
 class HeapFile
 {
@@ -57,7 +58,10 @@ private:
     BufferMgr m_bufferMgr;
 
     // Page ID of the first page of the directory
-    const PageId m_headerPage;
+    // const PageId m_headerPage;
+
+    // Directory for Heap file
+    Dir m_dir;
 };
 
 #endif

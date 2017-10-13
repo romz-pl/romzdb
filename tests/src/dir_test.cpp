@@ -40,12 +40,14 @@ TEST(Dir, Insert)
 
 
     Dir dir( bufferMgr, headerPage );
-    const std::size_t loopSize = 12;
+    const std::size_t loopSize = 50;
     std::vector< PageId > pageId( loopSize );
+
+    const std::size_t recLength = 300;
 
     for( size_t i = 0; i < loopSize; i++ )
     {
-        const PageId id = dir.Insert();
+        const PageId id = dir.Insert( recLength );
         pageId[ i ] = id;
     }
 
@@ -57,8 +59,7 @@ TEST(Dir, Insert)
 
     for( PageId id : pageId )
     {
-        EXPECT_NO_THROW( dir.Delete( id ) );
-        EXPECT_FALSE( dir.Is( id) );
+        EXPECT_NO_THROW( dir.Delete( id, recLength ) );
     }
 
 

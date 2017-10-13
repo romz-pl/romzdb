@@ -40,7 +40,7 @@ public:
     Slot GetSlot( SlotId slotId ) const;
 
     std::pair<PageOffset, SlotId> Insert( std::size_t recLength );
-    void Delete( SlotId slotId );
+    PageOffset Delete( SlotId slotId );
 
     std::int32_t GetFreeSpace() const;
 

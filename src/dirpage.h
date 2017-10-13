@@ -4,6 +4,13 @@
 #include "page.h"
 #include <vector>
 
+class DirSlot
+{
+public:
+    PageId m_pageId;
+    std::size_t m_freeSpace;
+};
+
 class DirPage
 {
 public:
@@ -13,8 +20,10 @@ public:
     bool IsFull() const;
     bool Is( PageId pageId ) const;
 
-    void Insert( PageId pageId );
-    bool Delete( PageId pageId );
+    std::pair< bool, PageId > InsertRec( std::size_t recLength );
+    void InsertPage( PageId pageId );
+
+    bool Delete( PageId pageId, PageOffset recLength );
 
     PageId GetNextPage() const;
     void SetNextPage( PageId id );
@@ -29,7 +38,7 @@ private:
     const PageId m_self;
 
     PageId m_nextPage;
-    std::vector< PageId > m_pageId;
+    std::vector< DirSlot > m_dirSlot;
     Page& m_page;
 
     static const std::size_t m_maxEntries;
