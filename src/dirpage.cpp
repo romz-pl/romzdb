@@ -72,7 +72,7 @@ void DirPage::InsertPage( PageId pageId )
 //
 //
 //
-bool DirPage::Delete( PageId pageId, PageOffset recLength )
+bool DirPage::Delete( PageId pageId, PageOffset freeSpace )
 {
     auto pred = [ pageId ]( DirSlot& d ){ return ( d.m_pageId == pageId ); };
     auto it = std::find_if( m_dirSlot.begin(), m_dirSlot.end(), pred );
@@ -81,7 +81,7 @@ bool DirPage::Delete( PageId pageId, PageOffset recLength )
         return false;
     }
 
-    it->m_freeSpace += recLength;
+    it->m_freeSpace = freeSpace;
     ToPage();
     return true;
 }

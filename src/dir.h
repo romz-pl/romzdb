@@ -16,7 +16,7 @@ public:
     PageId Insert( std::size_t recLength );
 
     bool Is( PageId pageId ) const;
-    void Delete( PageId pageId, PageOffset recLength );
+    void Delete( PageId pageId, PageOffset freeSpace );
 
 private:
     PageId InsertHeapPage();

@@ -23,7 +23,7 @@ public:
     std::pair< bool, PageId > InsertRec( std::size_t recLength );
     void InsertPage( PageId pageId );
 
-    bool Delete( PageId pageId, PageOffset recLength );
+    bool Delete( PageId pageId, PageOffset freeSpace );
 
     PageId GetNextPage() const;
     void SetNextPage( PageId id );

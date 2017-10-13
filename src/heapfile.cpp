@@ -58,10 +58,10 @@ void HeapFile::Delete( RecordId rid )
     HeapPage heapPage( *page );
 
     const SlotId slotId = rid.GetSlotId();
-    const std::size_t recLength = heapPage.Delete( slotId );
+    const std::size_t freeSpace = heapPage.Delete( slotId );
     m_bufferMgr.UnpinPage( rid.GetPageId() );
 
-    m_dir.Delete( pageId, recLength );
+    m_dir.Delete( pageId, freeSpace );
 
 }
 

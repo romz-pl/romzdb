@@ -88,6 +88,7 @@ PageId Dir::InsertHeapPage()
     //
     m_dirPage.back().SetNextPage( pageId );
     m_dirPage.push_back( DirPage( *page, pageId ) );
+    m_bufferMgr.UnpinPage( pageId );
 
     pair = m_bufferMgr.GetNewPage( );
     pageId = pair.first;
@@ -101,11 +102,11 @@ PageId Dir::InsertHeapPage()
 //
 //
 //
-void Dir::Delete( PageId pageId, PageOffset recLength )
+void Dir::Delete( PageId pageId, PageOffset freeSpace )
 {
     for( DirPage& d : m_dirPage )
     {
-        if( d.Delete( pageId, recLength ) )
+        if( d.Delete( pageId, freeSpace ) )
             return;
     }
 
