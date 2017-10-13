@@ -44,16 +44,18 @@ void DirPage::Insert( PageId pageId )
 //
 //
 //
-void DirPage::Delete( PageId pageId )
+bool DirPage::Delete( PageId pageId )
 {
     auto it = std::find( m_pageId.begin(), m_pageId.end(), pageId );
     if( it == m_pageId.end() )
     {
-        throw std::runtime_error( "DirPage::Delete: PageId '" + std::to_string( pageId ) + "' not found." );
+        return false;
+        // throw std::runtime_error( "DirPage::Delete: PageId '" + std::to_string( pageId ) + "' not found." );
     }
 
     m_pageId.erase( it );
     ToPage();
+    return true;
 }
 
 //
@@ -104,4 +106,26 @@ void DirPage::FromPage()
     }
 }
 
+//
+//
+//
+PageId DirPage::GetNextPage() const
+{
+    return m_nextPage;
+}
 
+//
+//
+//
+void DirPage::SetNextPage( PageId id )
+{
+    m_nextPage = id;
+}
+
+//
+//
+//
+bool DirPage::Is( PageId pageId ) const
+{
+    return ( std::find( m_pageId.begin(), m_pageId.end(), pageId ) != m_pageId.end() );
+}

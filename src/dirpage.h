@@ -11,8 +11,13 @@ public:
     ~DirPage() = default;
 
     bool IsFull() const;
+    bool Is( PageId pageId ) const;
+
     void Insert( PageId pageId );
-    void Delete( PageId pageId );
+    bool Delete( PageId pageId );
+
+    PageId GetNextPage() const;
+    void SetNextPage( PageId id );
 
 private:
     void ToPage() const;
