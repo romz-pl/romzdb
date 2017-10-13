@@ -13,9 +13,13 @@ public:
     Dir( BufferMgr& bufferMgr, PageId headerPage );
     ~Dir();
 
+    PageId Insert( std::size_t recLength );
+
     bool Is( PageId pageId ) const;
-    PageId Insert();
-    void Delete( PageId pageId );
+    void Delete( PageId pageId, PageOffset recLength );
+
+private:
+    PageId InsertHeapPage();
 
 private:
     BufferMgr& m_bufferMgr;
