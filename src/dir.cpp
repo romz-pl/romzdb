@@ -1,33 +1,36 @@
 #include "dir.h"
 #include <string>
 #include <stdexcept>
+#include <cassert>
 
 //
 //
 //
-Dir::Dir( BufferMgr& bufferMgr, PageId /*headerPage*/ )
+Dir::Dir( BufferMgr& bufferMgr, PageId headerPage )
     : m_bufferMgr( bufferMgr )
 {
-    /*
-    Page* page = m_bufferMgr.GetPage( headerPage, false );
-    m_dirPage.push_back( DirPage( page ) );
-    */
+    assert( headerPage != 0 );
+    PageId nextPage = headerPage;
+
+    while( nextPage != 0 )
+    {
+        Page* page = m_bufferMgr.GetPage( nextPage, false );
+        DirPage dp( *page );
+        m_dirPage.push_back( dp );
+        nextPage = dp.GetNextPage();
+    }
 }
 
 //
 //
 //
-bool Dir::Is( PageId /*pagId*/ ) const
+bool Dir::Is( PageId pageId ) const
 {
-    /*
-    for( DirPage& d : m_dirPage )
+    for( const DirPage& d : m_dirPage )
     {
         if( d.Is( pageId ) )
             return true;
     }
-    return false;
-    */
-
     return false;
 }
 
@@ -36,9 +39,8 @@ bool Dir::Is( PageId /*pagId*/ ) const
 //
 PageId Dir::Insert()
 {
-    /*
-    const auto pair = m_bufferMgr.GetNewPage( );
-    const PageId pageId = pair.first;
+    auto pair = m_bufferMgr.GetNewPage( );
+    PageId pageId = pair.first;
     Page* page = pair.second;
 
     for( DirPage& d : m_dirPage )
@@ -50,20 +52,25 @@ PageId Dir::Insert()
         }
     }
 
+    //
+    // The directry is full. New page for directory must be allocated.
+    //
+    m_dirPage.back().SetNextPage( pageId );
+    m_dirPage.push_back( DirPage( *page ) );
 
-    m_dirPage.back().SetNext( pageId );
-    m_dirPage.push_back( DirPage( page ) );
-    */
-    return 0;
+    pair = m_bufferMgr.GetNewPage( );
+    pageId = pair.first;
+    page = pair.second;
+    m_dirPage.back().Insert( pageId );
 
+    return pageId;
 }
 
 //
 //
 //
-void Dir::Delete( PageId /*pageId*/ )
+void Dir::Delete( PageId pageId )
 {
-    /*
     for( DirPage& d : m_dirPage )
     {
         if( d.Delete( pageId ) )
@@ -71,5 +78,4 @@ void Dir::Delete( PageId /*pageId*/ )
     }
 
     throw std::runtime_error( "Dir::Delete: Page '" + std::to_string( pageId ) + "' not found." );
-    */
 }
