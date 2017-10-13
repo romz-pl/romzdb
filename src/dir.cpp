@@ -37,15 +37,20 @@ bool Dir::Is( PageId /*pagId*/ ) const
 PageId Dir::Insert()
 {
     /*
-    for( DirPage& d : m_dirPage )
-    {
-        if( !d.IsFull( ) )
-            return d.Insert();
-    }
-
     const auto pair = m_bufferMgr.GetNewPage( );
     const PageId pageId = pair.first;
     Page* page = pair.second;
+
+    for( DirPage& d : m_dirPage )
+    {
+        if( !d.IsFull( ) )
+        {
+            d.Insert( pageId );
+            return pageId;
+        }
+    }
+
+
     m_dirPage.back().SetNext( pageId );
     m_dirPage.push_back( DirPage( page ) );
     */
