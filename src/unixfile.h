@@ -11,7 +11,7 @@ public:
     UnixFile( const std::string& path, Mode mode );
     ~UnixFile();
 
-
+    void Allocate( size_t nbyte );
 
     void Write( const char* data, size_t nbyte, off_t offset ) const;
     void Read( char* data, size_t nbyte, off_t offset ) const;

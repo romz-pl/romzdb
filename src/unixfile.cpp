@@ -5,6 +5,7 @@
 #include <cassert>
 #include <stdexcept>
 #include <cstring>
+#include <vector>
 
 //
 //
@@ -101,21 +102,11 @@ void UnixFile::Write( const char* data, size_t nbyte, off_t offset ) const
 
 //
 // Reads data from the file.
-// If the data are read outside the file, file is increased
-// and data is filled with zeros.
+// If the data are read outside the file, it throws the exeption.
 //
 void UnixFile::Read( char* data, size_t nbyte, off_t offset ) const
 {
     assert( m_fd != m_badFd );
-
-    // Reading outsize the file
-    if( GetSize() < offset + static_cast< off_t >( nbyte ) )
-    {
-        Lseek( offset + nbyte );
-        std::memset( data, 0, nbyte );
-        Write( data, nbyte, offset );
-        // return;
-    }
 
     Lseek( offset );
 
@@ -124,6 +115,17 @@ void UnixFile::Read( char* data, size_t nbyte, off_t offset ) const
     {
         throw std::runtime_error( "UnixFile::Read" );
     }
+}
+
+//
+// Allocates "nbyte" bytes at the end of the file
+//
+void UnixFile::Allocate( size_t nbyte )
+{
+    const off_t fileEnd = GetSize();
+    Lseek( fileEnd + nbyte );
+    std::vector< char > data( nbyte, 0 );
+    Write( &(data[ 0 ]), nbyte, fileEnd );
 }
 
 //
