@@ -49,9 +49,9 @@ SlotId HeapPage::Insert( const Record& rec )
 //
 //
 //
-void HeapPage::Delete( SlotId slotId )
+PageOffset HeapPage::Delete( SlotId slotId )
 {
-    m_hdr.Delete( slotId );
+    return m_hdr.Delete( slotId );
 }
 
 //

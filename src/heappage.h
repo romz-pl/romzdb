@@ -69,7 +69,7 @@ public:
 
     Record Get( SlotId slotId );
     SlotId Insert( const Record& rec );
-    void Delete( SlotId slotId );
+    PageOffset Delete( SlotId slotId );
 
     std::size_t GetRecordNo() const;
 
