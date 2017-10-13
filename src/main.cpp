@@ -4,26 +4,24 @@
 #include "heappage.h"
 #include "record.h"
 #include "dirpage.h"
+#include "dir.h"
 #include <cassert>
 
 void Test()
 {
     UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
     DiskSpaceMgr ds( uf );
-    const std::size_t numPages = 3;
+    const std::size_t numPages = 10;
     BufferMgr bufferMgr( ds, numPages );
-    std::vector< PageId > pageId;
 
-    for( std::size_t i = 0; i < numPages; i++ )
-    {
-        auto pair = bufferMgr.GetNewPage( );
-        pageId.push_back( pair.first );
-    }
+    auto pair = bufferMgr.GetNewPage();
+    PageId headerPage = pair.first ;
+    DirPage dp( *pair.second, headerPage );
+    dp.SetNextPage( InvalidPageId );
+    bufferMgr.UnpinPage( headerPage );
 
-    // bufferMgr.GetPage( numPages + 1, false );
 
-    for( auto id : pageId )
-        bufferMgr.UnpinPage( id );
+    Dir dir( bufferMgr, headerPage );
 
 }
 

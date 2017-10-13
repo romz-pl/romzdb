@@ -11,7 +11,7 @@ class Dir
 {
 public:
     Dir( BufferMgr& bufferMgr, PageId headerPage );
-    ~Dir() = default;
+    ~Dir();
 
     bool Is( PageId pageId ) const;
     PageId Insert();

@@ -9,15 +9,25 @@
 Dir::Dir( BufferMgr& bufferMgr, PageId headerPage )
     : m_bufferMgr( bufferMgr )
 {
-    assert( headerPage != 0 );
     PageId nextPage = headerPage;
 
-    while( nextPage != 0 )
+    while( nextPage != InvalidPageId )
     {
         Page* page = m_bufferMgr.GetPage( nextPage, false );
-        DirPage dp( *page );
+        DirPage dp( *page, nextPage );
         m_dirPage.push_back( dp );
         nextPage = dp.GetNextPage();
+    }
+}
+
+//
+//
+//
+Dir::~Dir()
+{
+    for( const DirPage& d : m_dirPage )
+    {
+        m_bufferMgr.UnpinPage( d.GetPageId() );
     }
 }
 
@@ -48,6 +58,7 @@ PageId Dir::Insert()
         if( !d.IsFull( ) )
         {
             d.Insert( pageId );
+            m_bufferMgr.UnpinPage( pageId );
             return pageId;
         }
     }
@@ -56,12 +67,13 @@ PageId Dir::Insert()
     // The directry is full. New page for directory must be allocated.
     //
     m_dirPage.back().SetNextPage( pageId );
-    m_dirPage.push_back( DirPage( *page ) );
+    m_dirPage.push_back( DirPage( *page, pageId ) );
 
     pair = m_bufferMgr.GetNewPage( );
     pageId = pair.first;
     page = pair.second;
     m_dirPage.back().Insert( pageId );
+    m_bufferMgr.UnpinPage( pageId );
 
     return pageId;
 }

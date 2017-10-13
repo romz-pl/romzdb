@@ -6,8 +6,11 @@
 //
 
 #include <cstddef>
+#include <limits>
 
 using PageId = std::size_t;
+
+const PageId InvalidPageId = std::numeric_limits< PageId >::max();
 
 
 #endif

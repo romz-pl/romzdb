@@ -12,8 +12,10 @@ const std::size_t DirPage::m_maxEntries =
 //
 //
 //
-DirPage::DirPage( Page& page )
-    : m_page( page )
+DirPage::DirPage(Page& page, PageId self )
+    : m_self( self )
+    , m_nextPage( InvalidPageId )
+    , m_page( page )
 {
     FromPage();
 }
@@ -120,6 +122,7 @@ PageId DirPage::GetNextPage() const
 void DirPage::SetNextPage( PageId id )
 {
     m_nextPage = id;
+    ToPage();
 }
 
 //
@@ -128,4 +131,12 @@ void DirPage::SetNextPage( PageId id )
 bool DirPage::Is( PageId pageId ) const
 {
     return ( std::find( m_pageId.begin(), m_pageId.end(), pageId ) != m_pageId.end() );
+}
+
+//
+//
+//
+PageId DirPage::GetPageId() const
+{
+    return m_self;
 }
