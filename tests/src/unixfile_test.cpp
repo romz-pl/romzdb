@@ -47,3 +47,15 @@ TEST(UnixFile, Write)
     
     EXPECT_TRUE( data == tmp );
 }
+
+TEST(UnixFile, Read)
+{
+    const std::string path = UnixFile::GetTempPath();
+    UnixFile uf( path, UnixFile::Mode::Create );
+
+    const std::size_t ss = 10;
+    std::vector< char > tmp( ss );
+    EXPECT_ANY_THROW( uf.Read( &( tmp[ 0 ] ), tmp.size(), 0 ) );
+
+
+}
