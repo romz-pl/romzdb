@@ -11,34 +11,8 @@ TEST(DirPage, Insert)
     Page page;
     DirPage dp( page, 0 );
 
-    const PageId pageId = 1;
-    EXPECT_NO_THROW( dp.Insert( pageId ) );
-    EXPECT_ANY_THROW( dp.Insert( pageId ) );
-}
-
-TEST(DirPage, InsertEx)
-{
-    Page page;
-    DirPage dp( page, 0 );
-
-    PageId pageId = 1;
-    std::vector< PageId > vec;
-
-    while( !dp.IsFull() )
-    {
-        vec.push_back( pageId );
-        EXPECT_NO_THROW( dp.Insert( pageId ) );
-        pageId++;
-    }
-
-    // Delete pages in random order
-    std::random_device rd;
-    std::mt19937 g( rd() );
-    std::shuffle( vec.begin(), vec.end(), g );
-    for( PageId v : vec )
-    {
-        EXPECT_NO_THROW( dp.Delete( v ) );
-    }
+    const std::size_t recLength = 3;
+    EXPECT_FALSE( dp.InsertRec( recLength ).first );
 }
 
 TEST(DirPage, Delete)
@@ -47,6 +21,8 @@ TEST(DirPage, Delete)
     DirPage dp( page, 0 );
 
     const PageId pageId = 1;
-    EXPECT_NO_THROW( dp.Insert( pageId ) );
-    EXPECT_NO_THROW( dp.Delete( pageId ) );
+    const std::size_t recLength = 3;
+
+    EXPECT_NO_THROW( dp.InsertRec( recLength ) );
+    EXPECT_NO_THROW( dp.Delete( pageId, recLength ) );
 }
