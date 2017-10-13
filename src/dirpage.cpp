@@ -23,7 +23,7 @@ DirPage::DirPage( Page& page )
 //
 bool DirPage::IsFull() const
 {
-    return ( m_pageId.size() < m_maxEntries );
+    return ( m_pageId.size() >= m_maxEntries );
 }
 
 //
