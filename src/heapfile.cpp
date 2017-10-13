@@ -1,5 +1,6 @@
 #include "heapfile.h"
 #include <cassert>
+#include "heappage.h"
 
 //
 //
@@ -15,15 +16,17 @@ HeapFile::HeapFile( BufferMgr& bufferMgr, PageId headerPage )
 //
 //
 //
-Record HeapFile::Get( RecordId /*rid*/ )
+Record HeapFile::Get( RecordId rid )
 {
-//    HeapPage page( m_bufferMgr.GetPage( rid.GetPageId(), true ) );
-//    const Record rec = page.Get( rid.GetSlotId() );
-//    m_bufferMgr.UnpinPage( rid.GetPageId() );
-//
-//    return rec;
+    const PageId pageId = rid.GetPageId();
+    // assert( m_dir.Is( pageId ) );
+    Page* page = m_bufferMgr.GetPage( pageId, true );
+    assert( page );
+    HeapPage hp( *page );
+    const Record rec = hp.Get( rid.GetSlotId() );
+    m_bufferMgr.UnpinPage( pageId );
 
-    return Record( "a" );
+    return rec;
 }
 
 //
