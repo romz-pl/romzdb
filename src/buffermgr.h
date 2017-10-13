@@ -73,6 +73,7 @@ public:
     BufferMgr( DiskSpaceMgr& ds, std::size_t numPages );
     ~BufferMgr();
 
+    std::pair< PageId, Page* > GetNewPage();
 
     Page *GetPage( PageId pageId, bool multiplePins );
     void WritePage( PageId pageId );

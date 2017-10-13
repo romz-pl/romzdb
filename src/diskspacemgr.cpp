@@ -26,3 +26,16 @@ void DiskSpaceMgr::Write( const Page& page, PageId id ) const
 {
     page.Write( m_uf , id );
 }
+
+//
+//
+//
+PageId DiskSpaceMgr::AllocatePage()
+{
+    static PageId curr = 0;
+    curr++;
+
+    Page page;
+    page.Write( m_uf , curr );
+    return curr;
+}

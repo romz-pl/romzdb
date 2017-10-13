@@ -25,6 +25,18 @@ BufferMgr::~BufferMgr()
 }
 
 //
+//
+//
+std::pair< PageId, Page* > BufferMgr::GetNewPage()
+{
+    PageId pageId = m_ds.AllocatePage();
+
+    Page* page = GetPageFromDisk( pageId );
+
+    return std::make_pair( pageId, page );
+}
+
+//
 // Returns  a pointer to a page pinned in the buffer.
 //
 //
