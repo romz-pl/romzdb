@@ -27,6 +27,9 @@ UnixFile::UnixFile( const std::string& path, Mode mode )
     assert( 0 );
 }
 
+//
+//
+//
 UnixFile::~UnixFile()
 {
     Close();
@@ -67,6 +70,9 @@ void UnixFile::Create( const std::string& path )
     }
 }
 
+//
+// Closes file
+//
 void UnixFile::Close( )
 {
     if( m_fd != m_badFd )
@@ -76,7 +82,10 @@ void UnixFile::Close( )
     }
 }
 
-
+//
+// Writes "data" of length "nbyte" to file.
+// The data are offset "offset" from the begin.
+//
 void UnixFile::Write( const char* data, size_t nbyte, off_t offset ) const
 {
     assert( m_fd != m_badFd );
@@ -117,6 +126,9 @@ void UnixFile::Read( char* data, size_t nbyte, off_t offset ) const
     }
 }
 
+//
+// Moves the "current position" to "offset" from the begin
+//
 void UnixFile::Lseek( off_t offset ) const
 {
     assert( m_fd != m_badFd );
