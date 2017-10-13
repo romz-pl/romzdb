@@ -79,7 +79,7 @@ std::pair< PageOffset, SlotId > HeapPageHdr::Insert( std::size_t recLength )
 // Deletes the slots.
 // The array of slots is updated
 //
-void HeapPageHdr::Delete( SlotId slotId )
+PageOffset HeapPageHdr::Delete( SlotId slotId )
 {
     if( slotId >= m_slot.size() )
     {
@@ -94,6 +94,8 @@ void HeapPageHdr::Delete( SlotId slotId )
         m_slot[ slotId ].m_offset -= length;
         slotId++;
     }
+
+    return length;
 }
 
 //
