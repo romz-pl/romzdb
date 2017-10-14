@@ -68,7 +68,7 @@ std::pair< bool, Record > DirPage::Get( RecordId rid ) const
 //
 std::pair< bool, RecordId > DirPage::Insert( const Record &rec )
 {
-    const auto pred = [ rec ]( const DirSlot& d ){ return ( d.m_freeSpace >= rec.GetLength() ); };
+    const auto pred = [ rec ]( const DirSlot& d ){ return ( d.m_freeSpace.GetValue() >= rec.GetLength() ); };
     auto it = std::find_if( m_dirSlot.begin(), m_dirSlot.end(), pred );
     if( it != m_dirSlot.end() )
     {
@@ -98,9 +98,7 @@ void DirPage::InsertPage( PageId pageId )
         throw std::runtime_error( "DirPage::Insert: PageId already inserted." );
     }
 
-    DirSlot d;
-    d.m_pageId = pageId;
-    d.m_freeSpace = Page::Size;
+    DirSlot d( pageId, Page::Size );
     m_dirSlot.push_back( d );
     ToPage();
 }
@@ -173,16 +171,17 @@ void DirPage::FromPage()
     std::memcpy( &s, p, sizeof( std::size_t ) );
 
     p = GetData();
-    DirSlot v;
     for( std::size_t i = 0; i < s; i++ )
     {
-        std::memcpy( &v.m_pageId, p, sizeof( v.m_pageId ) );
-        p += sizeof( v.m_pageId );
+        PageId pageId;
+        PageOffset freeSpace( 0 );
+        std::memcpy( &pageId, p, sizeof( pageId ) );
+        p += sizeof( pageId );
 
-        std::memcpy( &v.m_freeSpace, p, sizeof( v.m_freeSpace ) );
-        p += sizeof( v.m_freeSpace );
+        std::memcpy( &freeSpace, p, sizeof( freeSpace ) );
+        p += sizeof( freeSpace );
 
-        m_dirSlot.push_back( v );
+        m_dirSlot.push_back( DirSlot( pageId, freeSpace ) );
     }
 
     m_bufferMgr.UnpinPage( m_pageId );

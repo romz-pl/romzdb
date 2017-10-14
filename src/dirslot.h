@@ -7,6 +7,9 @@
 class DirSlot
 {
 public:
+    DirSlot( PageId pageId, PageOffset freeSpace );
+
+public:
     PageId m_pageId;
     PageOffset m_freeSpace;
 };
