@@ -69,7 +69,7 @@ std::pair< bool, Record > DirPage::Get( RecordId rid ) const
 //
 std::pair< bool, RecordId > DirPage::Insert( const Record &rec )
 {
-    const auto pred = [ rec ]( const DirSlot& d ){ return ( d.m_freeSpace.GetValue() >= rec.GetLength() ); };
+    const auto pred = [ rec ]( const DirSlot& d ){ return ( d.m_freeSpace >= rec.GetLength() ); };
     auto it = std::find_if( m_dirSlot.begin(), m_dirSlot.end(), pred );
     if( it != m_dirSlot.end() )
     {

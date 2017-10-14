@@ -10,8 +10,10 @@ public:
     ~PageOffset() = default;
 
     std::uint16_t GetValue() const;
-    PageOffset operator+=( const PageOffset& v );
-    PageOffset operator-=( const PageOffset& v );
+    PageOffset operator += ( const PageOffset& v );
+    PageOffset operator -= ( const PageOffset& v );
+
+    bool operator >= ( const PageOffset& v ) const;
 
 
 public:

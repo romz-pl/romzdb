@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <string>
+#include "pageoffset.h"
 
 class Record
 {
@@ -18,7 +19,7 @@ public:
     Record( const char* data, std::size_t length );
 
     void ToPage( char* page ) const;
-    std::size_t GetLength() const;
+    PageOffset GetLength() const;
 
     bool operator==( const Record& a ) const;
 

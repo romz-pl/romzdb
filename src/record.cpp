@@ -39,9 +39,9 @@ void Record::ToPage( char* page ) const
 //
 //
 //
-std::size_t Record::GetLength() const
+PageOffset Record::GetLength() const
 {
-    return m_data.size();
+    return PageOffset( m_data.size() );
 }
 
 //
