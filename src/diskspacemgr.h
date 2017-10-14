@@ -23,7 +23,8 @@ private:
 private:
     UnixFile& m_uf;
 
-    PageId m_curr;
+    // Next unallocated page
+    std::size_t m_nextPage;
 
 };
 
