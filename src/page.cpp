@@ -19,4 +19,19 @@ Page::~Page()
     m_bufferMgr.UnpinPage( m_pageId );
 }
 
+//
+//
+//
+const char* Page::GetData() const
+{
+    return m_block->GetData();
+}
+
+//
+//
+//
+char* Page::GetData()
+{
+    return m_block->GetData();
+}
 

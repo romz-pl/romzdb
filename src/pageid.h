@@ -17,6 +17,8 @@ public:
 
     bool IsValid() const;
 
+    bool operator==( const PageId& v ) const;
+
 private:
     std::size_t m_id;
 

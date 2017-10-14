@@ -39,3 +39,12 @@ bool PageId::IsValid() const
 {
     return ( m_id != m_invalid );
 }
+
+//
+//
+//
+bool PageId::operator== ( const PageId& v ) const
+{
+    return ( v.m_id == m_id );
+}
+

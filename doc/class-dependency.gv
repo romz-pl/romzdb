@@ -1,0 +1,58 @@
+#
+# dot -Tpng class-dependency.gv -o class-dependency.png
+#
+digraph G {
+
+BufferMgr -> DiskBlock;
+BufferMgr -> Frame;
+# BufferMgr -> PageId;
+BufferMgr -> DiskSpaceMgr;
+
+Dir -> BufferMgr;
+# Dir -> PageId;
+Dir -> Record;
+Dir -> RecordId;
+Dir -> DirPage;
+
+DirPage -> Page;
+DirPage -> BufferMgr;
+# DirPage -> PageId;
+DirPage -> Record;
+DirPage -> RecordId;
+DirPage -> DirSlot;
+DirPage -> HeapPage;
+
+# DirSlot -> PageId;
+
+DiskSpaceMgr -> UnixFile;
+# DiskSpaceMgr -> PageId;
+DiskSpaceMgr -> DiskBlock; 
+
+# Frame -> PageId;
+Frame -> DiskBlock;
+Frame -> DiskSpaceMgr;
+
+HeapFile -> BufferMgr;
+# HeapFile -> PageId;
+HeapFile -> Record;
+HeapFile -> RecordId;
+HeapFile -> Dir;
+
+HeapPage -> Page;
+HeapPage -> BufferMgr;
+#HeapPage -> PageId;
+#HeapPage -> SlotId;
+HeapPage -> Record;
+HeapPage -> PageOffset;
+HeapPage -> Slot;
+
+Page -> BufferMgr;
+# Page -> PageId;
+Page -> DiskBlock;
+
+RecordId -> PageId;
+RecordId -> SlotId;
+
+Slot -> PageOffset;
+
+}

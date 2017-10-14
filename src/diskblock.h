@@ -21,7 +21,7 @@ public:
     DiskBlock();
     ~DiskBlock() = default;
 
-private:
+// private:
     const char* GetData() const;
     char* GetData();
 

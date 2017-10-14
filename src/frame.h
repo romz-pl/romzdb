@@ -26,12 +26,12 @@ public:
 
     void UnpinPage();
 
-/*    void MarkDirty( );
+   void MarkDirty( );
 
 
 
 
-
+/*
 
 
     void Print() const;

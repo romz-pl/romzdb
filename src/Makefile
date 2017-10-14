@@ -24,20 +24,19 @@ VPATH := ../src/
 
 SOURCE :=
 SOURCE += buffermgr.cpp
-# SOURCE += dir.cpp
-# SOURCE += dirpage.cpp
+SOURCE += dir.cpp
+SOURCE += dirpage.cpp
 SOURCE += diskblock.cpp
 SOURCE += diskspacemgr.cpp
 SOURCE += frame.cpp
-# SOURCE += heapfile.cpp
-# SOURCE += heappage.cpp
-# SOURCE += heappagehdr.cpp
+SOURCE += heapfile.cpp
+SOURCE += heappage.cpp
 SOURCE += main.cpp
 SOURCE += page.cpp
 SOURCE += pageid.cpp
-# SOURCE += record.cpp
-# SOURCE += recordid.cpp
-# SOURCE += slot.cpp
+SOURCE += record.cpp
+SOURCE += recordid.cpp
+SOURCE += slot.cpp
 SOURCE += unixfile.cpp
 
 #Object files

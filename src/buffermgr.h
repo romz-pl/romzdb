@@ -72,15 +72,19 @@ public:
     DiskBlock* GetPage( PageId pageId, bool multiplePins );
     void UnpinPage( PageId pageId );
 
+
+    std::pair< PageId, DiskBlock* > GetNewPage();
+
+    void MarkDirty( PageId pageId );
+
 private:
     DiskBlock* GetPageFromDisk( PageId pageId );
     Frame& FindFrame( PageId pageId );
 
-/*    std::pair< PageId, Page* > GetNewPage();
 
-    void WritePage( PageId pageId );
+/*    void WritePage( PageId pageId );
 
-    void MarkDirty( PageId pageId );
+
 
     void FlushPages( );
 

@@ -49,23 +49,18 @@
 //
 
 #include "slotid.h"
+#include "slot.h"
 #include "page.h"
 #include "record.h"
-#include "heappagehdr.h"
 #include "buffermgr.h"
+#include <vector>
+#include "pageoffset.h"
 
-class HeapPage
+class HeapPage : public Page
 {
-private:
-    enum
-    {
-        FreeSpace = Page::PageSize - sizeof( PageOffset ),
-        SlotNo = FreeSpace - sizeof( PageOffset ),
-        SlotDir = SlotNo - sizeof( SlotId )
-    };
 
 public:
-    HeapPage( BufferMgr& bufferMgr, PageId self );
+    HeapPage( BufferMgr& bufferMgr, PageId pageId );
     ~HeapPage();
 
     Record Get( SlotId slotId );
@@ -77,9 +72,16 @@ public:
     std::int32_t GetFreeSpace() const;
 
 private:
-    const PageId m_self;
+    std::size_t GetSlotNo() const;
+    Slot GetSlot( SlotId slotId ) const;
 
-    HeapPageHdr m_hdr;
+
+private:
+    void ToPage();
+    void FromPage( );
+
+private:
+    std::vector< Slot > m_slot;
 
 };
 

@@ -111,21 +111,18 @@ Frame& BufferMgr::FindFrame( PageId pageId )
     return *it;
 }
 
-/*
+
 //
 //
 //
-std::pair< PageId, Page* > BufferMgr::GetNewPage()
+std::pair<PageId, DiskBlock *> BufferMgr::GetNewPage()
 {
     PageId pageId = m_ds.AllocatePage();
 
-    Page* page = GetPageFromDisk( pageId );
+    DiskBlock* block = GetPageFromDisk( pageId );
 
-    return std::make_pair( pageId, page );
+    return std::make_pair( pageId, block );
 }
-
-
-
 
 
 //
@@ -138,6 +135,8 @@ void BufferMgr::MarkDirty( PageId pageId )
     frame.MarkDirty();
 }
 
+
+/*
 //
 // Writes the page from the buffer into disk.
 //
