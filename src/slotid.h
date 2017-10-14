@@ -12,7 +12,7 @@
 class SlotId
 {
 public:
-    SlotId( std::uint16_t value );
+    explicit SlotId( std::uint16_t value );
 
     std::uint16_t GetValue() const;
 

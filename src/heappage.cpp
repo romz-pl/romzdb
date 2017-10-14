@@ -52,7 +52,7 @@ SlotId HeapPage::Insert( const Record& rec )
     rec.ToPage( p );
 
     ToPage();
-    return ( m_slot.size() - 1 );
+    return SlotId( m_slot.size() - 1 );
 }
 
 //
