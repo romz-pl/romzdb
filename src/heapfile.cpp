@@ -19,6 +19,7 @@ HeapFile::HeapFile( BufferMgr& bufferMgr, PageId headerPage )
 //
 Record HeapFile::Get( RecordId rid )
 {
+    /*
     const PageId pageId = rid.GetPageId();
     if( !m_dir.Is( pageId ) )
     {
@@ -32,6 +33,8 @@ Record HeapFile::Get( RecordId rid )
     m_bufferMgr.UnpinPage( pageId );
 
     return rec;
+    */
+    return m_dir.Get( rid );
 }
 
 //
@@ -39,6 +42,7 @@ Record HeapFile::Get( RecordId rid )
 //
 RecordId HeapFile::Insert( const Record& rec )
 {
+    /*
     const PageId pageId = m_dir.Insert( rec.GetLength() );
     Page* page = m_bufferMgr.GetPage( pageId, true );
     HeapPage heapPage( *page );
@@ -46,6 +50,8 @@ RecordId HeapFile::Insert( const Record& rec )
     m_bufferMgr.UnpinPage( pageId );
 
     return RecordId( pageId, slotId );
+    */
+    return m_dir.Insert( rec );
 }
 
 //
@@ -53,6 +59,7 @@ RecordId HeapFile::Insert( const Record& rec )
 //
 void HeapFile::Delete( RecordId rid )
 {
+    /*
     const PageId pageId = rid.GetPageId();
     Page* page = m_bufferMgr.GetPage( pageId, true );
     HeapPage heapPage( *page );
@@ -62,7 +69,8 @@ void HeapFile::Delete( RecordId rid )
     m_bufferMgr.UnpinPage( rid.GetPageId() );
 
     m_dir.Delete( pageId, freeSpace );
-
+    */
+    m_dir.Delete( rid );
 }
 
 //

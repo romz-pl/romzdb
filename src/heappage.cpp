@@ -4,10 +4,10 @@
 //
 //
 //
-HeapPage::HeapPage( Page& page )
-    : m_page( page )
+HeapPage::HeapPage( BufferMgr& bufferMgr, PageId self )
+    : m_self( self )
+    , m_hdr( bufferMgr, self )
 {
-    m_hdr.FromPage( page );
 }
 
 //
@@ -15,7 +15,6 @@ HeapPage::HeapPage( Page& page )
 //
 HeapPage::~HeapPage()
 {
-    m_hdr.ToPage( m_page );
 }
 
 //
@@ -23,12 +22,8 @@ HeapPage::~HeapPage()
 //
 Record HeapPage::Get( SlotId slotId )
 {
-    const Slot slot = m_hdr.GetSlot( slotId );
+    return m_hdr.Get( slotId );
 
-    const char* p = m_page.GetData();
-    p += slot.m_offset;
-    Record rec( p, slot.m_length );
-    return rec;
 }
 
 //
@@ -36,14 +31,7 @@ Record HeapPage::Get( SlotId slotId )
 //
 SlotId HeapPage::Insert( const Record& rec )
 {
-    const auto ret = m_hdr.Insert( rec.GetLength() );
-    const auto offset = ret.first;
-    const auto slotId = ret.second;
-
-    char* p = m_page.GetData() + offset;
-    rec.ToPage( p );
-
-    return slotId;
+    return m_hdr.Insert( rec );
 }
 
 //
@@ -60,4 +48,12 @@ PageOffset HeapPage::Delete( SlotId slotId )
 std::size_t HeapPage::GetRecordNo() const
 {
     return  m_hdr.GetSlotNo();
+}
+
+//
+//
+//
+std::int32_t HeapPage::GetFreeSpace() const
+{
+    return m_hdr.GetFreeSpace();
 }

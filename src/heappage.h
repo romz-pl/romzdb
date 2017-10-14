@@ -52,6 +52,7 @@
 #include "page.h"
 #include "record.h"
 #include "heappagehdr.h"
+#include "buffermgr.h"
 
 class HeapPage
 {
@@ -64,7 +65,7 @@ private:
     };
 
 public:
-    HeapPage( Page &page );
+    HeapPage( BufferMgr& bufferMgr, PageId self );
     ~HeapPage();
 
     Record Get( SlotId slotId );
@@ -73,8 +74,10 @@ public:
 
     std::size_t GetRecordNo() const;
 
+    std::int32_t GetFreeSpace() const;
+
 private:
-    Page& m_page;
+    const PageId m_self;
 
     HeapPageHdr m_hdr;
 

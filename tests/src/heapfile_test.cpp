@@ -6,6 +6,7 @@
 
 TEST(HeapFile, Insert)
 {
+    /*
     UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
     DiskSpaceMgr ds( uf );
     const std::size_t numPages = 1000;
@@ -28,5 +29,6 @@ TEST(HeapFile, Insert)
         // EXPECT_NO_THROW( hf.Insert( rec ) );
         hf.Insert( rec );
     }
+    */
 
 }
