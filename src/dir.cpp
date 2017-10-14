@@ -13,8 +13,7 @@ Dir::Dir( BufferMgr& bufferMgr, PageId headerPage )
 
     while( currPage != InvalidPageId )
     {
-        Page* page = m_bufferMgr.GetPage( currPage, false );
-        DirPage dp( *page, currPage );
+        DirPage dp( m_bufferMgr, currPage );
         m_dirPage.push_back( dp );
         currPage = dp.GetNextPage();
     }
@@ -25,22 +24,33 @@ Dir::Dir( BufferMgr& bufferMgr, PageId headerPage )
 //
 Dir::~Dir()
 {
-    for( const DirPage& d : m_dirPage )
-    {
-        m_bufferMgr.UnpinPage( d.GetPageId() );
-    }
+
 }
 
+//
+//
+//
+Record Dir::Get( RecordId rid ) const
+{
+    for( const DirPage& d : m_dirPage )
+    {
+        auto pair = d.Get( rid );
+        if( pair.first )
+            return pair.second;
+    }
 
+    throw std::runtime_error( "Dir::Get: Record not found." );
+
+}
 
 //
 //
 //
-PageId Dir::Insert( std::size_t recLength )
+RecordId Dir::Insert( const Record& rec )
 {
     for( DirPage& d : m_dirPage )
     {
-        auto pair = d.InsertRec( recLength );
+        auto pair = d.Insert( rec );
         if( pair.first )
             return pair.second;
     }
@@ -48,20 +58,7 @@ PageId Dir::Insert( std::size_t recLength )
 
     InsertHeapPage();
 
-    return Insert( recLength );
-}
-
-//
-//
-//
-bool Dir::Is( PageId pageId ) const
-{
-    for( const DirPage& d : m_dirPage )
-    {
-        if( d.Is( pageId ) )
-            return true;
-    }
-    return false;
+    return Insert( rec );
 }
 
 //
@@ -71,7 +68,6 @@ PageId Dir::InsertHeapPage()
 {
     auto pair = m_bufferMgr.GetNewPage( );
     PageId pageId = pair.first;
-    Page* page = pair.second;
 
     for( DirPage& d : m_dirPage )
     {
@@ -87,12 +83,11 @@ PageId Dir::InsertHeapPage()
     // The directry is full. New page for directory must be allocated.
     //
     m_dirPage.back().SetNextPage( pageId );
-    m_dirPage.push_back( DirPage( *page, pageId ) );
+    m_dirPage.push_back( DirPage( m_bufferMgr, pageId ) );
     m_bufferMgr.UnpinPage( pageId );
 
     pair = m_bufferMgr.GetNewPage( );
     pageId = pair.first;
-    page = pair.second;
     m_dirPage.back().InsertPage( pageId );
     m_bufferMgr.UnpinPage( pageId );
 
@@ -102,13 +97,13 @@ PageId Dir::InsertHeapPage()
 //
 //
 //
-void Dir::Delete( PageId pageId, PageOffset freeSpace )
+void Dir::Delete( RecordId rid )
 {
     for( DirPage& d : m_dirPage )
     {
-        if( d.Delete( pageId, freeSpace ) )
+        if( d.Delete( rid ) )
             return;
     }
 
-    throw std::runtime_error( "Dir::Delete: Page '" + std::to_string( pageId ) + "' not found." );
+    throw std::runtime_error( "Dir::Delete: RecordId not found." );
 }

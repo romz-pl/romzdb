@@ -3,6 +3,9 @@
 
 #include "page.h"
 #include <vector>
+#include "buffermgr.h"
+#include "record.h"
+#include "recordid.h"
 
 class DirSlot
 {
@@ -14,16 +17,17 @@ public:
 class DirPage
 {
 public:
-    DirPage( Page &page, PageId self );
-    ~DirPage() = default;
+    DirPage( BufferMgr &bufferMgr, PageId self );
+    ~DirPage();
 
     bool IsFull() const;
     bool Is( PageId pageId ) const;
 
-    std::pair< bool, PageId > InsertRec( std::size_t recLength );
+    std::pair< bool, Record > Get( RecordId rid ) const;
+    std::pair< bool, RecordId > Insert( const Record& rec );
     void InsertPage( PageId pageId );
 
-    bool Delete( PageId pageId, PageOffset freeSpace );
+    bool Delete( RecordId rid);
 
     PageId GetNextPage() const;
     void SetNextPage( PageId id );
@@ -38,10 +42,9 @@ private:
     const PageId m_self;
 
     PageId m_nextPage;
-    std::vector< DirSlot > m_dirSlot;
-    Page& m_page;
+    BufferMgr& m_bufferMgr;
 
-    static const std::size_t m_maxEntries;
+    std::vector< DirSlot > m_dirSlot;
 };
 
 #endif
