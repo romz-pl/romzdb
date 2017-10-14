@@ -8,7 +8,7 @@
 class DiskSpaceMgr
 {
 public:
-    DiskSpaceMgr( UnixFile& uf );
+    explicit DiskSpaceMgr( UnixFile& uf );
     ~DiskSpaceMgr() = default;
 
     DiskBlock Read( PageId pageId ) const;
