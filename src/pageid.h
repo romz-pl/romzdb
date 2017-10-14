@@ -15,6 +15,8 @@ public:
 
     std::size_t GetValue() const;
 
+    bool IsValid() const;
+
 private:
     std::size_t m_id;
 

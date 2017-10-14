@@ -31,3 +31,11 @@ std::size_t PageId::GetValue() const
 {
     return m_id;
 }
+
+//
+//
+//
+bool PageId::IsValid() const
+{
+    return ( m_id != m_invalid );
+}
