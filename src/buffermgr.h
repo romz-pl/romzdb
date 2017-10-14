@@ -57,12 +57,8 @@
 //    must be efficient. This is implemented as hash table.
 
 
-
-#include <map>
 #include <vector>
-#include <queue>
 #include "frame.h"
-#include "page.h"
 #include "diskspacemgr.h"
 
 
@@ -73,40 +69,30 @@ public:
     BufferMgr( DiskSpaceMgr& ds, std::size_t numPages );
     ~BufferMgr();
 
-    std::pair< PageId, Page* > GetNewPage();
+    DiskBlock* GetPage( PageId pageId, bool multiplePins );
+    void UnpinPage( PageId pageId );
 
-    Page *GetPage( PageId pageId, bool multiplePins );
+private:
+    DiskBlock* GetPageFromDisk( PageId pageId );
+    Frame& FindFrame( PageId pageId );
+
+/*    std::pair< PageId, Page* > GetNewPage();
+
     void WritePage( PageId pageId );
 
-    void UnpinPage( PageId pageId );
     void MarkDirty( PageId pageId );
 
     void FlushPages( );
 
     void Print() const;
 
-/*    static Page* AllocatePage( UnixFile* uf, PageId pageNum );
-    static void MarkDirty( UnixFile* uf, PageId pageNum );
-    static void UnpinPage( UnixFile* uf, PageId pageNum );
-    static void FlushPages( UnixFile* uf );
-    static void FlushPages();
-    static void ForcePages( UnixFile* uf, PageId pageNum = ALL_PAGES );
-
-    static void PrintBuffer();
-    static void ClearBuffer();
-    static void ResizeBuffer( int );
-
-private:
-    static Frame *InternalAlloc();
-    static bool IsInvariant();
-*/
 private:
     Page* GetPageUsed( PageId pageId, bool multiplePins );
     Page* GetPageFree( PageId pageId );
 
-    Frame& FindFrame( PageId pageId );
-    Page* GetPageFromDisk( PageId pageId );
 
+    Page* GetPageFromDisk( PageId pageId );
+*/
 private:
     DiskSpaceMgr& m_ds;
 

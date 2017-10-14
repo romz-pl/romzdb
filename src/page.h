@@ -2,90 +2,36 @@
 #define ROMZDB_PAGE_H
 
 //
-// Represents "the page of data".
-// The page can be stored on the disk or hold in the memory
+// 1. Represents "the page of data".
+//
+// 2. The page is piece of memory representing the disk block on the disk
+//
+// 3. All operations in Database must be done on pages
 //
 
+#include "diskblock.h"
 #include "pageid.h"
-#include "unixfile.h"
-#include <string>
-#include <array>
-#include <cstring>
-#include <stdexcept>
+#include "buffermgr.h"
 
 
-using PageOffset = std::uint16_t;
+
+// using PageOffset = std::uint16_t;
 
 
 class Page
 {
 public:
-    // The size of the page in the file.
-    // All pages have the same size!
-    enum { PageSize = 4096 };
-
-
-public:
-    Page();
-    explicit Page( const std::string& v );
-
-    void Write( const UnixFile& uf, PageId pageId ) const;
-    void Read( const UnixFile& uf, PageId pageId );
-
-    bool operator==( const Page& a ) const;
-
-    const char* GetData() const;
-    char* GetData();
-
-    template< typename T >
-    void Set( T value, PageOffset offset );
-
-    template< typename T >
-    T Get( PageOffset offset ) const;
+    Page( BufferMgr& bufferMgr, PageId pageId, bool multiplePins );
+    ~Page();
 
 private:
-    void Zero( );
+    BufferMgr& m_bufferMgr;
 
-    template< typename T >
-    void CheckOffset( PageOffset offset ) const;
+    const PageId m_pageId;
 
-private:
     // Data stored on the page
-    std::array< char, PageSize > m_data;
+    DiskBlock* m_block;
 };
 
-//
-//
-//
-template< typename T >
-void Page::Set( T value, PageOffset offset )
-{
-    CheckOffset< T >( offset );
-    std::memcpy( m_data.data() + offset, &value, sizeof( T ) );
-}
-
-//
-//
-//
-template< typename T >
-T Page::Get( PageOffset offset ) const
-{
-    T tmp = 0;
-    CheckOffset< T >( offset );
-    std::memcpy( &tmp, m_data.data() + offset, sizeof( T ) );
-    return tmp;
-}
-
-//
-//
-//
-template< typename T >
-void Page::CheckOffset( PageOffset offset ) const
-{
-    if( offset + sizeof( T ) > m_data.size() )
-    {
-        throw std::runtime_error( "Page::CheckOffset: Offset too large.");
-    }
-}
 
 #endif

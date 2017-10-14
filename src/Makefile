@@ -23,17 +23,17 @@ VPATH := ../src/
 # Source files (listed in alphabetical order)
 
 SOURCE :=
-# SOURCE += buffermgr.cpp
+SOURCE += buffermgr.cpp
 # SOURCE += dir.cpp
 # SOURCE += dirpage.cpp
 SOURCE += diskblock.cpp
-# SOURCE += diskspacemgr.cpp
-# SOURCE += frame.cpp
+SOURCE += diskspacemgr.cpp
+SOURCE += frame.cpp
 # SOURCE += heapfile.cpp
 # SOURCE += heappage.cpp
 # SOURCE += heappagehdr.cpp
 SOURCE += main.cpp
-# SOURCE += page.cpp
+SOURCE += page.cpp
 SOURCE += pageid.cpp
 # SOURCE += record.cpp
 # SOURCE += recordid.cpp
