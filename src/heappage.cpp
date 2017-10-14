@@ -36,8 +36,8 @@ Record HeapPage::Get( SlotId slotId )
 //
 SlotId HeapPage::Insert( const Record& rec )
 {
-    const std::size_t recLength = rec.GetLength();
-    if( GetFreeSpace() < static_cast< std::int32_t >( recLength ) )
+    const PageOffset recLength = rec.GetLength();
+    if( GetFreeSpace() < recLength )
     {
         throw std::runtime_error( "HeapPageHdr::Insert: Not enought space" );
     }
@@ -46,7 +46,7 @@ SlotId HeapPage::Insert( const Record& rec )
     for( Slot& s : m_slot )
         offset += s.m_length;
 
-    m_slot.push_back( Slot( offset, PageOffset( recLength ) ) );
+    m_slot.push_back( Slot( offset, recLength ) );
 
     char* p = GetData() + offset.GetValue();
     rec.ToPage( p );
@@ -88,19 +88,19 @@ std::size_t HeapPage::GetRecordNo() const
 }
 
 //
-// Returns free space on the Heap File managed by this Header
+// Returns free space on the Heap File
 //
-std::int32_t HeapPage::GetFreeSpace() const
+PageOffset HeapPage::GetFreeSpace() const
 {
-    std::int32_t ret = Page::Size;
+    PageOffset ret( Page::Size );
     for( const Slot& s : m_slot )
     {
-        ret -= s.m_length.GetValue();
-        ret -= sizeof( s.m_length );
-        ret -= sizeof( s.m_offset );
+        ret -= s.m_length;
+        ret -= PageOffset( sizeof( s.m_length ) );
+        ret -= PageOffset( sizeof( s.m_offset ) );
     }
 
-    ret -= sizeof( m_slot.size() );
+    ret -= PageOffset( sizeof( m_slot.size() ) );
 
     return ret;
 

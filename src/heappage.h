@@ -69,7 +69,7 @@ public:
 
     std::size_t GetRecordNo() const;
 
-    std::int32_t GetFreeSpace() const;
+    PageOffset GetFreeSpace() const;
 
 private:
     std::size_t GetSlotNo() const;
