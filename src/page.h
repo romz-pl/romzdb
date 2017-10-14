@@ -14,21 +14,23 @@
 #include "buffermgr.h"
 
 
-
-// using PageOffset = std::uint16_t;
-
-
 class Page
 {
+public:
+    enum { Size = DiskBlock::Size };
 public:
     Page( BufferMgr& bufferMgr, PageId pageId, bool multiplePins );
     ~Page();
 
-private:
+    const char* GetData() const;
+    char* GetData();
+
+protected:
     BufferMgr& m_bufferMgr;
 
     const PageId m_pageId;
 
+private:
     // Data stored on the page
     DiskBlock* m_block;
 };

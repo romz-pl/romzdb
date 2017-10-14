@@ -11,7 +11,7 @@ Dir::Dir( BufferMgr& bufferMgr, PageId headerPage )
 {
     PageId currPage = headerPage;
 
-    while( currPage != InvalidPageId )
+    while( currPage.IsValid() )
     {
         DirPage dp( m_bufferMgr, currPage );
         m_dirPage.push_back( dp );

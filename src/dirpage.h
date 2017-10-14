@@ -14,7 +14,7 @@ public:
     std::size_t m_freeSpace;
 };
 
-class DirPage
+class DirPage : public Page
 {
 public:
     DirPage( BufferMgr &bufferMgr, PageId self );
@@ -35,14 +35,11 @@ public:
     PageId GetPageId() const;
 
 private:
-    void ToPage() const;
+    void ToPage();
     void FromPage();
 
 private:
-    const PageId m_self;
-
     PageId m_nextPage;
-    BufferMgr& m_bufferMgr;
 
     std::vector< DirSlot > m_dirSlot;
 };

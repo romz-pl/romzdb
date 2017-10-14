@@ -6,13 +6,13 @@
 // Uniquely identifies a record on the page.
 //
 
-#include <cstddef>
+#include <cstdint>
 #include "page.h"
 #include <limits>
 
 using SlotId = std::uint16_t;
 
-static_assert( std::numeric_limits< SlotId >::max() > Page::PageSize,
+static_assert( std::numeric_limits< SlotId >::max() > Page::Size,
                "The size of SlotId type is not sufficiently large" );
 
 #endif

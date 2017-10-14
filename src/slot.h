@@ -2,6 +2,7 @@
 #define ROMZDB_SLOT_H
 
 #include "page.h"
+#include "pageoffset.h"
 
 class Slot
 {
