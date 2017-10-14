@@ -1,0 +1,18 @@
+#
+# dot -Tpng class-dependency.gv -o class-dependency.png
+#
+digraph G {
+DiskSpaceMgr -> UnixFile;
+DiskSpaceMgr -> PageId;
+DiskSpaceMgr -> DiskBlock; 
+
+BufferMgr -> DiskBlock;
+BufferMgr -> Frame;
+BufferMgr -> PageId;
+BufferMgr -> DiskSpaceMgr;
+
+Frame -> PageId;
+Frame -> DiskBlock;
+Frame -> DiskSpaceMgr;
+
+}
