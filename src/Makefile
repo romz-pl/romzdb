@@ -34,6 +34,7 @@ SOURCE += diskblock.cpp
 # SOURCE += heappagehdr.cpp
 SOURCE += main.cpp
 # SOURCE += page.cpp
+SOURCE += pageid.cpp
 # SOURCE += record.cpp
 # SOURCE += recordid.cpp
 # SOURCE += slot.cpp
