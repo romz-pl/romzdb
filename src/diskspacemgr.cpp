@@ -13,19 +13,21 @@ DiskSpaceMgr::DiskSpaceMgr( UnixFile& uf )
 //
 //
 //
-Page DiskSpaceMgr::Read( PageId id ) const
+DiskBlock DiskSpaceMgr::Read( PageId pageId ) const
 {
-    Page page;
-    page.Read( m_uf, id );
-    return page;
+    const off_t offset = PageIdToOffset( pageId );
+    DiskBlock block;
+    m_uf.Read( block.GetData(), DiskBlock::Size, offset );
+    return block;
 }
 
 //
 //
 //
-void DiskSpaceMgr::Write( const Page& page, PageId id ) const
+void DiskSpaceMgr::Write( const DiskBlock &block, PageId pageId ) const
 {
-    page.Write( m_uf , id );
+    const off_t offset = PageIdToOffset( pageId );
+    m_uf.Write( block.GetData(), DiskBlock::Size, offset );
 }
 
 //
@@ -35,6 +37,14 @@ PageId DiskSpaceMgr::AllocatePage()
 {
     m_curr++;
 
-    m_uf.Allocate( Page::PageSize );
+    m_uf.Allocate( DiskBlock::Size );
     return ( m_curr - 1 );
+}
+
+//
+//
+//
+off_t DiskSpaceMgr::PageIdToOffset( PageId pageId ) const
+{
+    return pageId * static_cast< off_t >( DiskBlock::Size );
 }
