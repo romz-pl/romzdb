@@ -38,7 +38,15 @@ PageOffset PageOffset::operator -= ( const PageOffset& v )
 //
 //
 //
-bool PageOffset:: operator >= ( const PageOffset& v ) const
+bool PageOffset::operator == ( const PageOffset& v ) const
 {
-    return ( m_value >= v.m_value );
+    return ( m_value == v.m_value );
+}
+
+//
+//
+//
+bool PageOffset::operator < ( const PageOffset& v ) const
+{
+    return ( m_value < v.m_value );
 }

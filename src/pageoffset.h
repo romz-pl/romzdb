@@ -13,10 +13,11 @@ public:
     PageOffset operator += ( const PageOffset& v );
     PageOffset operator -= ( const PageOffset& v );
 
-    bool operator >= ( const PageOffset& v ) const;
+    bool operator == ( const PageOffset& v ) const;
+    bool operator < ( const PageOffset& v ) const;
 
 
-public:
+private:
     std::uint16_t m_value;
 };
 
