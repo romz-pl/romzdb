@@ -23,7 +23,7 @@ HeapPage::~HeapPage()
 //
 Record HeapPage::Get( SlotId slotId )
 {
-    const Slot& slot = m_slot[ slotId ];
+    const Slot& slot = m_slot[ slotId.GetValue() ];
 
     const char* p = GetData() + slot.m_offset.GetValue();
     Record rec( p, slot.m_length.GetValue() );
@@ -58,8 +58,9 @@ SlotId HeapPage::Insert( const Record& rec )
 //
 //
 //
-PageOffset HeapPage::Delete( SlotId slotId )
+PageOffset HeapPage::Delete( SlotId slotIdEx )
 {
+    std::uint16_t slotId = slotIdEx.GetValue();
     if( slotId >= m_slot.size() )
     {
         throw std::runtime_error( "HeapPageHdr::Delete. Slot '" + std::to_string( slotId ) + "' does not exist." );

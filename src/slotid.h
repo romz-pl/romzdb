@@ -7,12 +7,18 @@
 //
 
 #include <cstdint>
-#include "page.h"
-#include <limits>
 
-using SlotId = std::uint16_t;
 
-static_assert( std::numeric_limits< SlotId >::max() > Page::Size,
-               "The size of SlotId type is not sufficiently large" );
+class SlotId
+{
+public:
+    SlotId( std::uint16_t value );
+
+    std::uint16_t GetValue() const;
+
+private:
+    std::uint16_t m_value;
+};
+
 
 #endif
