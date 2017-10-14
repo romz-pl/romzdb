@@ -4,36 +4,26 @@
 //
 //
 //
-void HeapPageHdr::ToPage( Page& page ) const
+HeapPageHdr::HeapPageHdr( BufferMgr& bufferMgr, PageId pageId )
+    : m_bufferMgr( bufferMgr )
+    , m_pageId( pageId )
 {
-    char* p = page.GetData() + Page::PageSize;
-
-    std::size_t size = m_slot.size();
-    p -= sizeof( size );
-    std::memcpy( p, &size, sizeof( size ) );
-
-    for( const Slot& s : m_slot )
-    {
-        s.ToPage( p );
-    }
+    FromPage( );
 }
 
 //
 //
 //
-void HeapPageHdr::FromPage( const Page& page )
+Record HeapPageHdr::Get( SlotId slotId )
 {
-    const char* p = page.GetData() + Page::PageSize;
+    const Slot& slot = m_slot[ slotId ];
 
-    std::size_t size = 0;
-    p -= sizeof( size );
-    std::memcpy( &size, p, sizeof( size ) );
-
-    for( std::size_t i = 0; i < size; i++ )
-    {
-        const Slot slot = Slot::FromPage( p );
-        m_slot.push_back( slot );
-    }
+    Page* page = m_bufferMgr.GetPage( m_pageId, true );
+    const char* p = page->GetData();
+    p += slot.m_offset;
+    Record rec( p, slot.m_length );
+    m_bufferMgr.UnpinPage( m_pageId );
+    return rec;
 }
 
 //
@@ -60,8 +50,9 @@ Slot HeapPageHdr::GetSlot( SlotId slotId ) const
 // Inserts slots for tracking Record of recLength.
 // Returns offset, where the record can be inserted
 //
-std::pair< PageOffset, SlotId > HeapPageHdr::Insert( std::size_t recLength )
+SlotId HeapPageHdr::Insert( const Record& rec )
 {
+    const std::size_t recLength = rec.GetLength();
     if( GetFreeSpace() < static_cast< std::int32_t >( recLength ) )
     {
         throw std::runtime_error( "HeapPageHdr::Insert: Not enought space" );
@@ -72,7 +63,14 @@ std::pair< PageOffset, SlotId > HeapPageHdr::Insert( std::size_t recLength )
         offset += s.m_length;
 
     m_slot.push_back( Slot( offset, recLength ) );
-    return std::make_pair( offset, m_slot.size() - 1 );
+
+    Page* page = m_bufferMgr.GetPage( m_pageId, true );
+    char* p = page->GetData() + offset;
+    rec.ToPage( p );
+    m_bufferMgr.UnpinPage( m_pageId );
+
+    ToPage();
+    return ( m_slot.size() - 1 );
 }
 
 //
@@ -95,6 +93,7 @@ PageOffset HeapPageHdr::Delete( SlotId slotId )
         slotId++;
     }
 
+    ToPage();
     return GetFreeSpace();
 }
 
@@ -116,3 +115,45 @@ std::int32_t HeapPageHdr::GetFreeSpace() const
     return ret;
 
 }
+
+//
+//
+//
+void HeapPageHdr::ToPage( ) const
+{
+    Page* page = m_bufferMgr.GetPage( m_pageId, true );
+    char* p = page->GetData() + Page::PageSize;
+
+    std::size_t size = m_slot.size();
+    p -= sizeof( size );
+    std::memcpy( p, &size, sizeof( size ) );
+
+    for( const Slot& s : m_slot )
+    {
+        s.ToPage( p );
+    }
+
+    m_bufferMgr.UnpinPage( m_pageId );
+}
+
+//
+//
+//
+void HeapPageHdr::FromPage()
+{
+    Page* page = m_bufferMgr.GetPage( m_pageId, true );
+    const char* p = page->GetData() + Page::PageSize;
+
+    std::size_t size = 0;
+    p -= sizeof( size );
+    std::memcpy( &size, p, sizeof( size ) );
+
+    for( std::size_t i = 0; i < size; i++ )
+    {
+        const Slot slot = Slot::FromPage( p );
+        m_slot.push_back( slot );
+    }
+
+    m_bufferMgr.UnpinPage( m_pageId );
+}
+

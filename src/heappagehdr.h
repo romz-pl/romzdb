@@ -27,25 +27,36 @@
 //    without holes (gaps).
 //
 
+#include "buffermgr.h"
+
 class HeapPageHdr
 {
 public:
-    HeapPageHdr() = default;
+    HeapPageHdr( BufferMgr& bufferMgr, PageId pageId );
     ~HeapPageHdr() = default;
 
-    void ToPage( Page& page ) const;
-    void FromPage( const Page& page );
+
 
     std::size_t GetSlotNo() const;
     Slot GetSlot( SlotId slotId ) const;
 
-    std::pair<PageOffset, SlotId> Insert( std::size_t recLength );
+    SlotId Insert( const Record &rec );
     PageOffset Delete( SlotId slotId );
 
     std::int32_t GetFreeSpace() const;
 
+    Record Get( SlotId slotId );
 
 private:
+    void ToPage() const;
+    void FromPage( );
+
+
+private:
+    BufferMgr& m_bufferMgr;
+
+    const PageId m_pageId;
+
     std::vector< Slot > m_slot;
 };
 
