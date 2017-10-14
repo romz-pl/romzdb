@@ -2,15 +2,25 @@
 #define ROMZDB_PAGEID_H
 
 //
-// Uniquely identifies a page on the disk.
+// Uniquely identifies the logical page.
 //
 
 #include <cstddef>
-#include <limits>
 
-using PageId = std::size_t;
+class PageId
+{
+public:
+    PageId();
+    PageId( std::size_t id );
 
-const PageId InvalidPageId = std::numeric_limits< PageId >::max();
+    std::size_t GetValue() const;
 
+    bool IsValid() const;
+
+private:
+    std::size_t m_id;
+
+    static const std::size_t m_invalid;
+};
 
 #endif

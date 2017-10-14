@@ -21,23 +21,11 @@ BufferMgr::BufferMgr( DiskSpaceMgr& ds, std::size_t numPages )
 //
 BufferMgr::~BufferMgr()
 {
-    FlushPages();
+    // FlushPages();
 }
 
 //
-//
-//
-std::pair< PageId, Page* > BufferMgr::GetNewPage()
-{
-    PageId pageId = m_ds.AllocatePage();
-
-    Page* page = GetPageFromDisk( pageId );
-
-    return std::make_pair( pageId, page );
-}
-
-//
-// Returns  a pointer to a page pinned in the buffer.
+// Returns  a pointer to a disk block pinned in the buffer.
 //
 //
 // 1. Check the buffer pool to see if it contains the requated page.
@@ -56,10 +44,10 @@ std::pair< PageId, Page* > BufferMgr::GetNewPage()
 //
 //
 // If the buffer is full, replace an unpinned page.
-// 
-// If multiplePins is true, the page can have "pin_count > 1" 
 //
-Page* BufferMgr::GetPage( PageId pageId, bool multiplePins )
+// If multiplePins is true, the page can have "pin_count > 1"
+//
+DiskBlock* BufferMgr::GetPage( PageId pageId, bool multiplePins )
 {
     auto pred = [ pageId ]( const Frame& f ){ return f.IsEqual( pageId ); };
     auto it = std::find_if( m_pool.begin(), m_pool.end(), pred );
@@ -74,7 +62,7 @@ Page* BufferMgr::GetPage( PageId pageId, bool multiplePins )
             throw std::runtime_error( "BufferMgr::GetPage. Multiple pins not allowed and the page is already pinned." );
         }
 
-        return frame.GetPage();
+        return frame.GetBlock();
     }
 
     return GetPageFromDisk( pageId );
@@ -84,7 +72,7 @@ Page* BufferMgr::GetPage( PageId pageId, bool multiplePins )
 //
 // Reads the page from the disk and sotes it in the buffer
 //
-Page* BufferMgr::GetPageFromDisk( PageId pageId )
+DiskBlock* BufferMgr::GetPageFromDisk( PageId pageId )
 {
     auto pred = []( const Frame& f ){ return !f.IsPinned(); };
     auto it = std::find_if( m_pool.begin(), m_pool.end(), pred );
@@ -93,10 +81,18 @@ Page* BufferMgr::GetPageFromDisk( PageId pageId )
         throw std::runtime_error( "BufferMgr::GetPageFree: All pages are pinned. The buffer is full." );
     }
 
-    Frame& f = *it;
-    f.Write( m_ds );
-    f.Read( m_ds, pageId );
-    return f.GetPage();
+    it->Write( m_ds );
+    it->Read( m_ds, pageId );
+    return it->GetBlock();
+}
+
+//
+// Unpin a page so that it can be discarded from the buffer.
+//
+void BufferMgr::UnpinPage( PageId pageId )
+{
+    Frame& frame = FindFrame( pageId );
+    frame.UnpinPage();
 }
 
 //
@@ -115,14 +111,22 @@ Frame& BufferMgr::FindFrame( PageId pageId )
     return *it;
 }
 
+/*
 //
-// Unpin a page so that it can be discarded from the buffer.
 //
-void BufferMgr::UnpinPage( PageId pageId )
+//
+std::pair< PageId, Page* > BufferMgr::GetNewPage()
 {
-    Frame& frame = FindFrame( pageId );
-    frame.UnpinPage();
+    PageId pageId = m_ds.AllocatePage();
+
+    Page* page = GetPageFromDisk( pageId );
+
+    return std::make_pair( pageId, page );
 }
+
+
+
+
 
 //
 // Mark a page dirty so that when it is discarded from the buffer
@@ -178,3 +182,4 @@ void BufferMgr::Print() const
 }
 
 
+*/
