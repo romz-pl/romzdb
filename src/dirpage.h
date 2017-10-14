@@ -6,13 +6,8 @@
 #include "buffermgr.h"
 #include "record.h"
 #include "recordid.h"
+#include "dirslot.h"
 
-class DirSlot
-{
-public:
-    PageId m_pageId;
-    std::size_t m_freeSpace;
-};
 
 class DirPage : public Page
 {
