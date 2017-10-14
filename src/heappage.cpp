@@ -1,6 +1,7 @@
 #include "heappage.h"
 #include <cassert>
 #include <cstring>
+#include <algorithm>
 
 //
 //
@@ -67,13 +68,17 @@ PageOffset HeapPage::Delete( SlotId slotIdEx )
     }
 
     const auto length = m_slot[ slotId ].m_length;
-    m_slot.erase( m_slot.begin() + slotId );
+    auto it = m_slot.erase( m_slot.begin() + slotId );
 
-    while( slotId < m_slot.size() )
+
+    auto fun = [ length ]( Slot& s ){ s.m_offset -= length; };
+    std::for_each( it, m_slot.end(), fun );
+
+/*    while( slotId < m_slot.size() )
     {
         m_slot[ slotId ].m_offset -= length;
         slotId++;
-    }
+    }*/
 
     ToPage();
     return PageOffset( GetFreeSpace() );
