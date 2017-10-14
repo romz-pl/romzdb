@@ -6,7 +6,7 @@
 class PageOffset
 {
 public:
-    PageOffset( std::uint16_t value );
+    explicit PageOffset( std::uint16_t value );
     ~PageOffset() = default;
 
     std::uint16_t GetValue() const;

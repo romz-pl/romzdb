@@ -46,7 +46,7 @@ SlotId HeapPage::Insert( const Record& rec )
     for( Slot& s : m_slot )
         offset += s.m_length;
 
-    m_slot.push_back( Slot( offset, recLength ) );
+    m_slot.push_back( Slot( offset, PageOffset( recLength ) ) );
 
     char* p = GetData() + offset.GetValue();
     rec.ToPage( p );
@@ -76,7 +76,7 @@ PageOffset HeapPage::Delete( SlotId slotIdEx )
     }
 
     ToPage();
-    return GetFreeSpace();
+    return PageOffset( GetFreeSpace() );
 }
 
 //

@@ -76,7 +76,7 @@ std::pair< bool, RecordId > DirPage::Insert( const Record &rec )
         const PageId pageId = it->m_pageId;
         HeapPage heapPage( m_bufferMgr, pageId );
         const SlotId slotId = heapPage.Insert( rec );
-        it->m_freeSpace = heapPage.GetFreeSpace();
+        it->m_freeSpace = PageOffset( heapPage.GetFreeSpace() );
 
         ToPage();
         return std::make_pair( true, RecordId( pageId, slotId ) );
@@ -99,7 +99,7 @@ void DirPage::InsertPage( PageId pageId )
         throw std::runtime_error( "DirPage::Insert: PageId already inserted." );
     }
 
-    DirSlot d( pageId, Page::Size );
+    DirSlot d( pageId, PageOffset( Page::Size ) );
     m_dirSlot.push_back( d );
     ToPage();
 }
@@ -119,7 +119,7 @@ bool DirPage::Delete( RecordId rid )
         const SlotId slotId = rid.GetSlotId();
         heapPage.Delete( slotId );
 
-        it->m_freeSpace = heapPage.GetFreeSpace();
+        it->m_freeSpace = PageOffset( heapPage.GetFreeSpace() );
 
         ToPage();
         return true;
