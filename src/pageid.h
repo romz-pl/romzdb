@@ -10,8 +10,7 @@
 class PageId
 {
 public:
-    PageId();
-    PageId( std::size_t id );
+    explicit PageId( std::size_t id );
 
     std::size_t GetValue() const;
 
@@ -19,10 +18,13 @@ public:
 
     bool operator==( const PageId& v ) const;
 
+public:
+    static const std::size_t m_invalid;
+
 private:
     std::size_t m_id;
 
-    static const std::size_t m_invalid;
+
 };
 
 #endif

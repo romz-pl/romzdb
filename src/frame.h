@@ -14,31 +14,20 @@ class Frame
 {
 public:
     Frame( );
+    ~Frame() = default;
 
     bool IsEqual( PageId pageId ) const;
     bool IsPinned() const;
 
     DiskBlock* GetBlock();
 
-
     void Read( const DiskSpaceMgr& ds, PageId pageId );
     void Write( const DiskSpaceMgr &ds );
 
     void UnpinPage();
+    void MarkDirty( );
 
-   void MarkDirty( );
-
-
-
-
-/*
-
-
-    void Print() const;
-*/
 private:
-    // Invalid page ID. This page ID must not be used!
-    // static const PageId m_invalidPageId;
 
     // Page identyfier associated with the disk block
     PageId m_pageId;

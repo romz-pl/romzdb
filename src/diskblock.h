@@ -12,7 +12,6 @@
 
 class DiskBlock
 {
-    friend class DiskSpaceMgr;
 public:
     // The size of the disk block in the file.
     enum { Size = 4096 };

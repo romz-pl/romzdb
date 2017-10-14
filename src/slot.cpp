@@ -29,11 +29,11 @@ void Slot::ToPage( char *& dest ) const
 //
 Slot Slot::FromPage( const char *& src )
 {
-    PageOffset offset;
+    PageOffset offset( 0 );
     src -= sizeof( offset );
     std::memcpy( &offset, src, sizeof( offset ) );
 
-    PageOffset length;
+    PageOffset length( 0 );
     src -= sizeof( length );
     std::memcpy( &length, src, sizeof( length ) );
 

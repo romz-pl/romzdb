@@ -14,13 +14,10 @@ class Record
 {
 public:
     explicit Record( const std::vector< char >& data );
-
     explicit Record( const std::string& str );
-
     Record( const char* data, std::size_t length );
 
     void ToPage( char* page ) const;
-
     std::size_t GetLength() const;
 
     bool operator==( const Record& a ) const;

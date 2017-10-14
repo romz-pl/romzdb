@@ -17,6 +17,7 @@
 //
 DirPage::DirPage( BufferMgr& bufferMgr, PageId self )
     : Page( bufferMgr, self, false )
+    , m_nextPage( PageId::m_invalid )
 {
     FromPage();
 }
@@ -68,21 +69,21 @@ std::pair< bool, Record > DirPage::Get( RecordId rid ) const
 //
 std::pair< bool, RecordId > DirPage::Insert( const Record &rec )
 {
-    const auto pred = [ rec ]( const DirSlot& d ){ return ( d.m_freeSpace >= rec.GetLength() ); };
+    const auto pred = [ rec ]( const DirSlot& d ){ return ( d.m_freeSpace.GetValue() >= rec.GetLength() ); };
     auto it = std::find_if( m_dirSlot.begin(), m_dirSlot.end(), pred );
     if( it != m_dirSlot.end() )
     {
         const PageId pageId = it->m_pageId;
         HeapPage heapPage( m_bufferMgr, pageId );
         const SlotId slotId = heapPage.Insert( rec );
-        it->m_freeSpace = heapPage.GetFreeSpace();
+        it->m_freeSpace = PageOffset( heapPage.GetFreeSpace() );
 
         ToPage();
         return std::make_pair( true, RecordId( pageId, slotId ) );
     }
     else
     {
-        return std::make_pair( false, RecordId( 0, 0 ) );
+        return std::make_pair( false, RecordId( PageId( 0 ), SlotId( 0 ) ) );
     }
 }
 
@@ -98,9 +99,7 @@ void DirPage::InsertPage( PageId pageId )
         throw std::runtime_error( "DirPage::Insert: PageId already inserted." );
     }
 
-    DirSlot d;
-    d.m_pageId = pageId;
-    d.m_freeSpace = Page::Size;
+    DirSlot d( pageId, PageOffset( Page::Size ) );
     m_dirSlot.push_back( d );
     ToPage();
 }
@@ -120,7 +119,7 @@ bool DirPage::Delete( RecordId rid )
         const SlotId slotId = rid.GetSlotId();
         heapPage.Delete( slotId );
 
-        it->m_freeSpace = heapPage.GetFreeSpace();
+        it->m_freeSpace = PageOffset( heapPage.GetFreeSpace() );
 
         ToPage();
         return true;
@@ -173,16 +172,17 @@ void DirPage::FromPage()
     std::memcpy( &s, p, sizeof( std::size_t ) );
 
     p = GetData();
-    DirSlot v;
     for( std::size_t i = 0; i < s; i++ )
     {
-        std::memcpy( &v.m_pageId, p, sizeof( v.m_pageId ) );
-        p += sizeof( v.m_pageId );
+        PageId pageId( 0 );
+        PageOffset freeSpace( 0 );
+        std::memcpy( &pageId, p, sizeof( pageId ) );
+        p += sizeof( pageId );
 
-        std::memcpy( &v.m_freeSpace, p, sizeof( v.m_freeSpace ) );
-        p += sizeof( v.m_freeSpace );
+        std::memcpy( &freeSpace, p, sizeof( freeSpace ) );
+        p += sizeof( freeSpace );
 
-        m_dirSlot.push_back( v );
+        m_dirSlot.push_back( DirSlot( pageId, freeSpace ) );
     }
 
     m_bufferMgr.UnpinPage( m_pageId );

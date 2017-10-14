@@ -26,6 +26,7 @@ SOURCE :=
 SOURCE += buffermgr.cpp
 SOURCE += dir.cpp
 SOURCE += dirpage.cpp
+SOURCE += dirslot.cpp
 SOURCE += diskblock.cpp
 SOURCE += diskspacemgr.cpp
 SOURCE += frame.cpp
@@ -34,9 +35,11 @@ SOURCE += heappage.cpp
 SOURCE += main.cpp
 SOURCE += page.cpp
 SOURCE += pageid.cpp
+SOURCE += pageoffset.cpp
 SOURCE += record.cpp
 SOURCE += recordid.cpp
 SOURCE += slot.cpp
+SOURCE += slotid.cpp
 SOURCE += unixfile.cpp
 
 #Object files

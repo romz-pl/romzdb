@@ -23,10 +23,10 @@ HeapPage::~HeapPage()
 //
 Record HeapPage::Get( SlotId slotId )
 {
-    const Slot& slot = m_slot[ slotId ];
+    const Slot& slot = m_slot[ slotId.GetValue() ];
 
-    const char* p = GetData() + slot.m_offset;
-    Record rec( p, slot.m_length );
+    const char* p = GetData() + slot.m_offset.GetValue();
+    Record rec( p, slot.m_length.GetValue() );
     return rec;
 
 }
@@ -42,24 +42,25 @@ SlotId HeapPage::Insert( const Record& rec )
         throw std::runtime_error( "HeapPageHdr::Insert: Not enought space" );
     }
 
-    PageOffset offset = 0;
+    PageOffset offset( 0 );
     for( Slot& s : m_slot )
         offset += s.m_length;
 
-    m_slot.push_back( Slot( offset, recLength ) );
+    m_slot.push_back( Slot( offset, PageOffset( recLength ) ) );
 
-    char* p = GetData() + offset;
+    char* p = GetData() + offset.GetValue();
     rec.ToPage( p );
 
     ToPage();
-    return ( m_slot.size() - 1 );
+    return SlotId( m_slot.size() - 1 );
 }
 
 //
 //
 //
-PageOffset HeapPage::Delete( SlotId slotId )
+PageOffset HeapPage::Delete( SlotId slotIdEx )
 {
+    std::uint16_t slotId = slotIdEx.GetValue();
     if( slotId >= m_slot.size() )
     {
         throw std::runtime_error( "HeapPageHdr::Delete. Slot '" + std::to_string( slotId ) + "' does not exist." );
@@ -75,7 +76,7 @@ PageOffset HeapPage::Delete( SlotId slotId )
     }
 
     ToPage();
-    return GetFreeSpace();
+    return PageOffset( GetFreeSpace() );
 }
 
 //
@@ -94,7 +95,7 @@ std::int32_t HeapPage::GetFreeSpace() const
     std::int32_t ret = Page::Size;
     for( const Slot& s : m_slot )
     {
-        ret -= s.m_length;
+        ret -= s.m_length.GetValue();
         ret -= sizeof( s.m_length );
         ret -= sizeof( s.m_offset );
     }
