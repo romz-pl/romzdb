@@ -42,7 +42,7 @@ DiskBlock* Frame::GetBlock()
 {
     if( m_pinCount == std::numeric_limits< std::uint8_t >::max() )
     {
-        throw std::runtime_error( "Frame::GetPage: Pin count exited the maksimum allowed value." );
+        throw std::runtime_error( "Frame::GetBlock: Pin count exited the maksimum allowed value." );
     }
     m_pinCount++;
     return &m_block;
