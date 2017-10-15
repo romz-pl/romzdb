@@ -22,6 +22,9 @@ public:
     Page( BufferMgr& bufferMgr, PageId pageId, bool multiplePins );
     ~Page();
 
+    Page( const Page& v );
+    Page operator=( const Page& v ) = delete;
+
     const char* GetData() const;
     char* GetData();
 
