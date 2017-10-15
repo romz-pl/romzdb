@@ -72,7 +72,7 @@ public:
     DiskBlock* Get( PageId pageId, bool multiplePins );
     void Unpin( PageId pageId );
 
-    std::pair< PageId, DiskBlock* > GetNew();
+    PageId GetNew();
 
     void MarkDirty( PageId pageId );
 
