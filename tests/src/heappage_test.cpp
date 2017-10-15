@@ -101,8 +101,24 @@ TEST(HeapPage, Delete)
         EXPECT_EQ( hp.GetRecordNo(), recordNo - 1 - i );
     }
     EXPECT_EQ( hp.GetRecordNo(), 0 );
+}
+
+TEST(HeapPage, CheckDelete)
+{
+    UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
+    DiskSpaceMgr ds( uf );
+    const std::size_t frameNo = 3;
+    BufferMgr bufferMgr( ds, frameNo );
 
 
+    const PageId pageId = bufferMgr.GetNew().first;
+    bufferMgr.Unpin( pageId );
 
+    HeapPage hp( bufferMgr, pageId );
 
+    SlotId ida = hp.Insert( Record( "A" ) );
+    SlotId idb = hp.Insert( Record( "B" ) );
+
+    EXPECT_NO_THROW( hp.Delete( ida ) );
+    EXPECT_NO_THROW( hp.Delete( idb ) );
 }
