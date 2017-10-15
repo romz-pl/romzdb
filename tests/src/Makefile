@@ -31,30 +31,31 @@ VPATH += ../../src
 # Source files (listed in alphabetical order)
 
 SOURCE :=
-#SOURCE += buffermgr.cpp
-#SOURCE += buffermgr_test.cpp
-#SOURCE += dir.cpp
+SOURCE += buffermgr.cpp
+SOURCE += buffermgr_test.cpp
+SOURCE += dir.cpp
 #SOURCE += dir_test.cpp
-#SOURCE += dirpage.cpp
+SOURCE += dirpage.cpp
+SOURCE += dirslot.cpp
 #SOURCE += dirpage_test.cpp
-#SOURCE += diskspacemgr.cpp
-#SOURCE += diskspacemgr_test.cpp
-#SOURCE += frame.cpp
-#SOURCE += frame_test.cpp
-#SOURCE += heapfile.cpp
+SOURCE += diskblock.cpp
+SOURCE += diskspacemgr.cpp
+SOURCE += diskspacemgr_test.cpp
+SOURCE += frame.cpp
+SOURCE += heapfile.cpp
 #SOURCE += heapfile_test.cpp
-#SOURCE += heappage.cpp
-#SOURCE += heappage_test.cpp
-#SOURCE += heappagehdr.cpp
-#SOURCE += heappagehdr_test.cpp
+SOURCE += heappage.cpp
+SOURCE += heappage_test.cpp
 SOURCE += main.cpp
-#SOURCE += page.cpp
-#SOURCE += page_test.cpp
-#SOURCE += record.cpp
-#SOURCE += recordid.cpp
-#SOURCE += slot.cpp
-#SOURCE += unixfile.cpp
-#SOURCE += unixfile_test.cpp
+SOURCE += page.cpp
+SOURCE += pageoffset.cpp
+SOURCE += pageid.cpp
+SOURCE += record.cpp
+SOURCE += recordid.cpp
+SOURCE += slot.cpp
+SOURCE += slotid.cpp
+SOURCE += unixfile.cpp
+SOURCE += unixfile_test.cpp
 
 
 #Object files

@@ -4,7 +4,7 @@
 #include <cassert>
 
 
-TEST(UnixFile, Open)
+TEST(UnixFile, OpenCreate)
 {
     const std::string path = UnixFile::GetTempPath();
 
@@ -31,7 +31,7 @@ std::vector< char > GetData()
     return ret;
 }
 
-TEST(UnixFile, Write)
+TEST(UnixFile, WriteRead)
 {
     const std::string path = UnixFile::GetTempPath();
 
@@ -46,6 +46,8 @@ TEST(UnixFile, Write)
     EXPECT_NO_THROW( uf.Read( &( tmp[ 0 ] ), tmp.size(), offset ) );
     
     EXPECT_TRUE( data == tmp );
+
+    EXPECT_ANY_THROW( uf.Read( &( tmp[ 0 ] ), tmp.size(), offset + data.size() ) );
 }
 
 TEST(UnixFile, Read)
@@ -56,6 +58,17 @@ TEST(UnixFile, Read)
     const std::size_t ss = 10;
     std::vector< char > tmp( ss );
     EXPECT_ANY_THROW( uf.Read( &( tmp[ 0 ] ), tmp.size(), 0 ) );
+}
 
+TEST(UnixFile, Allocate)
+{
+    const std::string path = UnixFile::GetTempPath();
+    UnixFile uf( path, UnixFile::Mode::Create );
+
+    const std::size_t ss = 10;
+    EXPECT_NO_THROW( uf.Allocate( ss ) );
+
+    std::vector< char > tmp( ss );
+    EXPECT_NO_THROW( uf.Read( &( tmp[ 0 ] ), tmp.size(), 0 ) );
 
 }

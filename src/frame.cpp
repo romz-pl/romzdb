@@ -1,12 +1,7 @@
 #include "frame.h"
-#include <cassert>
 #include <stdexcept>
-#include <iostream>
 #include <limits>
 
-
-// Invalid page ID is the maksimum allowed value
-// const PageId Frame::m_invalidPageId = std::numeric_limits< PageId >::max();
 
 //
 // In the constructor "m_pageId" is initialized to the invalid page ID
@@ -19,13 +14,12 @@ Frame::Frame()
 
 }
 
-
 //
-// Frames are equal, iff the pages ID are equal
 //
-bool Frame::IsEqual( PageId pageId ) const
+//
+PageId Frame::GetPageId( ) const
 {
-    return ( m_pageId.GetValue() == pageId.GetValue() );
+    return m_pageId;
 }
 
 //
@@ -89,8 +83,6 @@ void Frame::UnpinPage()
     m_pinCount--;
 }
 
-
-
 //
 //
 //
@@ -103,28 +95,4 @@ void Frame::MarkDirty( )
     }
     m_dirty = true;
 }
-
-
-/*
-
-
-
-//
-//
-//
-void Frame::Print() const
-{
-    if( m_pageId == m_invalidPageId )
-    {
-        std::cout << " Uninitialized frame\n";
-    }
-    else
-    {
-        std::cout << " page-ID = " << m_pageId << ";";
-        std::cout << " is-dirty = " << std::boolalpha << m_dirty << ";";
-        std::cout << " pin-count = " << static_cast< int>( m_pinCount ) << ";\n";
-    }
-}
-
-*/
 

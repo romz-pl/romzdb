@@ -15,6 +15,23 @@ Slot::Slot( PageOffset offset, PageOffset length )
 //
 //
 //
+void Slot::SetInvalid()
+{
+    m_offset.SetInvalid();
+    m_length = PageOffset( 0 );
+}
+
+//
+//
+//
+bool Slot::IsValid() const
+{
+    return m_offset.IsValid();
+}
+
+//
+//
+//
 void Slot::ToPage( char *& dest ) const
 {
     dest -= sizeof( m_offset );

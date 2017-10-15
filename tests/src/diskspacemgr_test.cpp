@@ -2,18 +2,23 @@
 #include <diskspacemgr.h>
 #include <unixfile.h>
 #include <cstdlib>
+#include <cstring>
 
 
-TEST(DiskSpaceMgr, IO)
+TEST(DiskSpaceMgr, ReadWrite)
 {
-    Page pa( "abc");
-    const PageId pageId = 0;
+    const PageId pageId( 0 );
     UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
     DiskSpaceMgr ds( uf );
 
-    EXPECT_NO_THROW( ds.Write( pa, pageId ) );
+    DiskBlock block;
+    char data[] = "abc";
+    std::memcpy( block.GetData(), data, std::strlen( data ) );
+
+    EXPECT_NO_THROW( ds.Write( block, pageId ) );
 
     EXPECT_NO_THROW( ds.Read( pageId ) );
-    EXPECT_EQ( ds.Read( pageId ), pa );
+
+    EXPECT_EQ( std::memcmp( ds.Read( pageId ).GetData(), block.GetData(), DiskBlock::Size ), 0 );
 }
 

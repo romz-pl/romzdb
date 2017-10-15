@@ -13,6 +13,9 @@ public:
     void ToPage( char *& dest ) const;
     static Slot FromPage(const char *& src );
 
+    void SetInvalid();
+    bool IsValid() const;
+
 // private:
     // Record offset
     PageOffset m_offset;

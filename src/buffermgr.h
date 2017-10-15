@@ -66,37 +66,22 @@ class BufferMgr
 {
 
 public:
-    BufferMgr( DiskSpaceMgr& ds, std::size_t numPages );
+    BufferMgr( DiskSpaceMgr& ds, std::size_t frameNo );
     ~BufferMgr();
 
-    DiskBlock* GetPage( PageId pageId, bool multiplePins );
-    void UnpinPage( PageId pageId );
+    DiskBlock* Get( PageId pageId, bool multiplePins );
+    void Unpin( PageId pageId );
 
-
-    std::pair< PageId, DiskBlock* > GetNewPage();
+    std::pair< PageId, DiskBlock* > GetNew();
 
     void MarkDirty( PageId pageId );
 
 private:
-    DiskBlock* GetPageFromDisk( PageId pageId );
+    DiskBlock* GetFromDisk( PageId pageId );
     Frame& FindFrame( PageId pageId );
 
+    void Flush( );
 
-/*    void WritePage( PageId pageId );
-
-
-
-    void FlushPages( );
-
-    void Print() const;
-
-private:
-    Page* GetPageUsed( PageId pageId, bool multiplePins );
-    Page* GetPageFree( PageId pageId );
-
-
-    Page* GetPageFromDisk( PageId pageId );
-*/
 private:
     DiskSpaceMgr& m_ds;
 
