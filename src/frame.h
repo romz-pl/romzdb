@@ -16,16 +16,20 @@ public:
     Frame( );
     ~Frame() = default;
 
-    bool IsEqual( PageId pageId ) const;
+    PageId GetPageId( ) const;
+
     bool IsPinned() const;
+    void UnpinPage();
+
+    void MarkDirty( );
 
     DiskBlock* GetBlock();
 
     void Read( const DiskSpaceMgr& ds, PageId pageId );
     void Write( const DiskSpaceMgr &ds );
 
-    void UnpinPage();
-    void MarkDirty( );
+
+
 
 private:
 

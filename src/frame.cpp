@@ -21,11 +21,11 @@ Frame::Frame()
 
 
 //
-// Frames are equal, iff the pages ID are equal
 //
-bool Frame::IsEqual( PageId pageId ) const
+//
+PageId Frame::GetPageId( ) const
 {
-    return ( m_pageId.GetValue() == pageId.GetValue() );
+    return m_pageId;
 }
 
 //

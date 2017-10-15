@@ -49,7 +49,7 @@ BufferMgr::~BufferMgr()
 //
 DiskBlock* BufferMgr::GetPage( PageId pageId, bool multiplePins )
 {
-    auto pred = [ pageId ]( const Frame& f ){ return f.IsEqual( pageId ); };
+    auto pred = [ pageId ]( const Frame& f ){ return f.GetPageId() == pageId; };
     auto it = std::find_if( m_pool.begin(), m_pool.end(), pred );
 
     // The page is already in the buffer
@@ -100,7 +100,7 @@ void BufferMgr::UnpinPage( PageId pageId )
 //
 Frame& BufferMgr::FindFrame( PageId pageId )
 {
-    auto pred = [ pageId ]( const Frame& f ){ return f.IsEqual( pageId ); };
+    auto pred = [ pageId ]( const Frame& f ){ return f.GetPageId() == pageId; };
     auto it = std::find_if( m_pool.begin(), m_pool.end(), pred );
 
     if( it == m_pool.end() )
