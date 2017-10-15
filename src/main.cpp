@@ -1,5 +1,6 @@
 #include <iostream>
 #include "heappage.h"
+#include "dirpage.h"
 
 void Test()
 {
@@ -9,22 +10,33 @@ void Test()
     BufferMgr bufferMgr( ds, frameNo );
 
 
-    const PageId pageId = bufferMgr.GetNew().first;
+    PageId pageId = bufferMgr.GetNew().first;
     bufferMgr.Unpin( pageId );
 
-    HeapPage hp( bufferMgr, pageId );
 
-    for( int i = 0; i < 10; i++ )
-    {
-        std::string str( "abc:" );
-        str += std::to_string( i );
-        Record rec( str );
-        SlotId slotId = hp.Insert( rec );
-        // The page is NOT empty
-        hp.Get( slotId );
-        Record ret = hp.Get( slotId );
-        // EXPECT_EQ( rec, ret );
-    }
+    DirPage dp( bufferMgr, pageId );
+
+    const Record rec( "ABC" );
+    ( dp.Insert( rec ).first );
+
+    pageId = bufferMgr.GetNew().first;
+    bufferMgr.Unpin( pageId );
+    dp.InsertPage( pageId );
+
+    ( dp.Insert( rec ).first );
+
+    auto reca = dp.Insert( Record( "a" ) );
+    ( reca.first );
+
+    auto recb = dp.Insert( Record( "b" ) );
+    ( recb.first );
+
+    ( dp.Delete( reca.second ) );
+    ( dp.Delete( recb.second ) );
+
+    ( dp.Delete( recb.second ) );
+    ( dp.Delete( reca.second ) );
+
 }
 
 
