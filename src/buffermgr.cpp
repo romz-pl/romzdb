@@ -73,8 +73,8 @@ DiskBlock* BufferMgr::Get( PageId pageId, bool multiplePins )
 //
 DiskBlock* BufferMgr::GetFromDisk( PageId pageId )
 {
-    auto pred = []( const Frame& f ){ return !f.IsPinned(); };
-    auto it = std::find_if( m_pool.begin(), m_pool.end(), pred );
+    auto pred = []( const Frame& f ){ return f.IsPinned(); };
+    auto it = std::find_if_not( m_pool.begin(), m_pool.end(), pred );
     if( it == m_pool.end() )
     {
         throw std::runtime_error( "BufferMgr::GetPageFree: All pages are pinned. The buffer is full." );
