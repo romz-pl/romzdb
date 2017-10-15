@@ -29,7 +29,6 @@ public:
 
     PageId GetPageId() const;
 
-private:
     void ToPage();
     void FromPage();
 

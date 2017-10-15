@@ -15,7 +15,7 @@ DirPage::DirPage( BufferMgr& bufferMgr, PageId self )
     : Page( bufferMgr, self, false )
     , m_nextPage( PageId::m_invalid )
 {
-    FromPage();
+
 }
 
 //
