@@ -21,15 +21,19 @@ Db::Db( const std::string &path, std::size_t frameNo )
 //
 HeapFile Db::CreteHeapFile()
 {
-    const PageId headerPage = m_bufferMgr->GetNew().first;
-    m_bufferMgr->Unpin( headerPage );
+    const PageId headerPage = m_bufferMgr->GetNew();
 
-    {
-        DirPage dp( *m_bufferMgr, headerPage );
-        dp.ToPage();
-    }
-
+    CreateHeaderPage( headerPage );
     HeapFile hf( *m_bufferMgr, headerPage );
 
     return hf;
+}
+
+//
+//
+//
+void Db::CreateHeaderPage( PageId headerPage )
+{
+    DirPage dp( *m_bufferMgr, headerPage );
+    dp.ToPage();
 }
