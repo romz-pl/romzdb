@@ -40,6 +40,7 @@ SOURCE += buffermgr_test.cpp
 SOURCE += diskblock.cpp
 SOURCE += diskspacemgr.cpp
 SOURCE += diskspacemgr_test.cpp
+SOURCE += frame.cpp
 #SOURCE += heapfile.cpp
 #SOURCE += heapfile_test.cpp
 #SOURCE += heappage.cpp
