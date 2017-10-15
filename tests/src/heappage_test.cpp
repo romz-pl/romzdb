@@ -5,15 +5,33 @@
 #include <algorithm>
 #include <random>
 
+TEST(HeapPage, Constructor)
+{
+    UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
+    DiskSpaceMgr ds( uf );
+    const std::size_t frameNo = 3;
+    BufferMgr bufferMgr( ds, frameNo );
+
+
+    PageId pageId( 0 );
+    EXPECT_ANY_THROW( HeapPage( bufferMgr, pageId ) );
+}
+
 TEST(HeapPage, Get)
 {
-    /*
-    Page page;
-    HeapPage hp( page );
-    const SlotId slotId = 0;
+    UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
+    DiskSpaceMgr ds( uf );
+    const std::size_t frameNo = 3;
+    BufferMgr bufferMgr( ds, frameNo );
+
+
+    PageId pageId = bufferMgr.GetNew().first;
+    HeapPage hp( bufferMgr, pageId );
+    const SlotId slotId( 0 );
     // The page is empty
     EXPECT_ANY_THROW( hp.Get( slotId ) );
-    */
+    bufferMgr.Unpin( pageId );
+
 }
 
 TEST(HeapPage, Insert)

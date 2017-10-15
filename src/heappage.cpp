@@ -22,9 +22,15 @@ HeapPage::~HeapPage()
 //
 //
 //
-Record HeapPage::Get( SlotId slotId )
+Record HeapPage::Get( SlotId slotIdEx )
 {
-    const Slot& slot = m_slot[ slotId.GetValue() ];
+    const std::uint16_t slotId = slotIdEx.GetValue();
+    if( slotId >= m_slot.size() )
+    {
+        throw std::runtime_error( "HeapPageHdr::Get. Slot does not exist." );
+    }
+
+    const Slot& slot = m_slot[ slotId ];
 
     const char* p = GetData() + slot.m_offset.GetValue();
     Record rec( p, slot.m_length.GetValue() );
