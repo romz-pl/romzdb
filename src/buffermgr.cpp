@@ -55,14 +55,13 @@ DiskBlock* BufferMgr::Get( PageId pageId, bool multiplePins )
     // The page is already in the buffer
     if( it != m_pool.end() )
     {
-        Frame& frame = *it;
         // Error if we don't want to get already pinned page
-        if( !multiplePins && frame.IsPinned() )
+        if( !multiplePins && it->IsPinned() )
         {
             throw std::runtime_error( "BufferMgr::GetPage. Multiple pins not allowed and the page is already pinned." );
         }
 
-        return frame.GetBlock();
+        return it->GetBlock();
     }
 
     return GetFromDisk( pageId );
@@ -140,7 +139,7 @@ void BufferMgr::MarkDirty( PageId pageId )
 //
 void BufferMgr::Flush( )
 {
-    for( auto& f : m_pool )
+    for( Frame& f : m_pool )
     {
         if( f.IsPinned() )
         {
