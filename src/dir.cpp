@@ -66,7 +66,7 @@ RecordId Dir::Insert( const Record& rec )
 //
 PageId Dir::InsertHeapPage()
 {
-    auto pair = m_bufferMgr.GetNewPage( );
+    auto pair = m_bufferMgr.GetNew( );
     PageId pageId = pair.first;
 
     for( DirPage& d : m_dirPage )
@@ -74,7 +74,7 @@ PageId Dir::InsertHeapPage()
         if( !d.IsFull( ) )
         {
             d.InsertPage( pageId );
-            m_bufferMgr.UnpinPage( pageId );
+            m_bufferMgr.Unpin( pageId );
             return pageId;
         }
     }
@@ -84,12 +84,12 @@ PageId Dir::InsertHeapPage()
     //
     m_dirPage.back().SetNextPage( pageId );
     m_dirPage.push_back( DirPage( m_bufferMgr, pageId ) );
-    m_bufferMgr.UnpinPage( pageId );
+    m_bufferMgr.Unpin( pageId );
 
-    pair = m_bufferMgr.GetNewPage( );
+    pair = m_bufferMgr.GetNew( );
     pageId = pair.first;
     m_dirPage.back().InsertPage( pageId );
-    m_bufferMgr.UnpinPage( pageId );
+    m_bufferMgr.Unpin( pageId );
 
     return pageId;
 }

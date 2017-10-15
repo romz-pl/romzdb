@@ -152,7 +152,7 @@ void DirPage::ToPage()
     }
 
     m_bufferMgr.MarkDirty( m_pageId );
-    m_bufferMgr.UnpinPage( m_pageId );
+    m_bufferMgr.Unpin( m_pageId );
 }
 
 //
@@ -183,7 +183,7 @@ void DirPage::FromPage()
         m_dirSlot.push_back( DirSlot( pageId, freeSpace ) );
     }
 
-    m_bufferMgr.UnpinPage( m_pageId );
+    m_bufferMgr.Unpin( m_pageId );
 }
 
 //

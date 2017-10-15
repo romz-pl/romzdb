@@ -21,7 +21,7 @@ BufferMgr::BufferMgr( DiskSpaceMgr& ds, std::size_t numPages )
 //
 BufferMgr::~BufferMgr()
 {
-    FlushPages();
+    Flush();
 }
 
 //
@@ -47,7 +47,7 @@ BufferMgr::~BufferMgr()
 //
 // If multiplePins is true, the page can have "pin_count > 1"
 //
-DiskBlock* BufferMgr::GetBlock( PageId pageId, bool multiplePins )
+DiskBlock* BufferMgr::Get( PageId pageId, bool multiplePins )
 {
     auto pred = [ pageId ]( const Frame& f ){ return f.GetPageId() == pageId; };
     auto it = std::find_if( m_pool.begin(), m_pool.end(), pred );
@@ -65,14 +65,14 @@ DiskBlock* BufferMgr::GetBlock( PageId pageId, bool multiplePins )
         return frame.GetBlock();
     }
 
-    return GetBlockFromDisk( pageId );
+    return GetFromDisk( pageId );
 
 }
 
 //
 // Reads the page from the disk and sotes it in the buffer
 //
-DiskBlock* BufferMgr::GetBlockFromDisk( PageId pageId )
+DiskBlock* BufferMgr::GetFromDisk( PageId pageId )
 {
     auto pred = []( const Frame& f ){ return !f.IsPinned(); };
     auto it = std::find_if( m_pool.begin(), m_pool.end(), pred );
@@ -89,7 +89,7 @@ DiskBlock* BufferMgr::GetBlockFromDisk( PageId pageId )
 //
 // Unpin a page so that it can be discarded from the buffer.
 //
-void BufferMgr::UnpinPage( PageId pageId )
+void BufferMgr::Unpin( PageId pageId )
 {
     Frame& frame = FindFrame( pageId );
     frame.UnpinPage();
@@ -115,11 +115,11 @@ Frame& BufferMgr::FindFrame( PageId pageId )
 //
 //
 //
-std::pair<PageId, DiskBlock *> BufferMgr::GetNewPage()
+std::pair<PageId, DiskBlock *> BufferMgr::GetNew()
 {
     PageId pageId = m_ds.AllocatePage();
 
-    DiskBlock* block = GetBlockFromDisk( pageId );
+    DiskBlock* block = GetFromDisk( pageId );
 
     return std::make_pair( pageId, block );
 }
@@ -138,7 +138,7 @@ void BufferMgr::MarkDirty( PageId pageId )
 //
 // Flush all pages hold in the buffer into disk.
 //
-void BufferMgr::FlushPages( )
+void BufferMgr::Flush( )
 {
     for( auto& f : m_pool )
     {

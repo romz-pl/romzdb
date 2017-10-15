@@ -8,7 +8,7 @@ Page::Page( BufferMgr& bufferMgr, PageId pageId, bool multiplePins )
     : m_bufferMgr( bufferMgr )
     , m_pageId( pageId )
 {
-    m_block = m_bufferMgr.GetBlock( pageId, multiplePins );
+    m_block = m_bufferMgr.Get( pageId, multiplePins );
 }
 
 //
@@ -16,7 +16,7 @@ Page::Page( BufferMgr& bufferMgr, PageId pageId, bool multiplePins )
 //
 Page::~Page()
 {
-    m_bufferMgr.UnpinPage( m_pageId );
+    m_bufferMgr.Unpin( m_pageId );
 }
 
 //

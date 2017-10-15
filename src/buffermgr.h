@@ -69,18 +69,18 @@ public:
     BufferMgr( DiskSpaceMgr& ds, std::size_t numPages );
     ~BufferMgr();
 
-    DiskBlock* GetBlock( PageId pageId, bool multiplePins );
-    void UnpinPage( PageId pageId );
+    DiskBlock* Get( PageId pageId, bool multiplePins );
+    void Unpin( PageId pageId );
 
-    std::pair< PageId, DiskBlock* > GetNewPage();
+    std::pair< PageId, DiskBlock* > GetNew();
 
     void MarkDirty( PageId pageId );
 
 private:
-    DiskBlock* GetBlockFromDisk( PageId pageId );
+    DiskBlock* GetFromDisk( PageId pageId );
     Frame& FindFrame( PageId pageId );
 
-    void FlushPages( );
+    void Flush( );
 
 private:
     DiskSpaceMgr& m_ds;
