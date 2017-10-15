@@ -30,6 +30,11 @@ Record HeapPage::Get( SlotId slotIdEx )
         throw std::runtime_error( "HeapPageHdr::Get. Slot does not exist." );
     }
 
+    if( !m_slot[ slotId ].IsValid() )
+    {
+        throw std::runtime_error( "HeapPageHdr::Get: Invalid slot." );
+    }
+
     const Slot& slot = m_slot[ slotId ];
 
     const char* p = GetData() + slot.m_offset.GetValue();
