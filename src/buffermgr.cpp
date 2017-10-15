@@ -47,7 +47,7 @@ BufferMgr::~BufferMgr()
 //
 // If multiplePins is true, the page can have "pin_count > 1"
 //
-DiskBlock* BufferMgr::GetPage( PageId pageId, bool multiplePins )
+DiskBlock* BufferMgr::GetBlock( PageId pageId, bool multiplePins )
 {
     auto pred = [ pageId ]( const Frame& f ){ return f.GetPageId() == pageId; };
     auto it = std::find_if( m_pool.begin(), m_pool.end(), pred );
@@ -65,14 +65,14 @@ DiskBlock* BufferMgr::GetPage( PageId pageId, bool multiplePins )
         return frame.GetBlock();
     }
 
-    return GetPageFromDisk( pageId );
+    return GetBlockFromDisk( pageId );
 
 }
 
 //
 // Reads the page from the disk and sotes it in the buffer
 //
-DiskBlock* BufferMgr::GetPageFromDisk( PageId pageId )
+DiskBlock* BufferMgr::GetBlockFromDisk( PageId pageId )
 {
     auto pred = []( const Frame& f ){ return !f.IsPinned(); };
     auto it = std::find_if( m_pool.begin(), m_pool.end(), pred );
@@ -119,7 +119,7 @@ std::pair<PageId, DiskBlock *> BufferMgr::GetNewPage()
 {
     PageId pageId = m_ds.AllocatePage();
 
-    DiskBlock* block = GetPageFromDisk( pageId );
+    DiskBlock* block = GetBlockFromDisk( pageId );
 
     return std::make_pair( pageId, block );
 }
