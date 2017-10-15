@@ -58,7 +58,6 @@
 
 class HeapPage : public Page
 {
-
 public:
     HeapPage( BufferMgr& bufferMgr, PageId pageId );
     ~HeapPage();

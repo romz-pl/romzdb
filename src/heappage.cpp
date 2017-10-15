@@ -49,17 +49,30 @@ SlotId HeapPage::Insert( const Record& rec )
         throw std::runtime_error( "HeapPageHdr::Insert: Not enought space" );
     }
 
+    // New record is alway inserted at he end of current records
     PageOffset offset( 0 );
     for( Slot& s : m_slot )
         offset += s.m_length;
 
-    m_slot.push_back( Slot( offset, recLength ) );
+    auto pred = []( const Slot& s ){ return s.IsValid(); };
+    auto it = std::find_if_not( m_slot.begin(), m_slot.end(), pred );
+    SlotId ret( 0 );
+    if( it == m_slot.end() )
+    {
+        m_slot.push_back( Slot( offset, recLength ) );
+        ret = SlotId( m_slot.size() - 1 );
+    }
+    else
+    {
+        *it = Slot( offset, recLength );
+        ret = SlotId( it - m_slot.begin() );
+    }
 
     char* p = GetData() + offset.GetValue();
     rec.ToPage( p );
 
     ToPage();
-    return SlotId( m_slot.size() - 1 );
+    return ret;
 }
 
 //
@@ -74,17 +87,13 @@ PageOffset HeapPage::Delete( SlotId slotIdEx )
     }
 
     const auto length = m_slot[ slotId ].m_length;
-    auto it = m_slot.erase( m_slot.begin() + slotId );
+    m_slot[ slotId ].SetInvalid();
 
-
+    // Move records to keep them compactly stored (without holes)
     auto fun = [ length ]( Slot& s ){ s.m_offset -= length; };
+    auto it = m_slot.begin() + slotId + 1;
     std::for_each( it, m_slot.end(), fun );
 
-/*    while( slotId < m_slot.size() )
-    {
-        m_slot[ slotId ].m_offset -= length;
-        slotId++;
-    }*/
 
     ToPage();
     return PageOffset( GetFreeSpace() );
@@ -95,7 +104,8 @@ PageOffset HeapPage::Delete( SlotId slotIdEx )
 //
 std::size_t HeapPage::GetRecordNo() const
 {
-    return m_slot.size();
+    auto pred = []( const Slot& s ){ return s.IsValid(); };
+    return std::count_if( m_slot.begin(), m_slot.end(), pred );
 }
 
 //

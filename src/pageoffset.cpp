@@ -1,4 +1,10 @@
 #include "pageoffset.h"
+#include <limits>
+
+//
+//
+//
+const std::uint16_t PageOffset::m_invalid = std::numeric_limits< std::uint16_t >::max();
 
 //
 //
@@ -49,4 +55,20 @@ bool PageOffset::operator == ( const PageOffset& v ) const
 bool PageOffset::operator < ( const PageOffset& v ) const
 {
     return ( m_value < v.m_value );
+}
+
+//
+//
+//
+void PageOffset::SetInvalid()
+{
+    m_value = m_invalid;
+}
+
+//
+//
+//
+bool PageOffset::IsValid() const
+{
+    return ( m_value != m_invalid );
 }

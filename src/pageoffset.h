@@ -17,9 +17,14 @@ public:
     bool operator == ( const PageOffset& v ) const;
     bool operator < ( const PageOffset& v ) const;
 
+    void SetInvalid();
+    bool IsValid() const;
+
 
 private:
     std::uint16_t m_value;
+
+    static const std::uint16_t m_invalid;
 };
 
 
