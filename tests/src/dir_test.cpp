@@ -1,52 +1,42 @@
 #include <gtest/gtest.h>
-#include <buffermgr.h>
-#include <unixfile.h>
-#include <cstdlib>
 #include <dir.h>
+#include <unixfile.h>
 
-TEST(Dir, Constructor)
+
+TEST(Dir, InsertDeleteGet)
 {
     /*
     UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
     DiskSpaceMgr ds( uf );
-    const std::size_t numPages = 10;
-    BufferMgr bufferMgr( ds, numPages );
-
-    auto pair = bufferMgr.GetNewPage();
-    PageId headerPage = pair.first ;
-    DirPage dp( bufferMgr, headerPage );
-    dp.SetNextPage( InvalidPageId );
-    bufferMgr.UnpinPage( headerPage );
+    const std::size_t frameNo = 3;
+    BufferMgr bufferMgr( ds, frameNo );
 
 
-    Dir dir( bufferMgr, headerPage );
-*/
-}
-
-TEST(Dir, Insert)
-{
-    /*
-    UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
-    DiskSpaceMgr ds( uf );
-    const std::size_t numPages = 10;
-    BufferMgr bufferMgr( ds, numPages );
-
-    auto pair = bufferMgr.GetNewPage();
-    PageId headerPage = pair.first ;
-    DirPage dp( bufferMgr, headerPage );
-    dp.SetNextPage( InvalidPageId );
-    bufferMgr.UnpinPage( headerPage );
+    PageId pageId = bufferMgr.GetNew().first;
+    bufferMgr.Unpin( pageId );
 
 
-    Dir dir( bufferMgr, headerPage );
-    const std::size_t loopSize = 50;
+    Dir dir( bufferMgr, pageId );
 
-    const Record rec( std::vector< char >( 300, 'a' ) );
+    const Record rec( "ABC" );
+    EXPECT_NO_THROW( dir.Insert( rec ) );
+    EXPECT_NO_THROW( dir.Insert( rec ) );
 
-    for( size_t i = 0; i < loopSize; i++ )
-    {
-        const RecordId rid = dir.Insert( rec );
-        EXPECT_NO_THROW( dir.Delete( rid ) );
-    }
+    const auto rida = dir.Insert( Record( "a" ) );
+    EXPECT_NO_THROW( dir.Get( rida ) );
+
+    const auto ridb = dir.Insert( Record( "b" ) );
+    EXPECT_NO_THROW( dir.Get( ridb ) );
+
+    EXPECT_NO_THROW( dir.Delete( rida ) );
+    EXPECT_ANY_THROW( dir.Get( rida ) );
+
+    EXPECT_NO_THROW( dir.Delete( ridb ) );
+    EXPECT_ANY_THROW( dir.Get( ridb ) );
+
+    EXPECT_ANY_THROW( dir.Delete( rida ) );
+    EXPECT_ANY_THROW( dir.Delete( ridb ) );
+
     */
+
 }
