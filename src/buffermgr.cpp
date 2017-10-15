@@ -7,11 +7,11 @@
 
 //
 // Constructor
-// numPage - number of pages in the buffer manager.
+// frameNo - number of frames in the buffer manager.
 //
-BufferMgr::BufferMgr( DiskSpaceMgr& ds, std::size_t numPages )
+BufferMgr::BufferMgr( DiskSpaceMgr& ds, std::size_t frameNo )
     : m_ds( ds )
-    , m_pool( numPages )
+    , m_pool( frameNo )
 {
 
 }

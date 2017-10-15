@@ -66,7 +66,7 @@ class BufferMgr
 {
 
 public:
-    BufferMgr( DiskSpaceMgr& ds, std::size_t numPages );
+    BufferMgr( DiskSpaceMgr& ds, std::size_t frameNo );
     ~BufferMgr();
 
     DiskBlock* Get( PageId pageId, bool multiplePins );
