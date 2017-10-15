@@ -12,18 +12,14 @@ TEST(DirPage, InsertDeleteGet)
     BufferMgr bufferMgr( ds, frameNo );
 
 
-    PageId pageId = bufferMgr.GetNew().first;
-    bufferMgr.Unpin( pageId );
-
-
+    PageId pageId = bufferMgr.GetNew();
     DirPage dp( bufferMgr, pageId );
 
     const Record rec( "ABC" );
     EXPECT_FALSE( dp.Insert( rec ).first );
 
-    pageId = bufferMgr.GetNew().first;
-    bufferMgr.Unpin( pageId );
-    dp.InsertPage( pageId );
+    pageId = bufferMgr.GetNew();
+    EXPECT_NO_THROW( dp.InsertPage( pageId ) );
 
     EXPECT_TRUE( dp.Insert( rec ).first );
 
