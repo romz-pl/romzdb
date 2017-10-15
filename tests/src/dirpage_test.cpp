@@ -1,12 +1,10 @@
 #include <gtest/gtest.h>
 #include <dirpage.h>
 #include <unixfile.h>
-#include <cstdlib>
-#include <algorithm>
-#include <random>
 
 
-TEST(DirPage, InsertDelete)
+
+TEST(DirPage, InsertDeleteGet)
 {
     UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
     DiskSpaceMgr ds( uf );
@@ -29,14 +27,19 @@ TEST(DirPage, InsertDelete)
 
     EXPECT_TRUE( dp.Insert( rec ).first );
 
-    auto reca = dp.Insert( Record( "a" ) );
+    const auto reca = dp.Insert( Record( "a" ) );
     EXPECT_TRUE( reca.first );
+    EXPECT_TRUE( dp.Get( reca.second ).first );
 
-    auto recb = dp.Insert( Record( "b" ) );
+    const auto recb = dp.Insert( Record( "b" ) );
     EXPECT_TRUE( recb.first );
+    EXPECT_TRUE( dp.Get( recb.second ).first );
 
     EXPECT_TRUE( dp.Delete( reca.second ) );
+    EXPECT_ANY_THROW( dp.Get( reca.second ).first );
+
     EXPECT_TRUE( dp.Delete( recb.second ) );
+    EXPECT_ANY_THROW( dp.Get( recb.second ).first );
 
     EXPECT_ANY_THROW( dp.Delete( recb.second ) );
     EXPECT_ANY_THROW( dp.Delete( reca.second ) );
