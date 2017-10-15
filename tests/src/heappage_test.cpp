@@ -88,14 +88,9 @@ TEST(HeapPage, Delete)
 
     EXPECT_EQ( hp.GetRecordNo(), recordNo );
 
-    // Delete records in the random order
-    std::random_device rd;
-    std::mt19937 rng( rd() );
-
     for( std::size_t i = 0; i < recordNo; i++ )
     {
-        std::uniform_int_distribution< std::size_t > uni( 0 , hp.GetRecordNo() - 1 );
-        SlotId slotId( uni( rng ) );
+        SlotId slotId( i );
 
         EXPECT_NO_THROW( hp.Delete( slotId ) );
         EXPECT_EQ( hp.GetRecordNo(), recordNo - 1 - i );
