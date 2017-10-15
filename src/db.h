@@ -18,6 +18,9 @@ public:
     HeapFile CreteHeapFile();
 
 private:
+    void CreateHeaderPage( PageId headerPage );
+
+private:
 
     std::unique_ptr< UnixFile > m_unixFile;
 

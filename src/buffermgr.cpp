@@ -114,13 +114,10 @@ Frame& BufferMgr::FindFrame( PageId pageId )
 //
 //
 //
-std::pair<PageId, DiskBlock *> BufferMgr::GetNew()
+PageId BufferMgr::GetNew()
 {
     PageId pageId = m_ds.AllocatePage();
-
-    DiskBlock* block = GetFromDisk( pageId );
-
-    return std::make_pair( pageId, block );
+    return pageId;
 }
 
 

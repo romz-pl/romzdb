@@ -25,9 +25,7 @@ TEST(HeapPage, Get)
     BufferMgr bufferMgr( ds, frameNo );
 
 
-    const PageId pageId = bufferMgr.GetNew().first;
-    bufferMgr.Unpin( pageId );
-
+    const PageId pageId = bufferMgr.GetNew();
     HeapPage hp( bufferMgr, pageId );
     const SlotId slotId( 0 );
     // The page is empty
@@ -43,9 +41,7 @@ TEST(HeapPage, Insert)
     BufferMgr bufferMgr( ds, frameNo );
 
 
-    const PageId pageId = bufferMgr.GetNew().first;
-    bufferMgr.Unpin( pageId );
-
+    const PageId pageId = bufferMgr.GetNew();
     HeapPage hp( bufferMgr, pageId );
 
     for( int i = 0; i < 10; i++ )
@@ -72,9 +68,7 @@ TEST(HeapPage, Delete)
     BufferMgr bufferMgr( ds, frameNo );
 
 
-    const PageId pageId = bufferMgr.GetNew().first;
-    bufferMgr.Unpin( pageId );
-
+    const PageId pageId = bufferMgr.GetNew();
     HeapPage hp( bufferMgr, pageId );
 
     std::string str( "abc" );
@@ -106,9 +100,7 @@ TEST(HeapPage, CheckDelete)
     BufferMgr bufferMgr( ds, frameNo );
 
 
-    const PageId pageId = bufferMgr.GetNew().first;
-    bufferMgr.Unpin( pageId );
-
+    const PageId pageId = bufferMgr.GetNew();
     HeapPage hp( bufferMgr, pageId );
 
     SlotId ida = hp.Insert( Record( "A" ) );
