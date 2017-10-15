@@ -21,7 +21,7 @@ BufferMgr::BufferMgr( DiskSpaceMgr& ds, std::size_t numPages )
 //
 BufferMgr::~BufferMgr()
 {
-    // FlushPages();
+    FlushPages();
 }
 
 //
@@ -135,17 +135,6 @@ void BufferMgr::MarkDirty( PageId pageId )
     frame.MarkDirty();
 }
 
-
-/*
-//
-// Writes the page from the buffer into disk.
-//
-void BufferMgr::WritePage( PageId pageId )
-{
-    Frame& frame = FindFrame( pageId );
-    frame.Write( m_ds );
-}
-
 //
 // Flush all pages hold in the buffer into disk.
 //
@@ -160,25 +149,3 @@ void BufferMgr::FlushPages( )
         f.Write( m_ds );
     }
 }
-
-//
-// Display all information about the pages within the buffer.
-// This routine is for debugging purposes only.
-//
-void BufferMgr::Print() const
-{
-    std::cout << "Buffer contains " << m_pool.size()
-              << " pages each of size " << Page::PageSize <<".\n";
-
-
-    std::size_t i = 0;
-    for( const Frame& frame : m_pool )
-    {
-        std:: cout << "Frame " << i << ":";
-        frame.Print();
-        i++;
-    }
-}
-
-
-*/
