@@ -53,8 +53,8 @@ SOURCE += main.cpp
 #SOURCE += record.cpp
 #SOURCE += recordid.cpp
 #SOURCE += slot.cpp
-#SOURCE += unixfile.cpp
-#SOURCE += unixfile_test.cpp
+SOURCE += unixfile.cpp
+SOURCE += unixfile_test.cpp
 
 
 #Object files
