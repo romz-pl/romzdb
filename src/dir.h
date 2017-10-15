@@ -25,7 +25,7 @@ public:
     void Delete( RecordId rid );
 
 private:
-    PageId InsertHeapPage();
+    void InsertHeapPage();
 
 private:
     BufferMgr& m_bufferMgr;
