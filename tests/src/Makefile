@@ -31,8 +31,8 @@ VPATH += ../../src
 # Source files (listed in alphabetical order)
 
 SOURCE :=
-#SOURCE += buffermgr.cpp
-#SOURCE += buffermgr_test.cpp
+SOURCE += buffermgr.cpp
+SOURCE += buffermgr_test.cpp
 #SOURCE += dir.cpp
 #SOURCE += dir_test.cpp
 #SOURCE += dirpage.cpp
@@ -40,8 +40,6 @@ SOURCE :=
 SOURCE += diskblock.cpp
 SOURCE += diskspacemgr.cpp
 SOURCE += diskspacemgr_test.cpp
-#SOURCE += frame.cpp
-#SOURCE += frame_test.cpp
 #SOURCE += heapfile.cpp
 #SOURCE += heapfile_test.cpp
 #SOURCE += heappage.cpp
