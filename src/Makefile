@@ -24,6 +24,7 @@ VPATH := ../src/
 
 SOURCE :=
 SOURCE += buffermgr.cpp
+SOURCE += db.cpp
 SOURCE += dir.cpp
 SOURCE += dirpage.cpp
 SOURCE += dirslot.cpp
