@@ -25,20 +25,28 @@ TEST(HeapPage, Get)
     BufferMgr bufferMgr( ds, frameNo );
 
 
-    PageId pageId = bufferMgr.GetNew().first;
+    const PageId pageId = bufferMgr.GetNew().first;
+    bufferMgr.Unpin( pageId );
+
     HeapPage hp( bufferMgr, pageId );
     const SlotId slotId( 0 );
     // The page is empty
     EXPECT_ANY_THROW( hp.Get( slotId ) );
-    bufferMgr.Unpin( pageId );
 
 }
 
 TEST(HeapPage, Insert)
 {
-    /*
-    Page page;
-    HeapPage hp( page );
+    UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
+    DiskSpaceMgr ds( uf );
+    const std::size_t frameNo = 3;
+    BufferMgr bufferMgr( ds, frameNo );
+
+
+    const PageId pageId = bufferMgr.GetNew().first;
+    bufferMgr.Unpin( pageId );
+
+    HeapPage hp( bufferMgr, pageId );
 
     for( int i = 0; i < 10; i++ )
     {
@@ -51,14 +59,24 @@ TEST(HeapPage, Insert)
         Record ret = hp.Get( slotId );
         EXPECT_EQ( rec, ret );
     }
-    */
+
+
+
 }
 
 TEST(HeapPage, Delete)
 {
-    /*
-    Page page;
-    HeapPage hp( page );
+    UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
+    DiskSpaceMgr ds( uf );
+    const std::size_t frameNo = 3;
+    BufferMgr bufferMgr( ds, frameNo );
+
+
+    const PageId pageId = bufferMgr.GetNew().first;
+    bufferMgr.Unpin( pageId );
+
+    HeapPage hp( bufferMgr, pageId );
+
     std::string str( "abc" );
     Record rec( str );
     const std::size_t recordNo = 123;
@@ -76,13 +94,15 @@ TEST(HeapPage, Delete)
 
     for( std::size_t i = 0; i < recordNo; i++ )
     {
-        std::uniform_int_distribution< SlotId > uni( 0 , hp.GetRecordNo() - 1 );
-        SlotId slotId = uni( rng );
+        std::uniform_int_distribution< std::size_t > uni( 0 , hp.GetRecordNo() - 1 );
+        SlotId slotId( uni( rng ) );
 
         EXPECT_NO_THROW( hp.Delete( slotId ) );
         EXPECT_EQ( hp.GetRecordNo(), recordNo - 1 - i );
     }
     EXPECT_EQ( hp.GetRecordNo(), 0 );
-    */
+
+
+
 
 }
