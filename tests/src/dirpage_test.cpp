@@ -6,27 +6,39 @@
 #include <random>
 
 
-TEST(DirPage, Insert)
+TEST(DirPage, InsertDelete)
 {
-    /*
-    Page page;
-    DirPage dp( page, 0 );
+    UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
+    DiskSpaceMgr ds( uf );
+    const std::size_t frameNo = 3;
+    BufferMgr bufferMgr( ds, frameNo );
 
-    const std::size_t recLength = 3;
-    EXPECT_FALSE( dp.InsertRec( recLength ).first );
-    */
-}
 
-TEST(DirPage, Delete)
-{
-    /*
-    Page page;
-    DirPage dp( page, 0 );
+    PageId pageId = bufferMgr.GetNew().first;
+    bufferMgr.Unpin( pageId );
 
-    const PageId pageId = 1;
-    const std::size_t recLength = 3;
 
-    EXPECT_NO_THROW( dp.InsertRec( recLength ) );
-    EXPECT_NO_THROW( dp.Delete( pageId, recLength ) );
-    */
+    DirPage dp( bufferMgr, pageId );
+
+    const Record rec( "ABC" );
+    EXPECT_FALSE( dp.Insert( rec ).first );
+
+    pageId = bufferMgr.GetNew().first;
+    bufferMgr.Unpin( pageId );
+    dp.InsertPage( pageId );
+
+    EXPECT_TRUE( dp.Insert( rec ).first );
+
+    auto reca = dp.Insert( Record( "a" ) );
+    EXPECT_TRUE( reca.first );
+
+    auto recb = dp.Insert( Record( "b" ) );
+    EXPECT_TRUE( recb.first );
+
+    EXPECT_TRUE( dp.Delete( reca.second ) );
+    EXPECT_TRUE( dp.Delete( recb.second ) );
+
+    EXPECT_ANY_THROW( dp.Delete( recb.second ) );
+    EXPECT_ANY_THROW( dp.Delete( reca.second ) );
+
 }
