@@ -83,7 +83,12 @@ PageOffset HeapPage::Delete( SlotId slotIdEx )
     std::uint16_t slotId = slotIdEx.GetValue();
     if( slotId >= m_slot.size() )
     {
-        throw std::runtime_error( "HeapPageHdr::Delete. Slot '" + std::to_string( slotId ) + "' does not exist." );
+        throw std::runtime_error( "HeapPageHdr::Delete: Slot '" + std::to_string( slotId ) + "' does not exist." );
+    }
+
+    if( !m_slot[ slotId ].IsValid() )
+    {
+        throw std::runtime_error( "HeapPageHdr::Delete: Invalid slot." );
     }
 
     const auto length = m_slot[ slotId ].m_length;
