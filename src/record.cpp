@@ -51,3 +51,15 @@ bool Record::operator==( const Record& a ) const
 {
     return m_data == a.m_data;
 }
+
+//
+//
+//
+std::string Record::ToString() const
+{
+    std::string str;
+    for( char v : m_data )
+        str += v;
+    // std::copy( m_data.begin(), m_data.end(), str.begin() );
+    return str;
+}
