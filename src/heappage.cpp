@@ -100,9 +100,14 @@ PageOffset HeapPage::Delete( SlotId slotIdEx )
     m_slot[ slotId ].SetInvalid();
 
     // Move records to keep them compactly stored (without holes)
-    auto fun = [ length ]( Slot& s ){ s.m_offset -= length; };
     auto it = m_slot.begin() + slotId + 1;
-    std::for_each( it, m_slot.end(), fun );
+    for( ; it < m_slot.end(); ++it )
+    {
+        if( it->IsValid() )
+        {
+            it->m_offset -= length;
+        }
+    }
 
 
     ToPage();
