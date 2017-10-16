@@ -123,17 +123,18 @@ std::size_t HeapPage::GetRecordNo() const
 //
 PageOffset HeapPage::GetFreeSpace() const
 {
-    PageOffset ret( Page::Size );
+    std::int32_t ret = Page::Size;
     for( const Slot& s : m_slot )
     {
-        ret -= s.m_length;
-        ret -= PageOffset( sizeof( s.m_length ) );
-        ret -= PageOffset( sizeof( s.m_offset ) );
+        ret -= s.m_length.GetValue();
+        ret -= sizeof( s.m_length );
+        ret -= sizeof( s.m_offset );
     }
 
-    ret -= PageOffset( sizeof( m_slot.size() ) );
+    ret -= sizeof( m_slot.size() );
 
-    return ret;
+    assert( ret >= 0 );
+    return PageOffset( ret );
 
 }
 
@@ -152,6 +153,8 @@ void HeapPage::ToPage( )
     {
         s.ToPage( p );
     }
+
+    m_bufferMgr.MarkDirty( m_pageId );
 }
 
 //

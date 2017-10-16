@@ -3,11 +3,14 @@
 
 #include "pageid.h"
 #include "pageoffset.h"
+#include "record.h"
 
 class DirSlot
 {
 public:
     DirSlot( PageId pageId, PageOffset freeSpace );
+
+    bool IsFree( const Record &rec ) const;
 
 public:
     // Page into the "DirSlot" points
