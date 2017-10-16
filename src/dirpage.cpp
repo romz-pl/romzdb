@@ -88,7 +88,7 @@ std::pair< bool, RecordId > DirPage::Insert( const Record &rec )
 //
 //
 //
-bool DirPage::InsertPage( PageId pageId )
+bool DirPage::InsertHeapPage( PageId pageId )
 {
     if( IsFull() )
         return false;

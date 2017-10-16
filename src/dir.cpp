@@ -60,7 +60,7 @@ void Dir::InsertHeapPage()
 
     for( DirPage& d : m_dirPage )
     {
-        if( d.InsertPage( pageId ) )
+        if( d.InsertHeapPage( pageId ) )
         {
             return;
         }
@@ -73,7 +73,7 @@ void Dir::InsertHeapPage()
     m_dirPage.push_back( DirPage( m_bufferMgr, pageId ) );
 
     pageId = m_bufferMgr.GetNew( );
-    m_dirPage.back().InsertPage( pageId );
+    m_dirPage.back().InsertHeapPage( pageId );
 }
 
 //

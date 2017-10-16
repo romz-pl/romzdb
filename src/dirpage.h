@@ -17,7 +17,7 @@ public:
 
     std::pair< bool, Record > Get( RecordId rid ) const;
     std::pair< bool, RecordId > Insert( const Record& rec );
-    bool InsertPage( PageId pageId );
+    bool InsertHeapPage( PageId pageId );
 
     bool Delete( RecordId rid);
 
