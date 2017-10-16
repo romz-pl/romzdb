@@ -25,10 +25,9 @@ public:
     Page( const Page& v );
     Page operator=( const Page& v ) = delete;
 
+protected:
     const char* GetData() const;
     char* GetData();
-
-protected:
     void MarkDirty();
 
 protected:
