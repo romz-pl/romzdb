@@ -23,6 +23,8 @@ public:
 
     bool operator==( const Record& a ) const;
 
+    std::string ToString() const;
+
 private:
     std::vector< char > m_data;
 };
