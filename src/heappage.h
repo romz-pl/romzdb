@@ -73,6 +73,7 @@ public:
 private:
     std::size_t GetSlotNo() const;
     Slot GetSlot( SlotId slotId ) const;
+    void CheckSlotId( SlotId slotIdEx ) const;
 
 
 private:

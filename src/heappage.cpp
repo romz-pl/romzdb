@@ -24,17 +24,9 @@ HeapPage::~HeapPage()
 //
 Record HeapPage::Get( SlotId slotIdEx )
 {
+    CheckSlotId( slotIdEx );
+
     const std::uint16_t slotId = slotIdEx.GetValue();
-    if( slotId >= m_slot.size() )
-    {
-        throw std::runtime_error( "HeapPageHdr::Get. Slot does not exist." );
-    }
-
-    if( !m_slot[ slotId ].IsValid() )
-    {
-        throw std::runtime_error( "HeapPageHdr::Get: Invalid slot." );
-    }
-
     const Slot& slot = m_slot[ slotId ];
 
     const char* p = GetData() + slot.m_offset.GetValue();
@@ -85,16 +77,9 @@ SlotId HeapPage::Insert( const Record& rec )
 //
 PageOffset HeapPage::Delete( SlotId slotIdEx )
 {
-    std::uint16_t slotId = slotIdEx.GetValue();
-    if( slotId >= m_slot.size() )
-    {
-        throw std::runtime_error( "HeapPageHdr::Delete: Slot '" + std::to_string( slotId ) + "' does not exist." );
-    }
+    CheckSlotId( slotIdEx );
 
-    if( !m_slot[ slotId ].IsValid() )
-    {
-        throw std::runtime_error( "HeapPageHdr::Delete: Invalid slot." );
-    }
+    std::uint16_t slotId = slotIdEx.GetValue();
 
     const auto length = m_slot[ slotId ].m_length;
     m_slot[ slotId ].SetInvalid();
@@ -112,6 +97,24 @@ PageOffset HeapPage::Delete( SlotId slotIdEx )
 
     ToPage();
     return PageOffset( GetFreeSpace() );
+}
+
+//
+//
+//
+void HeapPage::CheckSlotId( SlotId slotIdEx ) const
+{
+    const std::uint16_t slotId = slotIdEx.GetValue();
+
+    if( slotId >= m_slot.size() )
+    {
+        throw std::runtime_error( "HeapPage::CheckSlotId: Slot '" + std::to_string( slotId ) + "' does not exist." );
+    }
+
+    if( !m_slot[ slotId ].IsValid() )
+    {
+        throw std::runtime_error( "HeapPage::CheckSlotId: Invalid slot." );
+    }
 }
 
 //
