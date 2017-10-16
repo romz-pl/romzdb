@@ -20,6 +20,7 @@ public:
     void Delete( RecordId rid );
 
     std::size_t GetRecordNo() const;
+    void GetRid( std::vector< RecordId >& rid ) const;
 
 private:
     void InsertHeapPage();

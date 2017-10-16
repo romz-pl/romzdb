@@ -28,6 +28,7 @@ public:
     void FromPage();
 
     std::size_t GetRecordNo() const;
+    void GetRid( std::vector< RecordId >& rid ) const;
 
 private:
     bool IsFull() const;

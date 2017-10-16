@@ -105,3 +105,14 @@ std::size_t Dir::GetRecordNo() const
     }
     return ret;
 }
+
+//
+//
+//
+void Dir::GetRid( std::vector< RecordId >& rid ) const
+{
+    for( const DirPage& d : m_dirPage )
+    {
+        d.GetRid( rid );
+    }
+}

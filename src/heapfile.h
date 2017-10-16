@@ -53,6 +53,7 @@ public:
     void Update( RecordId rid, const Record& rec );
 
     std::size_t GetRecordNo() const;
+    void GetRid( std::vector< RecordId >& rid ) const;
 
 private:
     // Buffer manager

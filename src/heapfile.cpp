@@ -59,3 +59,11 @@ std::size_t HeapFile::GetRecordNo() const
 {
     return m_dir.GetRecordNo( );
 }
+
+//
+//
+//
+void HeapFile::GetRid( std::vector< RecordId >& rid ) const
+{
+    m_dir.GetRid( rid );
+}

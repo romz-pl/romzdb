@@ -39,6 +39,10 @@ void Insert( HeapFile& hf, std::vector< RecordId >& allId )
     }
 
     EXPECT_EQ( hf.GetRecordNo(), loopSize );
+
+    std::vector< RecordId > rids;
+    hf.GetRid( rids );
+    EXPECT_EQ( rids.size(), loopSize );
 }
 
 void Delete( HeapFile& hf, std::vector< RecordId >& allId )
@@ -54,6 +58,10 @@ void Delete( HeapFile& hf, std::vector< RecordId >& allId )
         EXPECT_ANY_THROW( hf.Get( v ) );
     }
     EXPECT_EQ( hf.GetRecordNo(), 0 );
+
+    std::vector< RecordId > rids;
+    hf.GetRid( rids );
+    EXPECT_EQ( rids.size(), 0 );
 }
 
 

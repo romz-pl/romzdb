@@ -25,6 +25,8 @@ public:
     Page( const Page& v );
     Page operator=( const Page& v ) = delete;
 
+    PageId GetPageId( ) const;
+
 protected:
     const char* GetData() const;
     char* GetData();
