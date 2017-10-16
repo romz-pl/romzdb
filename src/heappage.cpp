@@ -153,6 +153,8 @@ void HeapPage::ToPage( )
     {
         s.ToPage( p );
     }
+
+    m_bufferMgr.MarkDirty( m_pageId );
 }
 
 //
