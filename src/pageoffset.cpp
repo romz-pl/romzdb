@@ -28,7 +28,10 @@ std::uint16_t PageOffset::GetValue() const
 //
 PageOffset PageOffset::operator += ( const PageOffset& v )
 {
-    m_value += v.m_value;
+    if( IsValid() )
+    {
+        m_value += v.m_value;
+    }
     return *this;
 }
 
@@ -37,7 +40,10 @@ PageOffset PageOffset::operator += ( const PageOffset& v )
 //
 PageOffset PageOffset::operator -= ( const PageOffset& v )
 {
-    m_value -= v.m_value;
+    if( IsValid() )
+    {
+        m_value -= v.m_value;
+    }
     return *this;
 }
 
