@@ -88,9 +88,11 @@ std::pair< bool, RecordId > DirPage::Insert( const Record &rec )
 //
 //
 //
-void DirPage::InsertPage( PageId pageId )
+bool DirPage::InsertHeapPage( PageId pageId )
 {
-    assert( !IsFull() );
+    if( IsFull() )
+        return false;
+
     const auto pred = [ pageId ]( const DirSlot& d ){ return ( d.m_pageId == pageId ); };
     if( std::find_if( m_dirSlot.begin(), m_dirSlot.end(), pred ) != m_dirSlot.end() )
     {
@@ -100,6 +102,7 @@ void DirPage::InsertPage( PageId pageId )
     DirSlot d( pageId, PageOffset( Page::Size ) );
     m_dirSlot.push_back( d );
     ToPage();
+    return true;
 }
 
 
@@ -151,7 +154,7 @@ void DirPage::ToPage()
         p += sizeof( v.m_freeSpace );
     }
 
-    m_bufferMgr.MarkDirty( m_pageId );
+    MarkDirty( );
 }
 
 //
@@ -198,24 +201,6 @@ void DirPage::SetNextPage( PageId id )
 {
     m_nextPage = id;
     ToPage();
-}
-
-//
-//
-//
-bool DirPage::Is( PageId pageId ) const
-{
-    auto pred = [ pageId ]( DirSlot d ){ return ( d.m_pageId == pageId ); };
-    auto it = std::find_if( m_dirSlot.begin(), m_dirSlot.end(), pred );
-    return ( it != m_dirSlot.end() );
-}
-
-//
-//
-//
-PageId DirPage::GetPageId() const
-{
-    return m_pageId;
 }
 
 //

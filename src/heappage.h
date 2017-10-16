@@ -60,11 +60,11 @@ class HeapPage : public Page
 {
 public:
     HeapPage( BufferMgr& bufferMgr, PageId pageId );
-    ~HeapPage();
+    ~HeapPage() = default;
 
     Record Get( SlotId slotId );
     SlotId Insert( const Record& rec );
-    PageOffset Delete( SlotId slotId );
+    void Delete( SlotId slotId );
 
     std::size_t GetRecordNo() const;
 
@@ -73,9 +73,8 @@ public:
 private:
     std::size_t GetSlotNo() const;
     Slot GetSlot( SlotId slotId ) const;
+    void CheckSlotId( SlotId slotIdEx ) const;
 
-
-private:
     void ToPage();
     void FromPage( );
 

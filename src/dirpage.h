@@ -15,24 +15,22 @@ public:
     DirPage( BufferMgr &bufferMgr, PageId self );
     ~DirPage();
 
-    bool IsFull() const;
-    bool Is( PageId pageId ) const;
-
     std::pair< bool, Record > Get( RecordId rid ) const;
     std::pair< bool, RecordId > Insert( const Record& rec );
-    void InsertPage( PageId pageId );
+    bool InsertHeapPage( PageId pageId );
 
     bool Delete( RecordId rid);
 
     PageId GetNextPage() const;
     void SetNextPage( PageId id );
 
-    PageId GetPageId() const;
-
     void ToPage();
     void FromPage();
 
     std::size_t GetRecordNo() const;
+
+private:
+    bool IsFull() const;
 
 private:
     PageId m_nextPage;

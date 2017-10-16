@@ -60,9 +60,8 @@ void Dir::InsertHeapPage()
 
     for( DirPage& d : m_dirPage )
     {
-        if( !d.IsFull( ) )
+        if( d.InsertHeapPage( pageId ) )
         {
-            d.InsertPage( pageId );
             return;
         }
     }
@@ -71,10 +70,12 @@ void Dir::InsertHeapPage()
     // The directry is full. New page for directory must be allocated.
     //
     m_dirPage.back().SetNextPage( pageId );
-    m_dirPage.push_back( DirPage( m_bufferMgr, pageId ) );
+    DirPage dp( m_bufferMgr, pageId );
 
     pageId = m_bufferMgr.GetNew( );
-    m_dirPage.back().InsertPage( pageId );
+    dp.InsertHeapPage( pageId );
+
+    m_dirPage.push_back( dp );
 }
 
 //

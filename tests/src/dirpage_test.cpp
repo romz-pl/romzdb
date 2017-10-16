@@ -19,7 +19,7 @@ TEST(DirPage, InsertDeleteGet)
     EXPECT_FALSE( dp.Insert( rec ).first );
 
     pageId = bufferMgr.GetNew();
-    EXPECT_NO_THROW( dp.InsertPage( pageId ) );
+    EXPECT_NO_THROW( dp.InsertHeapPage( pageId ) );
 
     EXPECT_TRUE( dp.Insert( rec ).first );
 

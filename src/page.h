@@ -25,15 +25,17 @@ public:
     Page( const Page& v );
     Page operator=( const Page& v ) = delete;
 
+protected:
     const char* GetData() const;
     char* GetData();
+    void MarkDirty();
 
 protected:
     BufferMgr& m_bufferMgr;
 
+private:
     const PageId m_pageId;
 
-private:
     // Data stored on the page
     DiskBlock* m_block;
 };

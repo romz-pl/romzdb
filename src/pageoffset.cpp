@@ -1,5 +1,6 @@
 #include "pageoffset.h"
 #include <limits>
+#include <cassert>
 
 //
 //
@@ -28,10 +29,8 @@ std::uint16_t PageOffset::GetValue() const
 //
 PageOffset PageOffset::operator += ( const PageOffset& v )
 {
-    if( IsValid() )
-    {
-        m_value += v.m_value;
-    }
+    assert( IsValid() );
+    m_value += v.m_value;
     return *this;
 }
 
@@ -40,10 +39,8 @@ PageOffset PageOffset::operator += ( const PageOffset& v )
 //
 PageOffset PageOffset::operator -= ( const PageOffset& v )
 {
-    if( IsValid() )
-    {
-        m_value -= v.m_value;
-    }
+    assert( IsValid() );
+    m_value -= v.m_value;
     return *this;
 }
 
