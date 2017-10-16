@@ -72,8 +72,8 @@ TEST(HeapFile, GetInsertDelete)
 
     allId.clear();
 
-    //Insert( hf, allId );
-    //Delete( hf, allId );
+    Insert( hf, allId );
+    Delete( hf, allId );
 
 
 }
