@@ -20,7 +20,7 @@ void Test()
     std::size_t loopSize = 20;
     for( std::size_t i = 0; i < loopSize; i++ )
     {
-        const std::string txt = std::to_string( i );
+        const std::string txt = std::string( "A" ) + std::to_string( i );
         const Record recA( txt );
         const RecordId rid = hf.Insert( recA );
         std::cout << rid.GetPageId().GetValue() << "," << rid.GetSlotId().GetValue() << "  " << std::flush;
@@ -32,6 +32,15 @@ void Test()
     for( auto v : scaner )
     {
         std::cout << v.GetPageId().GetValue() << "," << v.GetSlotId().GetValue() << "  " << std::flush;
+    }
+
+    std::cout << "\n\n";
+
+    for( auto v : scaner )
+    {
+        Record rec = hf.Get( v );
+        std::string s = rec.ToString();
+        std::cout << s << "  " << std::flush;
     }
 }
 
