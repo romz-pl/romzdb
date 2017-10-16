@@ -203,17 +203,6 @@ void DirPage::SetNextPage( PageId id )
 //
 //
 //
-bool DirPage::Is( PageId pageId ) const
-{
-    auto pred = [ pageId ]( DirSlot d ){ return ( d.m_pageId == pageId ); };
-    auto it = std::find_if( m_dirSlot.begin(), m_dirSlot.end(), pred );
-    return ( it != m_dirSlot.end() );
-}
-
-
-//
-//
-//
 std::size_t DirPage::GetRecordNo() const
 {
     std::size_t ret = 0;

@@ -16,7 +16,6 @@ public:
     ~DirPage();
 
     bool IsFull() const;
-    bool Is( PageId pageId ) const;
 
     std::pair< bool, Record > Get( RecordId rid ) const;
     std::pair< bool, RecordId > Insert( const Record& rec );
