@@ -37,6 +37,8 @@ void Insert( HeapFile& hf, std::vector< RecordId >& allId )
         const Record recB = hf.Get( rid );
         EXPECT_EQ( recA, recB );
     }
+
+    EXPECT_EQ( hf.GetRecordNo(), loopSize );
 }
 
 void Delete( HeapFile& hf, std::vector< RecordId >& allId )
@@ -51,6 +53,7 @@ void Delete( HeapFile& hf, std::vector< RecordId >& allId )
         EXPECT_NO_THROW( hf.Delete( v ) );
         EXPECT_ANY_THROW( hf.Get( v ) );
     }
+    EXPECT_EQ( hf.GetRecordNo(), 0 );
 }
 
 
@@ -69,8 +72,8 @@ TEST(HeapFile, GetInsertDelete)
 
     allId.clear();
 
-    Insert( hf, allId );
-    Delete( hf, allId );
+    //Insert( hf, allId );
+    //Delete( hf, allId );
 
 
 }
