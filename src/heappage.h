@@ -75,8 +75,6 @@ private:
     Slot GetSlot( SlotId slotId ) const;
     void CheckSlotId( SlotId slotIdEx ) const;
 
-
-private:
     void ToPage();
     void FromPage( );
 
