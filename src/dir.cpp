@@ -22,14 +22,6 @@ Dir::Dir( BufferMgr& bufferMgr, PageId headerPage )
 //
 //
 //
-Dir::~Dir()
-{
-
-}
-
-//
-//
-//
 Record Dir::Get( RecordId rid ) const
 {
     for( const DirPage& d : m_dirPage )

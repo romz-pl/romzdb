@@ -13,13 +13,8 @@ class Dir
 {
 public:
     Dir( BufferMgr& bufferMgr, PageId headerPage );
-    ~Dir();
+    ~Dir() = default;
 
-    /*
-    PageId Insert( std::size_t recLength );
-    bool Is( PageId pageId ) const;
-    void Delete( PageId pageId, PageOffset freeSpace );
-*/
     Record Get( RecordId rid ) const;
     RecordId Insert( const Record& rec );
     void Delete( RecordId rid );
