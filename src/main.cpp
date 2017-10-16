@@ -28,7 +28,7 @@ std::string RandomString( )
 
 void Insert( HeapFile& hf, std::vector< RecordId >& allId )
 {
-    std::size_t loopSize = 300000;
+    std::size_t loopSize = 3000;
     for( std::size_t i = 0; i < loopSize; i++ )
     {
         const std::string txt = RandomString();
@@ -40,6 +40,10 @@ void Insert( HeapFile& hf, std::vector< RecordId >& allId )
     }
 
     assert( hf.GetRecordNo() == loopSize );
+
+    std::vector< RecordId > rids;
+    hf.GetRid( rids );
+    assert( rids.size() == loopSize );
 }
 
 void Delete( HeapFile& hf, std::vector< RecordId >& allId )
@@ -62,6 +66,10 @@ void Delete( HeapFile& hf, std::vector< RecordId >& allId )
     std::size_t w = hf.GetRecordNo();
 
     std::cout << w <<"\n\n";
+
+    std::vector< RecordId > rids;
+    hf.GetRid( rids );
+    assert( rids.size() == 0 );
 }
 
 
