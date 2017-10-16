@@ -39,6 +39,7 @@ SOURCE += pageid.cpp
 SOURCE += pageoffset.cpp
 SOURCE += record.cpp
 SOURCE += recordid.cpp
+SOURCE += scaner.cpp
 SOURCE += slot.cpp
 SOURCE += slotid.cpp
 SOURCE += unixfile.cpp
