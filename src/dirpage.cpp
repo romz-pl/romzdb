@@ -88,9 +88,11 @@ std::pair< bool, RecordId > DirPage::Insert( const Record &rec )
 //
 //
 //
-void DirPage::InsertPage( PageId pageId )
+bool DirPage::InsertPage( PageId pageId )
 {
-    assert( !IsFull() );
+    if( IsFull() )
+        return false;
+
     const auto pred = [ pageId ]( const DirSlot& d ){ return ( d.m_pageId == pageId ); };
     if( std::find_if( m_dirSlot.begin(), m_dirSlot.end(), pred ) != m_dirSlot.end() )
     {
@@ -100,6 +102,7 @@ void DirPage::InsertPage( PageId pageId )
     DirSlot d( pageId, PageOffset( Page::Size ) );
     m_dirSlot.push_back( d );
     ToPage();
+    return true;
 }
 
 

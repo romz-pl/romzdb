@@ -60,9 +60,8 @@ void Dir::InsertHeapPage()
 
     for( DirPage& d : m_dirPage )
     {
-        if( !d.IsFull( ) )
+        if( d.InsertPage( pageId ) )
         {
-            d.InsertPage( pageId );
             return;
         }
     }

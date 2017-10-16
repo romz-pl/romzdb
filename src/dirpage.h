@@ -15,11 +15,9 @@ public:
     DirPage( BufferMgr &bufferMgr, PageId self );
     ~DirPage();
 
-    bool IsFull() const;
-
     std::pair< bool, Record > Get( RecordId rid ) const;
     std::pair< bool, RecordId > Insert( const Record& rec );
-    void InsertPage( PageId pageId );
+    bool InsertPage( PageId pageId );
 
     bool Delete( RecordId rid);
 
@@ -30,6 +28,9 @@ public:
     void FromPage();
 
     std::size_t GetRecordNo() const;
+
+private:
+    bool IsFull() const;
 
 private:
     PageId m_nextPage;
