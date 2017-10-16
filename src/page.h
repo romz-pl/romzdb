@@ -29,11 +29,14 @@ public:
     char* GetData();
 
 protected:
+    void MarkDirty();
+
+protected:
     BufferMgr& m_bufferMgr;
 
+private:
     const PageId m_pageId;
 
-private:
     // Data stored on the page
     DiskBlock* m_block;
 };
