@@ -172,3 +172,17 @@ void HeapPage::FromPage()
         m_slot.push_back( slot );
     }
 }
+
+//
+//
+//
+void HeapPage::GetRid( std::vector< RecordId >& rid ) const
+{
+    for( std::size_t i = 0; i < m_slot.size(); i++ )
+    {
+        if( m_slot[ i ].IsValid() )
+        {
+            rid.push_back( RecordId( GetPageId(), SlotId( i ) ) );
+        }
+    }
+}

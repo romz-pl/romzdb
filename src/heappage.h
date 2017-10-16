@@ -55,6 +55,7 @@
 #include "buffermgr.h"
 #include <vector>
 #include "pageoffset.h"
+#include "recordid.h"
 
 class HeapPage : public Page
 {
@@ -69,6 +70,9 @@ public:
     std::size_t GetRecordNo() const;
 
     PageOffset GetFreeSpace() const;
+    void GetRid( std::vector< RecordId >& rid ) const;
+
+
 
 private:
     std::size_t GetSlotNo() const;

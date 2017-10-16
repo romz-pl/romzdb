@@ -216,3 +216,15 @@ std::size_t DirPage::GetRecordNo() const
     }
     return ret;
 }
+
+//
+//
+//
+void DirPage::GetRid( std::vector< RecordId >& rid ) const
+{
+    for( DirSlot v : m_dirSlot )
+    {
+        HeapPage hp( m_bufferMgr, v.m_pageId );
+        hp.GetRid( rid );
+    }
+}

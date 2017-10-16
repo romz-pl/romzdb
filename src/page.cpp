@@ -54,3 +54,11 @@ void Page::MarkDirty()
     m_bufferMgr.MarkDirty( m_pageId );
 }
 
+//
+//
+//
+PageId Page::GetPageId( ) const
+{
+    return m_pageId;
+}
+
