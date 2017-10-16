@@ -19,6 +19,8 @@ public:
     RecordId Insert( const Record& rec );
     void Delete( RecordId rid );
 
+    std::size_t GetRecordNo() const;
+
 private:
     void InsertHeapPage();
 

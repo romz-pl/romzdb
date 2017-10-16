@@ -218,3 +218,16 @@ PageId DirPage::GetPageId() const
     return m_pageId;
 }
 
+//
+//
+//
+std::size_t DirPage::GetRecordNo() const
+{
+    std::size_t ret = 0;
+    for( DirSlot v : m_dirSlot )
+    {
+        HeapPage hp( m_bufferMgr, v.m_pageId );
+        ret += hp.GetRecordNo();
+    }
+    return ret;
+}

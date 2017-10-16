@@ -90,3 +90,17 @@ void Dir::Delete( RecordId rid )
 
     throw std::runtime_error( "Dir::Delete: RecordId not found." );
 }
+
+//
+//
+//
+std::size_t Dir::GetRecordNo() const
+{
+    std::size_t ret = 0;
+
+    for( const DirPage& d : m_dirPage )
+    {
+        ret += d.GetRecordNo();
+    }
+    return ret;
+}

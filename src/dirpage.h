@@ -32,6 +32,8 @@ public:
     void ToPage();
     void FromPage();
 
+    std::size_t GetRecordNo() const;
+
 private:
     PageId m_nextPage;
 

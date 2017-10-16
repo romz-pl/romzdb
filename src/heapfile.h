@@ -52,13 +52,11 @@ public:
     void Delete( RecordId rid );
     void Update( RecordId rid, const Record& rec );
 
+    std::size_t GetRecordNo() const;
 
 private:
     // Buffer manager
     BufferMgr m_bufferMgr;
-
-    // Page ID of the first page of the directory
-    // const PageId m_headerPage;
 
     // Directory for Heap file
     Dir m_dir;

@@ -51,3 +51,11 @@ void HeapFile::Update( RecordId rid, const Record& rec )
     Delete( rid );
     Insert( rec );
 }
+
+//
+//
+//
+std::size_t HeapFile::GetRecordNo() const
+{
+    return m_dir.GetRecordNo( );
+}
