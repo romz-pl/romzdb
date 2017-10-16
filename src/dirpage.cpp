@@ -151,7 +151,7 @@ void DirPage::ToPage()
         p += sizeof( v.m_freeSpace );
     }
 
-    m_bufferMgr.MarkDirty( m_pageId );
+    MarkDirty( );
 }
 
 //
@@ -210,13 +210,6 @@ bool DirPage::Is( PageId pageId ) const
     return ( it != m_dirSlot.end() );
 }
 
-//
-//
-//
-PageId DirPage::GetPageId() const
-{
-    return m_pageId;
-}
 
 //
 //

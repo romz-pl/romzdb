@@ -27,8 +27,6 @@ public:
     PageId GetNextPage() const;
     void SetNextPage( PageId id );
 
-    PageId GetPageId() const;
-
     void ToPage();
     void FromPage();
 
