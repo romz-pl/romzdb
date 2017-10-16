@@ -15,13 +15,6 @@ HeapPage::HeapPage(BufferMgr& bufferMgr, PageId pageId )
 //
 //
 //
-HeapPage::~HeapPage()
-{
-}
-
-//
-//
-//
 Record HeapPage::Get( SlotId slotIdEx )
 {
     CheckSlotId( slotIdEx );
@@ -75,7 +68,7 @@ SlotId HeapPage::Insert( const Record& rec )
 //
 //
 //
-PageOffset HeapPage::Delete( SlotId slotIdEx )
+void HeapPage::Delete( SlotId slotIdEx )
 {
     CheckSlotId( slotIdEx );
 
@@ -93,10 +86,7 @@ PageOffset HeapPage::Delete( SlotId slotIdEx )
             it->m_offset -= length;
         }
     }
-
-
     ToPage();
-    return PageOffset( GetFreeSpace() );
 }
 
 //
