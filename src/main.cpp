@@ -26,15 +26,67 @@ std::string RandomString( )
     return s;
 }
 
+void Insert( HeapFile& hf, std::vector< RecordId >& allId )
+{
+    std::size_t loopSize = 300000;
+    for( std::size_t i = 0; i < loopSize; i++ )
+    {
+        const std::string txt = RandomString();
+        const Record recA( txt );
+        const RecordId rid = hf.Insert( recA );
+        allId.push_back( rid  );
+        const Record recB = hf.Get( rid );
+        assert( recA == recB );
+    }
+
+    assert( hf.GetRecordNo() == loopSize );
+}
+
+void Delete( HeapFile& hf, std::vector< RecordId >& allId )
+{
+    std::random_device rd;
+    std::mt19937 g( rd() );
+
+    std::shuffle( allId.begin(), allId.end(), g );
+
+    int i = 0;
+    for( RecordId v : allId )
+    // for( std::size_t i = 0; i < allId.size(); i++ )
+    {
+        i++;
+        // RecordId v( allId[ i ] );
+        hf.Delete( v );
+        // hf.Get( v );
+    }
+    std::cout << i << "\n";
+    std::size_t w = hf.GetRecordNo();
+
+    std::cout << w <<"\n\n";
+}
+
+
 void Test()
 {
+    const std::string path = UnixFile::GetTempPath();
+    // std::cout << path << "\n";
+    std::size_t frameNo = 50;
 
-    for( int i = 0; i < 1000; i++ )
-    {
-        std::string s = RandomString();
-        std::cout << s.size() << " " << s << "\n";
-    }
+    Db db( path, frameNo );
+    HeapFile hf = db.CreteHeapFile();
+    std::vector< RecordId > allId;
+
+    Insert( hf, allId );
+    Delete( hf, allId );
+
+    allId.clear();
+
+    //Insert( hf, allId );
+    //Delete( hf, allId );
+
+
 }
+
+
 
 
 int main()
