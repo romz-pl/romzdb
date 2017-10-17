@@ -2,7 +2,9 @@
 
 [![Build Status](https://travis-ci.org/romz-pl/romzdb.svg?branch=master)](https://travis-ci.org/romz-pl/romzdb)
 
-This is a relational database project based on: 
+This is a implemenation of Heap File storing the varaible length records.
+The project romzdb is based on: 
+
 1. RedBase project from Stanford University
    See https://web.stanford.edu/class/cs346/2015/redbase.html
 
