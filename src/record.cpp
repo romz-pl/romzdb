@@ -90,3 +90,15 @@ std::string Record::RandomString( )
     }
     return s;
 }
+
+//
+//
+//
+bool Record::operator< (const Record& rec ) const
+{
+    const std::string sa = ToString();
+    const std::string sb = rec.ToString();
+
+    return sa < sb;
+
+}
