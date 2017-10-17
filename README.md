@@ -2,17 +2,18 @@
 
 [![Build Status](https://travis-ci.org/romz-pl/romzdb.svg?branch=master)](https://travis-ci.org/romz-pl/romzdb)
 
-1. This is an implemenation of feap file storing the varaible length records.
+1. 
+This is an implementation of heap file storing the variable length records.
 
 2. The program is implemented in C++.
 
 3. All data are stored in one file. The file is implemented in class UnixFile.
 
-4. The data to the UnixFile is tranfered in pages of fixed size. This is managed by class DiskSpaceMgr.
+4. The data to the UnixFile is transferred in pages of fixed size. This is managed by class DiskSpaceMgr.
 
-5. Buffer magager (implemented in class BufferMgr) is responsible for tranfering data from disk into memory and transfering data from memory to disk. Disk blocks in the buffer manager are kept in frames (class Frame), where "dirty" bit and "pin-count" are stored.
+5. Buffer manager (implemented in class BufferMgr) is responsible for transferring data from disk into memory and transferring data from memory to disk. Disk blocks in the buffer manager are kept in frames (class Frame), where "dirty" bit and "pin-count" are stored.
 
-6. Heap file is a sequence of pagees. It uses buffer manager for page management. 
+6. Heap file is a sequence of pages. It uses buffer manager for page management. 
 
 7. Pages in heap file are managed by directory of pages. 
 
