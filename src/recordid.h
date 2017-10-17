@@ -21,6 +21,8 @@ public:
     PageId GetPageId() const;
     SlotId GetSlotId() const;
 
+    bool operator == ( const RecordId& rid ) const;
+
 private:
     // ID of page on the disk, where the record is stored
     PageId m_pageId;

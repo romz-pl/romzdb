@@ -16,6 +16,8 @@ public:
 
     std::uint16_t GetValue() const;
 
+    bool operator ==( const SlotId& slotId ) const;
+
 private:
     std::uint16_t m_value;
 };

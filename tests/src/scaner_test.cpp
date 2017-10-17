@@ -39,18 +39,23 @@ TEST(Scaner, Compare)
         rid.push_back( hf.Insert( r ) );
     }
 
-    std::random_device rd;
-    std::mt19937 g( rd() );
-
-    std::shuffle( rid.begin(), rid.end(), g );
-
     std::vector< Record > newData;
-    for( auto v : rid )
+    Scaner scaner( hf );
+    for( auto v : scaner )
     {
         newData.push_back( hf.Get( v ) );
     }
 
+    for( const RecordId r : rid )
+    {
+        EXPECT_TRUE( std::find( scaner.begin(), scaner.end(), r ) != scaner.end() );
+    }
+
+    std::random_device rd;
+    std::mt19937 g( rd() );
+    std::shuffle( rid.begin(), rid.end(), g );
     std::sort( data.begin(), data.end() );
+
     std::sort( newData.begin(), newData.end() );
 
     EXPECT_EQ( data, newData );
