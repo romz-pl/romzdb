@@ -4,7 +4,21 @@
 
 1. This is an implemenation of feap file storing the varaible length records.
 
-2. The project romzdb is based on: 
+2. The program is implemented in C++.
+
+3. All data are stored in one file. The file is implemented in class UnixFile.
+
+4. The data to the UnixFile is tranfered in pages of fixed size. This is managed by class DiskSpaceMgr.
+
+5. Buffer magager (implemented in class BufferMgr) is responsible for tranfering data from disk into memory and transfering data from memory to disk. Disk blocks in the buffer manager are kept in frames (class Frame), where "dirty" bit and "pin-count" are stored.
+
+6. Heap file is a sequence of pagees. It uses buffer manager for page management. 
+
+7. Pages in heap file are managed by directory of pages. 
+
+8. On the page of heap file variable length record can be stored. 
+
+9. The project romzdb is based on: 
 
 a. RedBase project from Stanford University
    See https://web.stanford.edu/class/cs346/2015/redbase.html
@@ -21,20 +35,6 @@ d. Book: "Database System Concepts" by Abraham Silberschatz, Henry Korth, S. Sud
 e. Paper: "Principles of Database Buffer Management" by WOLFGANG EFFELSBERG and THEO HAERDER
    ACM Transactions on Database Systems, Vol. 9, No. 4, December 1984, Pages 560-595.
 
-
-3. The program is implemented in C++.
-
-4. All data are stored in one file. The file is implemented in class UnixFile.
-
-5. The data to the UnixFile is tranfered in pages of fixed size. This is managed by class DiskSpaceMgr.
-
-6. Buffer magager (implemented in class BufferMgr) is responsible for tranfering data from disk into memory and transfering data from memory to disk. Disk blocks in the buffer manager are kept in frames (class Frame), where "dirty" bit and "pin-count" are stored.
-
-7. Heap file is a sequence of pagees. It uses buffer manager for page management. 
-
-8. Pages in heap file are managed by directory of pages. 
-
-9. On the page of heap file variable length record can be stored. 
 
 Author: Zbigniew Romanowski
 
