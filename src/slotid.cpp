@@ -21,3 +21,11 @@ std::uint16_t SlotId::GetValue() const
 {
     return m_value;
 }
+
+//
+//
+//
+bool SlotId::operator ==( const SlotId& slotId ) const
+{
+    return m_value == slotId.m_value;
+}
