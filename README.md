@@ -25,9 +25,13 @@ e. Paper: "Principles of Database Buffer Management" by WOLFGANG EFFELSBERG and 
 3. The program is implemented in C++.
 
 4. The structure of the program is as follows:
+
 a. All data are stored in one file. The file is implemented in class UnixFile.
+
 b. The data to the UnixFile is tranfered in pages of fixed size. This is managed by class DiskSpaceMgr.
+
 c. Buffer magager (implemented in class BufferMgr) is responsible for tranfering data from disk into memory and transfering data from memory to disk. Disk blocks in the buffer manager are kept in frames (class Frame), where "dirty" bit and "pin-count" are stored.
+
 d. Heap file is a sequence of pagees. It uses buffer manager for page management. Pages in heap file are managed by directory of pages. On the page of heap file variable length record can be stored. 
 
 Author: Zbigniew Romanowski
