@@ -1,5 +1,7 @@
 #include "record.h"
 #include <cstring>
+#include <random>
+#include <algorithm>
 
 //
 //
@@ -62,4 +64,41 @@ std::string Record::ToString() const
         str += v;
     // std::copy( m_data.begin(), m_data.end(), str.begin() );
     return str;
+}
+
+//
+//
+//
+std::string Record::RandomString( )
+{
+    const std::string alphabet( "0123456789"
+                                "abcdefghijklmnopqrstuvwxyz"
+                                "ABCDEFGHIJKLMNOPQRSTUVWXYZ" );
+
+    std::random_device rd;
+    std::mt19937 g( rd() );
+    std::uniform_int_distribution< std::string::size_type > pick( 0, alphabet.size() );
+
+    std::string::size_type length = pick( g );
+    std::string s;
+    s.reserve( length );
+
+    while( length-- )
+    {
+        const char c = alphabet[ pick( g ) ];
+        s += c;
+    }
+    return s;
+}
+
+//
+//
+//
+bool Record::operator< (const Record& rec ) const
+{
+    const std::string sa = ToString();
+    const std::string sb = rec.ToString();
+
+    return sa < sb;
+
 }

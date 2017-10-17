@@ -25,6 +25,10 @@ public:
 
     std::string ToString() const;
 
+    static std::string RandomString( );
+
+    bool operator< (const Record& rec ) const;
+
 private:
     std::vector< char > m_data;
 };

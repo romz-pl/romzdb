@@ -3,34 +3,14 @@
 #include <unixfile.h>
 #include <db.h>
 #include <random>
-#include <algorithm>
 
-std::string RandomString( )
-{
-    const std::string alphabet( "0123456789"
-                                "abcdefghijklmnopqrstuvwxyz"
-                                "ABCDEFGHIJKLMNOPQRSTUVWXYZ" );
-
-    std::random_device rd;
-    std::mt19937 g( rd() );
-    std::uniform_int_distribution< std::string::size_type > pick( 0, alphabet.size() );
-
-    std::string::size_type length = pick( g );
-    std::string s;
-    s.reserve( length );
-
-    while( length-- )
-        s += alphabet[ pick( g ) ];
-
-    return s;
-}
 
 void Insert( HeapFile& hf, std::vector< RecordId >& allId )
 {
     std::size_t loopSize = 200000;
     for( std::size_t i = 0; i < loopSize; i++ )
     {
-        const std::string txt = RandomString();
+        const std::string txt = Record::RandomString();
         const Record recA( txt );
         const RecordId rid = hf.Insert( recA );
         allId.push_back( rid  );
