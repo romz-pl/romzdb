@@ -25,6 +25,8 @@ public:
 
     std::string ToString() const;
 
+    static std::string RandomString( );
+
 private:
     std::vector< char > m_data;
 };
