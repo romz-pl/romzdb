@@ -2,8 +2,7 @@
 
 [![Build Status](https://travis-ci.org/romz-pl/romzdb.svg?branch=master)](https://travis-ci.org/romz-pl/romzdb)
 
-1. 
-This is an implementation of heap file storing the variable length records.
+1. This is an implementation of heap file storing the variable length records.
 
 2. The program is implemented in C++.
 
