@@ -8,19 +8,19 @@
 
 3. The size of the page is fixed during the compilation. The current value is 4096.
 
-4. The program is implemented in C++.
+4. All data are stored in one file. The file is implemented in class UnixFile.
 
-5. All data are stored in one file. The file is implemented in class UnixFile.
+5. The data to the UnixFile is transferred in pages of fixed size. This is managed by class DiskSpaceMgr.
 
-6. The data to the UnixFile is transferred in pages of fixed size. This is managed by class DiskSpaceMgr.
+6. Buffer manager (implemented in class BufferMgr) is responsible for transferring data from disk into memory and transferring data from memory to disk. Disk blocks in the buffer manager are kept in frames (class Frame), where "dirty" bit and "pin-count" are stored.
 
-7. Buffer manager (implemented in class BufferMgr) is responsible for transferring data from disk into memory and transferring data from memory to disk. Disk blocks in the buffer manager are kept in frames (class Frame), where "dirty" bit and "pin-count" are stored.
+7. Heap file is a sequence of pages. It uses buffer manager for page management. 
 
-8. Heap file is a sequence of pages. It uses buffer manager for page management. 
+8. Pages in heap file are managed by directory of pages. 
 
-9. Pages in heap file are managed by directory of pages. 
+9. On the page of heap file variable length record can be stored. 
 
-10. On the page of heap file variable length record can be stored. 
+10. The program is implemented in C++.
 
 11. The project romzdb is based on: 
 
