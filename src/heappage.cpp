@@ -36,7 +36,7 @@ SlotId HeapPage::Insert( const Record& rec )
     const PageOffset recLength = rec.GetLength();
     if( GetFreeSpace() < recLength )
     {
-        throw std::runtime_error( "HeapPageHdr::Insert: Not enought space" );
+        throw std::runtime_error( "HeapPage::Insert: Not enought space" );
     }
 
     // New record is alway inserted at he end of current records
@@ -185,4 +185,22 @@ void HeapPage::GetRid( std::vector< RecordId >& rid ) const
             rid.push_back( RecordId( GetPageId(), SlotId( i ) ) );
         }
     }
+}
+
+//
+// Returns maximal allowed record length
+//
+std::size_t HeapPage::GetMaxRecordLength()
+{
+    // For details of page format, see the function HeapPage::ToPage
+
+    std::size_t maxRecordLength = Page::Size; // This is the size of the page
+
+    // For storing recor, one slot is required. This is the size of the Slot
+    maxRecordLength -= - 2 * sizeof( PageOffset );
+
+    // On the page, always number of records are stored
+    maxRecordLength -= sizeof( std::size_t );
+
+    return maxRecordLength;
 }

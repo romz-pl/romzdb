@@ -27,6 +27,15 @@ Record HeapFile::Get( RecordId rid )
 //
 RecordId HeapFile::Insert( const Record& rec )
 {
+    const std::size_t maxRecordLength = HeapPage::GetMaxRecordLength();
+
+    const PageOffset recLength = rec.GetLength();
+    if( PageOffset( maxRecordLength ) < recLength )
+    {
+        throw std::runtime_error( "Record is too long. It does not fix onto one page."
+                                  "Current version of the romzdb does not support this." );
+    }
+
     return m_dir.Insert( rec );
 }
 

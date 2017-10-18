@@ -72,6 +72,7 @@ public:
     PageOffset GetFreeSpace() const;
     void GetRid( std::vector< RecordId >& rid ) const;
 
+    static std::size_t GetMaxRecordLength();
 
 
 private:
