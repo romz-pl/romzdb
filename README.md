@@ -4,21 +4,25 @@
 
 1. This is an implementation of heap file storing the variable length records.
 
-2. The program is implemented in C++.
+2. The record length must fit on one page. 
 
-3. All data are stored in one file. The file is implemented in class UnixFile.
+3. The size of the page is fixed during the compilation. The current value is 4096.
 
-4. The data to the UnixFile is transferred in pages of fixed size. This is managed by class DiskSpaceMgr.
+4. The program is implemented in C++.
 
-5. Buffer manager (implemented in class BufferMgr) is responsible for transferring data from disk into memory and transferring data from memory to disk. Disk blocks in the buffer manager are kept in frames (class Frame), where "dirty" bit and "pin-count" are stored.
+5. All data are stored in one file. The file is implemented in class UnixFile.
 
-6. Heap file is a sequence of pages. It uses buffer manager for page management. 
+6. The data to the UnixFile is transferred in pages of fixed size. This is managed by class DiskSpaceMgr.
 
-7. Pages in heap file are managed by directory of pages. 
+7. Buffer manager (implemented in class BufferMgr) is responsible for transferring data from disk into memory and transferring data from memory to disk. Disk blocks in the buffer manager are kept in frames (class Frame), where "dirty" bit and "pin-count" are stored.
 
-8. On the page of heap file variable length record can be stored. 
+8. Heap file is a sequence of pages. It uses buffer manager for page management. 
 
-9. The project romzdb is based on: 
+9. Pages in heap file are managed by directory of pages. 
+
+10. On the page of heap file variable length record can be stored. 
+
+11. The project romzdb is based on: 
 
 a. RedBase project from Stanford University
    See https://web.stanford.edu/class/cs346/2015/redbase.html
