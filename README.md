@@ -22,7 +22,9 @@
 
 10. The program is implemented in C++.
 
-11. The project romzdb is based on: 
+11. There is an extensive set of tests written in Google test format.
+
+12. The project romzdb is based on: 
 
 a. RedBase project from Stanford University
    See https://web.stanford.edu/class/cs346/2015/redbase.html
