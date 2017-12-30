@@ -51,6 +51,7 @@ void Test()
 
 int main()
 {
+    int x....
     Test();
     std::cout << "OK\n";
     return 0;
