@@ -1,6 +1,7 @@
-cmake_minimum_required (VERSION 3.0)
-project (ROMZDB)
-add_executable(romzdb.x
+
+
+
+add_library(lib-romzdb STATIC
 buffermgr.cpp
 db.cpp
 dir.cpp
@@ -11,7 +12,6 @@ diskspacemgr.cpp
 frame.cpp
 heapfile.cpp
 heappage.cpp
-main.cpp
 page.cpp
 pageid.cpp
 pageoffset.cpp
@@ -23,3 +23,5 @@ slotid.cpp
 unixfile.cpp
 )
 
+add_executable(romzdb.x main.cpp)
+target_link_libraries(romzdb.x lib-romzdb)
