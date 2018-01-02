@@ -19,7 +19,7 @@ void Test()
     Db db( path, frameNo );
     HeapFile hf = db.CreteHeapFile();
 
-    std::size_t loopSize = 20;
+    std::size_t loopSize = 21;
     for( std::size_t i = 0; i < loopSize; i++ )
     {
         const std::string txt = std::string( "A" ) + std::to_string( i );
