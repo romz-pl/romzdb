@@ -1,0 +1,12 @@
+#!/bin/bash
+
+rm -rf build &&
+cd 3rdparty/googletest &&
+make gtest.a &&
+cd ../.. &&
+mkdir build &&
+cd build &&
+cmake .. &&
+make &&
+./tests/test.x
+
