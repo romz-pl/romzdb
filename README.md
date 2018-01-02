@@ -42,6 +42,19 @@ e. Paper: "Principles of Database Buffer Management" by WOLFGANG EFFELSBERG and 
    ACM Transactions on Database Systems, Vol. 9, No. 4, December 1984, Pages 560-595.
 
 
+13. In order to compile, do the following:
+
+a. mkdir build
+
+b. cd build
+
+c. cmake ..
+
+d. make
+
+e. ./tests/test.x
+
+
 Author: Zbigniew Romanowski
 
 emil: romz@wp.pl
