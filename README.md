@@ -43,16 +43,14 @@ e. Paper: "Principles of Database Buffer Management" by WOLFGANG EFFELSBERG and 
 
 
 13. In order to compile, do the following:
-
-a. mkdir build
-
-b. cd build
-
-c. cmake ..
-
-d. make
-
-e. ./tests/test.x
+  - cd 3rdparty/googletest
+  - make gtest.a
+  - cd ../..
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make
+  - ./tests/test.x
 
 
 Author: Zbigniew Romanowski
