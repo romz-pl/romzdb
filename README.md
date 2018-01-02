@@ -1,12 +1,16 @@
 # romzdb
 
+Simple framework for SQL database.
+
 [![Build Status](https://travis-ci.org/romz-pl/romzdb.svg?branch=master)](https://travis-ci.org/romz-pl/romzdb)
+
+## Overview
 
 1. This is an implementation of heap file storing the variable length records.
 
-2. The record length must fit on one page. 
+2. The record length must fit on one disk page. 
 
-3. The size of the page is fixed during the compilation. The current value is 4096.
+3. The size of the page is fixed during the compilation. The current value is 4096 bytes.
 
 4. All data are stored in one file. The file is implemented in class UnixFile.
 
@@ -24,25 +28,27 @@
 
 11. There is an extensive set of tests written in Google test format.
 
-12. The project romzdb is based on: 
+## Literature
 
-a. RedBase project from Stanford University
+The project romzdb is based on: 
+1. RedBase project from Stanford University
    See https://web.stanford.edu/class/cs346/2015/redbase.html
 
-b. Book: "Database Management Systems" by Raghu Ramakrishnan and Johannes Gehrke
+2. Book: "Database Management Systems" by Raghu Ramakrishnan and Johannes Gehrke
    http://pages.cs.wisc.edu/~dbbook/
    and associated MiniBase project with tis book
    http://pages.cs.wisc.edu/~dbbook/openAccess/Minibase/minibase.html
 
-c. Book: "Fundamentals of Database Systems" by Ramez Elmasri and Shamkant B. Navathe
+3. Book: "Fundamentals of Database Systems" by Ramez Elmasri and Shamkant B. Navathe
 
-d. Book: "Database System Concepts" by Abraham Silberschatz, Henry Korth, S. Sudarshan 
+4. Book: "Database System Concepts" by Abraham Silberschatz, Henry Korth, S. Sudarshan 
 
-e. Paper: "Principles of Database Buffer Management" by WOLFGANG EFFELSBERG and THEO HAERDER
+5. Paper: "Principles of Database Buffer Management" by WOLFGANG EFFELSBERG and THEO HAERDER
    ACM Transactions on Database Systems, Vol. 9, No. 4, December 1984, Pages 560-595.
 
+## Compilation
 
-13. In order to compile, do the following:
+In order to compile, do the following:
   - cd 3rdparty/googletest
   - make gtest.a
   - cd ../..
@@ -52,8 +58,9 @@ e. Paper: "Principles of Database Buffer Management" by WOLFGANG EFFELSBERG and 
   - make
   - ./tests/test.x
 
+## Author
 
-Author: Zbigniew Romanowski
+Name: Zbigniew Romanowski
 
-emil: romz@wp.pl
+email: romz@wp.pl
 
