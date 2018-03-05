@@ -1,7 +1,7 @@
 
 
 
-add_library(lib-romzdb STATIC
+add_library(romzdb STATIC
 buffermgr.cpp
 db.cpp
 dir.cpp
@@ -23,5 +23,7 @@ slotid.cpp
 unixfile.cpp
 )
 
-add_executable(romzdb.x main.cpp)
-target_link_libraries(romzdb.x lib-romzdb)
+target_compile_options( romzdb PRIVATE -Wall -pedantic -pthread -g -O0 -fprofile-arcs -ftest-coverage -std=c++11 -DNDEBUG )
+
+#add_executable(romzdb.x main.cpp)
+#target_link_libraries(romzdb.x lib-romzdb)
