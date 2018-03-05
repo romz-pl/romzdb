@@ -1,6 +1,4 @@
-# romzdb
-
-Simple framework for SQL database.
+# romzdb: a framework for heap file database
 
 [![Build Status](https://travis-ci.org/romz-pl/romzdb.svg?branch=master)](https://travis-ci.org/romz-pl/romzdb)
 [![Coverage Status](https://codecov.io/gh/romz-pl/romzdb/badge.svg?branch=master)](https://codecov.io/gh/romz-pl/romzdb?branch=master)
@@ -49,15 +47,7 @@ The project romzdb is based on:
 
 ## Compilation
 
-In order to compile, do the following:
-  - cd 3rdparty/googletest
-  - make gtest.a
-  - cd ../..
-  - mkdir build
-  - cd build
-  - cmake ..
-  - make
-  - ./tests/test.x
+In order to compile, and run all tests execute bash script: `./build-all.sh`
 
 ## Author
 
