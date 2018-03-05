@@ -1,9 +1,6 @@
 build/*
-!build/Makefile
 
-tests/build/*
-!tests/build/Makefile
 
-tests/googletest/gtest-all.o
-tests/googletest/gtest.a
+3rdparty/googletest/gtest-all.o
+3rdparty/googletest/gtest.a
 

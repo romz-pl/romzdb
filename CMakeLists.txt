@@ -1,7 +1,11 @@
 cmake_minimum_required (VERSION 3.0)
-project (ROMZDB)
+project (romzdb)
 
-SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
+# SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
 
+include(CTest)
+enable_testing(true)
+
+add_subdirectory(3rdparty/googletest)
 add_subdirectory(src)
 add_subdirectory(tests)

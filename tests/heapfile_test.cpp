@@ -7,7 +7,7 @@
 
 void Insert( HeapFile& hf, std::vector< RecordId >& allId )
 {
-    std::size_t loopSize = 200000;
+    std::size_t loopSize = 2000;
     for( std::size_t i = 0; i < loopSize; i++ )
     {
         const std::string txt = Record::RandomString();
