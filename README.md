@@ -3,6 +3,7 @@
 Simple framework for SQL database.
 
 [![Build Status](https://travis-ci.org/romz-pl/romzdb.svg?branch=master)](https://travis-ci.org/romz-pl/romzdb)
+[![Coverage Status](https://codecov.io/gh/romz-pl/romzdb/badge.svg?branch=master)](https://codecov.io/gh/romz-pl/romzdb?branch=master)
 
 ## Overview
 
