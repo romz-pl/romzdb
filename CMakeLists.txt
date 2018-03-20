@@ -7,6 +7,7 @@ include(CTest)
 enable_testing(true)
 
 add_subdirectory(3rdparty/googletest)
+
 add_subdirectory(src/disk)
 add_subdirectory(src/buffer)
 add_subdirectory(src/hf)
