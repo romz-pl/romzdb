@@ -1,19 +1,18 @@
 
-set( TEST_NAME test-disk )
+set( TEST_NAME test-buffer )
 
 add_executable( ${TEST_NAME}
-diskspacemgr.cpp
+buffermgr_test.cpp
 main.cpp
-unixfile.cpp
 )
 
 target_compile_options( ${TEST_NAME} PRIVATE -Wall -pedantic -pthread -g -O0 -fprofile-arcs -ftest-coverage -std=c++11 -DNDEBUG )
 
 target_include_directories( ${TEST_NAME} PRIVATE ${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR} )
 
-target_include_directories( ${TEST_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/src/disk )
+target_include_directories( ${TEST_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/src/disk ${PROJECT_SOURCE_DIR}/src/buffer )
 
-target_link_libraries( ${TEST_NAME} -fprofile-arcs gtest gtest_main pthread romzdb-disk )
+target_link_libraries( ${TEST_NAME} -fprofile-arcs gtest gtest_main pthread romzdb-disk romzdb-buffer )
 
 add_test( NAME ${TEST_NAME} COMMAND ${TEST_NAME} )
 

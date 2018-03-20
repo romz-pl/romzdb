@@ -11,7 +11,7 @@ cd build || exit 1
 # Run cmake
 #
 cmake -DBUILD_GTEST=ON -DBUILD_GMOCK=OFF -DCMAKE_BUILD_TYPE=Debug  .. || exit 1
-make || exit 1
+make -j4 || exit 1
 
 
 #
