@@ -2,9 +2,10 @@
 set( TEST_NAME test-disk )
 
 add_executable( ${TEST_NAME}
-diskspacemgr.cpp
-main.cpp
-unixfile.cpp
+    disk.cpp
+    diskspacemgr.cpp
+    main.cpp
+    unixfile.cpp
 )
 
 target_compile_options( ${TEST_NAME} PRIVATE -Wall -pedantic -pthread -g -O0 -fprofile-arcs -ftest-coverage -std=c++11 -DNDEBUG )

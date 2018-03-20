@@ -47,7 +47,7 @@ DiskBlock* Frame::GetBlock()
 //
 // Reads (from the disk) the page into the frame
 //
-void Frame::Read( const DiskSpaceMgr &ds, PageId pageId )
+void Frame::Read( const Disk &disk, PageId pageId )
 {
     if( !pageId.IsValid() )
     {
@@ -55,18 +55,18 @@ void Frame::Read( const DiskSpaceMgr &ds, PageId pageId )
     }
 
     m_pageId = pageId;
-    m_block = ds.Read( m_pageId );
+    m_block = disk.Read( m_pageId );
     m_dirty = false;
 }
 
 //
 // Writes (to the disk) the page from the frame
 //
-void Frame::Write( const DiskSpaceMgr &ds )
+void Frame::Write(const Disk &disk )
 {
     if( m_dirty )
     {
-        ds.Write( m_block, m_pageId );
+        disk.Write( m_block, m_pageId );
         m_dirty = false;
     }
 }

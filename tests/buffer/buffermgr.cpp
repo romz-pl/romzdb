@@ -7,10 +7,9 @@
 TEST(BufferMgr, GetPage)
 {
     PageId pageId( 0 );
-    UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
-    DiskSpaceMgr ds( uf );
+    Disk disk( UnixFile::GetTempPath(), UnixFile::Mode::Create );
     const std::size_t numPages = 10;
-    BufferMgr bufferMgr( ds, numPages );
+    BufferMgr bufferMgr( disk, numPages );
 
     EXPECT_ANY_THROW( bufferMgr.Get( pageId, false ) );
 
@@ -26,10 +25,9 @@ TEST(BufferMgr, GetPage)
 
 TEST(BufferMgr, TooSmallBuffer)
 {
-    UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
-    DiskSpaceMgr ds( uf );
+    Disk disk( UnixFile::GetTempPath(), UnixFile::Mode::Create );
     const std::size_t numPages = 3;
-    BufferMgr bufferMgr( ds, numPages );
+    BufferMgr bufferMgr( disk, numPages );
     std::vector< PageId > pageId;
 
     for( std::size_t i = 0; i < numPages; i++ )
@@ -49,10 +47,9 @@ TEST(BufferMgr, TooSmallBuffer)
 TEST(BufferMgr, MarkDirty)
 {
     PageId pageId( 1 );
-    UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
-    DiskSpaceMgr ds( uf );
+    Disk disk( UnixFile::GetTempPath(), UnixFile::Mode::Create );
     const std::size_t numPages = 3;
-    BufferMgr bufferMgr( ds, numPages );
+    BufferMgr bufferMgr( disk, numPages );
 
     EXPECT_ANY_THROW( bufferMgr.MarkDirty( pageId ) );
     EXPECT_ANY_THROW( bufferMgr.Unpin( pageId ) );
@@ -67,11 +64,10 @@ TEST(BufferMgr, MarkDirty)
 TEST(BufferMgr, Unpin)
 {
 
-    UnixFile uf( UnixFile::GetTempPath(), UnixFile::Mode::Create );
-    DiskSpaceMgr ds( uf );
+    Disk disk( UnixFile::GetTempPath(), UnixFile::Mode::Create );
     const std::size_t numPages = 3;
     const std::size_t loopSize = 11;
-    BufferMgr bufferMgr( ds, numPages );
+    BufferMgr bufferMgr( disk, numPages );
 
     const PageId pageId = bufferMgr.GetNew();
 
