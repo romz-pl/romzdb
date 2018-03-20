@@ -91,9 +91,7 @@ void UnixFile::Write( const char* data, size_t nbyte, off_t offset ) const
 {
     assert( m_fd != m_badFd );
 
-    Lseek( offset );
-
-    ssize_t rcw = write( m_fd, data, nbyte );
+    ssize_t rcw = pwrite( m_fd, data, nbyte, offset );
     if( rcw < 0 || rcw != static_cast< ssize_t >( nbyte ) )
     {
         throw std::runtime_error( "UnixFile::Write: write" );
@@ -108,9 +106,7 @@ void UnixFile::Read( char* data, size_t nbyte, off_t offset ) const
 {
     assert( m_fd != m_badFd );
 
-    Lseek( offset );
-
-    ssize_t rc = read( m_fd, data, nbyte );
+    ssize_t rc = pread( m_fd, data, nbyte, offset );
     if( rc < 0 || rc != static_cast< ssize_t >( nbyte ) )
     {
         throw std::runtime_error( "UnixFile::Read" );
