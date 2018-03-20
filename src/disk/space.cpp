@@ -1,10 +1,10 @@
-#include "diskspacemgr.h"
+#include "space.h"
 
 //
 //
 //
-DiskSpaceMgr::DiskSpaceMgr( UnixFile& uf )
-    : m_uf( uf )
+Space::Space( const std::string& path, UnixFile::Mode mode )
+    : m_uf( path, mode )
     , m_nextPage( 0 )
 {
 
@@ -13,7 +13,7 @@ DiskSpaceMgr::DiskSpaceMgr( UnixFile& uf )
 //
 //
 //
-DiskBlock DiskSpaceMgr::Read( PageId pageId ) const
+DiskBlock Space::Read( PageId pageId ) const
 {
     const off_t offset = PageIdToOffset( pageId );
     DiskBlock block;
@@ -24,7 +24,7 @@ DiskBlock DiskSpaceMgr::Read( PageId pageId ) const
 //
 //
 //
-void DiskSpaceMgr::Write( const DiskBlock &block, PageId pageId ) const
+void Space::Write( const DiskBlock &block, PageId pageId ) const
 {
     const off_t offset = PageIdToOffset( pageId );
     m_uf.Write( block.GetData(), DiskBlock::Size, offset );
@@ -33,7 +33,7 @@ void DiskSpaceMgr::Write( const DiskBlock &block, PageId pageId ) const
 //
 //
 //
-PageId DiskSpaceMgr::AllocatePage()
+PageId Space::Allocate()
 {
     m_nextPage++;
 
@@ -44,7 +44,7 @@ PageId DiskSpaceMgr::AllocatePage()
 //
 //
 //
-off_t DiskSpaceMgr::PageIdToOffset( PageId pageId ) const
+off_t Space::PageIdToOffset( PageId pageId ) const
 {
     return pageId.GetValue() * static_cast< off_t >( DiskBlock::Size );
 }

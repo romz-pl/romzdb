@@ -7,9 +7,9 @@
 
 TEST(HeapPage, Constructor)
 {
-    Disk disk( UnixFile::GetTempPath(), UnixFile::Mode::Create );
+    Space space( UnixFile::GetTempPath(), UnixFile::Mode::Create );
     const std::size_t frameNo = 3;
-    BufferMgr bufferMgr( disk, frameNo );
+    BufferMgr bufferMgr( space, frameNo );
 
 
     PageId pageId( 0 );
@@ -18,9 +18,9 @@ TEST(HeapPage, Constructor)
 
 TEST(HeapPage, Get)
 {
-    Disk disk( UnixFile::GetTempPath(), UnixFile::Mode::Create );
+    Space space( UnixFile::GetTempPath(), UnixFile::Mode::Create );
     const std::size_t frameNo = 3;
-    BufferMgr bufferMgr( disk, frameNo );
+    BufferMgr bufferMgr( space, frameNo );
 
 
     const PageId pageId = bufferMgr.GetNew();
@@ -33,9 +33,9 @@ TEST(HeapPage, Get)
 
 TEST(HeapPage, Insert)
 {
-    Disk disk( UnixFile::GetTempPath(), UnixFile::Mode::Create );
+    Space space( UnixFile::GetTempPath(), UnixFile::Mode::Create );
     const std::size_t frameNo = 3;
-    BufferMgr bufferMgr( disk, frameNo );
+    BufferMgr bufferMgr( space, frameNo );
 
 
     const PageId pageId = bufferMgr.GetNew();
@@ -59,9 +59,9 @@ TEST(HeapPage, Insert)
 
 TEST(HeapPage, Delete)
 {
-    Disk disk( UnixFile::GetTempPath(), UnixFile::Mode::Create );
+    Space space( UnixFile::GetTempPath(), UnixFile::Mode::Create );
     const std::size_t frameNo = 3;
-    BufferMgr bufferMgr( disk, frameNo );
+    BufferMgr bufferMgr( space, frameNo );
 
 
     const PageId pageId = bufferMgr.GetNew();
@@ -90,9 +90,9 @@ TEST(HeapPage, Delete)
 
 TEST(HeapPage, CheckDelete)
 {
-    Disk disk( UnixFile::GetTempPath(), UnixFile::Mode::Create );
+    Space space( UnixFile::GetTempPath(), UnixFile::Mode::Create );
     const std::size_t frameNo = 3;
-    BufferMgr bufferMgr( disk, frameNo );
+    BufferMgr bufferMgr( space, frameNo );
 
 
     const PageId pageId = bufferMgr.GetNew();

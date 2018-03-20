@@ -4,8 +4,7 @@
 #include "pageid.h"
 #include <string>
 #include "unixfile.h"
-#include <memory>
-#include "disk.h"
+#include "space.h"
 #include "buffermgr.h"
 #include "heapfile.h"
 
@@ -22,7 +21,7 @@ private:
 
 private:
 
-    Disk m_disk;
+    Space m_space;
 
     BufferMgr m_bufferMgr;
 };

@@ -59,14 +59,14 @@
 
 #include <vector>
 #include "frame.h"
-#include "disk.h"
+#include "space.h"
 
 
 class BufferMgr
 {
 
 public:
-    BufferMgr( Disk& disk, std::size_t frameNo );
+    BufferMgr( Space& space, std::size_t frameNo );
     ~BufferMgr();
 
     DiskBlock* Get( PageId pageId, bool multiplePins );
@@ -83,7 +83,7 @@ private:
     void Flush( );
 
 private:
-    Disk& m_disk;
+    Space& m_space;
 
     // Pool of frames stored in the buffer manager
     std::vector< Frame > m_pool;

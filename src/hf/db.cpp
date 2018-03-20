@@ -6,8 +6,8 @@
 //
 //
 Db::Db( const std::string &path, std::size_t frameNo )
-    : m_disk( path, UnixFile::Mode::Create )
-    , m_bufferMgr( m_disk, frameNo )
+    : m_space( path, UnixFile::Mode::Create )
+    , m_bufferMgr( m_space, frameNo )
 {
 
 

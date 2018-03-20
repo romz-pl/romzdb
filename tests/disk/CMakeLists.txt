@@ -2,8 +2,7 @@
 set( TEST_NAME test-disk )
 
 add_executable( ${TEST_NAME}
-    disk.cpp
-    diskspacemgr.cpp
+    space.cpp
     main.cpp
     unixfile.cpp
 )
