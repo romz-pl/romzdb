@@ -11,5 +11,5 @@ add_subdirectory(src/disk)
 add_subdirectory(src/buffer)
 add_subdirectory(src/hf)
 
-# add_subdirectory(tests)
+add_subdirectory(tests/disk)
 
