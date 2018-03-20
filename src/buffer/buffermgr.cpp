@@ -9,8 +9,8 @@
 // Constructor
 // frameNo - number of frames in the buffer manager.
 //
-BufferMgr::BufferMgr( DiskSpaceMgr& ds, std::size_t frameNo )
-    : m_ds( ds )
+BufferMgr::BufferMgr( Disk& disk, std::size_t frameNo )
+    : m_disk( disk )
     , m_pool( frameNo )
 {
 
@@ -80,8 +80,8 @@ DiskBlock* BufferMgr::GetFromDisk( PageId pageId )
         throw std::runtime_error( "BufferMgr::GetPageFree: All pages are pinned. The buffer is full." );
     }
 
-    it->Write( m_ds );
-    it->Read( m_ds, pageId );
+    it->Write( m_disk );
+    it->Read( m_disk, pageId );
     return it->GetBlock();
 }
 
@@ -116,7 +116,7 @@ Frame& BufferMgr::FindFrame( PageId pageId )
 //
 PageId BufferMgr::GetNew()
 {
-    PageId pageId = m_ds.AllocatePage();
+    PageId pageId = m_disk.Allocate();
     return pageId;
 }
 
@@ -142,6 +142,6 @@ void BufferMgr::Flush( )
         {
             throw std::runtime_error( "BufferMgr::FlushPages. There are pinned pages." );
         }
-        f.Write( m_ds );
+        f.Write( m_disk );
     }
 }

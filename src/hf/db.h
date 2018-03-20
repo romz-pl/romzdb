@@ -5,7 +5,7 @@
 #include <string>
 #include "unixfile.h"
 #include <memory>
-#include "diskspacemgr.h"
+#include "disk.h"
 #include "buffermgr.h"
 #include "heapfile.h"
 
@@ -22,11 +22,9 @@ private:
 
 private:
 
-    std::unique_ptr< UnixFile > m_unixFile;
+    Disk m_disk;
 
-    std::unique_ptr< DiskSpaceMgr > m_ds;
-
-    std::unique_ptr< BufferMgr > m_bufferMgr;
+    BufferMgr m_bufferMgr;
 };
 
 #endif

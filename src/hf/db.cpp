@@ -6,14 +6,11 @@
 //
 //
 Db::Db( const std::string &path, std::size_t frameNo )
+    : m_disk( path, UnixFile::Mode::Create )
+    , m_bufferMgr( m_disk, frameNo )
 {
-    //
-    // If C++14, then instead using "reset" function, use std::make_unique< T >
-    //
 
-    m_unixFile.reset( new UnixFile ( path, UnixFile::Mode::Create ) );
-    m_ds.reset( new DiskSpaceMgr( *m_unixFile ) );
-    m_bufferMgr.reset( new BufferMgr( *m_ds, frameNo ) );
+
 }
 
 //
@@ -21,10 +18,10 @@ Db::Db( const std::string &path, std::size_t frameNo )
 //
 HeapFile Db::CreteHeapFile()
 {
-    const PageId headerPage = m_bufferMgr->GetNew();
+    const PageId headerPage = m_bufferMgr.GetNew();
 
     CreateHeaderPage( headerPage );
-    HeapFile hf( *m_bufferMgr, headerPage );
+    HeapFile hf( m_bufferMgr, headerPage );
 
     return hf;
 }
@@ -34,6 +31,6 @@ HeapFile Db::CreteHeapFile()
 //
 void Db::CreateHeaderPage( PageId headerPage )
 {
-    DirPage dp( *m_bufferMgr, headerPage );
+    DirPage dp( m_bufferMgr, headerPage );
     dp.ToPage();
 }

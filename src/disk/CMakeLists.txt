@@ -2,6 +2,7 @@
 set( LIB_NAME romzdb-disk ) 
 
 add_library( ${LIB_NAME} STATIC
+    disk.cpp
     diskblock.cpp
     diskspacemgr.cpp
     pageid.cpp
