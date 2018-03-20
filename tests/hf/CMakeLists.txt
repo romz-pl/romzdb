@@ -2,12 +2,12 @@
 set( TEST_NAME test-hf )
 
 add_executable( ${TEST_NAME}
-    dirpage_test.cpp
-    dir_test.cpp
-    heapfile_test.cpp
-    heappage_test.cpp
+    dirpage.cpp
+    dir.cpp
+    heapfile.cpp
+    heappage.cpp
     main.cpp
-    scaner_test.cpp
+    scaner.cpp
 )
 
 target_compile_options( ${TEST_NAME} PRIVATE 
