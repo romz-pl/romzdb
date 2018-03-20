@@ -17,10 +17,6 @@ public:
     PageId Allocate();
 
 private:
-    off_t PageIdToOffset( PageId pageId ) const;
-
-
-private:
     UnixFile m_uf;
 
     // Next unallocated page

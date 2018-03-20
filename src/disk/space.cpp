@@ -15,9 +15,8 @@ Space::Space( const std::string& path, UnixFile::Mode mode )
 //
 DiskBlock Space::Read( PageId pageId ) const
 {
-    const off_t offset = PageIdToOffset( pageId );
     DiskBlock block;
-    m_uf.Read( block.GetData(), DiskBlock::Size, offset );
+    block.Read( m_uf, pageId );
     return block;
 }
 
@@ -26,8 +25,7 @@ DiskBlock Space::Read( PageId pageId ) const
 //
 void Space::Write( const DiskBlock &block, PageId pageId ) const
 {
-    const off_t offset = PageIdToOffset( pageId );
-    m_uf.Write( block.GetData(), DiskBlock::Size, offset );
+    block.Write( m_uf, pageId );
 }
 
 //
@@ -41,10 +39,3 @@ PageId Space::Allocate()
     return PageId( m_nextPage - 1 );
 }
 
-//
-//
-//
-off_t Space::PageIdToOffset( PageId pageId ) const
-{
-    return pageId.GetValue() * static_cast< off_t >( DiskBlock::Size );
-}

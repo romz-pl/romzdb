@@ -10,15 +10,13 @@ TEST(Space, ReadWrite)
     const PageId pageId( 0 );
     Space space( UnixFile::GetTempPath(), UnixFile::Mode::Create );
 
-    DiskBlock block;
-    char data[] = "abc";
-    std::memcpy( block.GetData(), data, std::strlen( data ) );
+    const DiskBlock block ( std::string( "abc" ) );
 
     EXPECT_NO_THROW( space.Write( block, pageId ) );
 
     EXPECT_NO_THROW( space.Read( pageId ) );
 
-    EXPECT_EQ( std::memcmp( space.Read( pageId ).GetData(), block.GetData(), DiskBlock::Size ), 0 );
+    EXPECT_EQ( space.Read( pageId ), block );
 
     EXPECT_ANY_THROW( space.Read( PageId( 1 ) ) );
     EXPECT_ANY_THROW( space.Read( PageId( 2 ) ) );
