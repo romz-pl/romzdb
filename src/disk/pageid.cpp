@@ -4,14 +4,14 @@
 //
 //
 //
-const std::size_t PageId::m_invalid = std::numeric_limits< std::size_t >::max();
+const std::uint32_t PageId::m_invalid = std::numeric_limits< std::uint32_t >::max();
 
 
 
 //
 //
 //
-PageId::PageId( std::size_t id )
+PageId::PageId( std::uint32_t id )
     : m_id ( id )
 {
 
@@ -20,7 +20,7 @@ PageId::PageId( std::size_t id )
 //
 //
 //
-std::size_t PageId::GetValue() const
+std::uint32_t PageId::GetValue() const
 {
     return m_id;
 }

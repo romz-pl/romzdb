@@ -1,28 +1,28 @@
-#ifndef ROMZDB_PAGEID_H
-#define ROMZDB_PAGEID_H
+#ifndef ROMZDB_DISK_PAGEID_H
+#define ROMZDB_DISK_PAGEID_H
 
 //
 // Uniquely identifies the logical page.
 //
 
-#include <cstddef>
+#include <cstdint>
 
 class PageId
 {
 public:
-    explicit PageId( std::size_t id );
+    explicit PageId( std::uint32_t id );
 
-    std::size_t GetValue() const;
+    std::uint32_t GetValue() const;
 
     bool IsValid() const;
 
     bool operator==( const PageId& v ) const;
 
 public:
-    static const std::size_t m_invalid;
+    static const std::uint32_t m_invalid;
 
 private:
-    std::size_t m_id;
+    std::uint32_t m_id;
 
 
 };
