@@ -1,5 +1,5 @@
-#ifndef ROMZDB_UNIXFILE_H
-#define ROMZDB_UNIXFILE_H
+#ifndef ROMZDB_DISK_UNIXFILE_H
+#define ROMZDB_DISK_UNIXFILE_H
 
 #include <string>
 
@@ -16,6 +16,7 @@ public:
     void Write( const char* data, size_t nbyte, off_t offset ) const;
     void Read( char* data, size_t nbyte, off_t offset ) const;
 
+    void Fsync() const;
     static std::string GetTempPath();
 
 
@@ -23,7 +24,6 @@ private:
     void Open( const std::string& path );
     void Create( const std::string& path );
     void Close( );
-    void Lseek( off_t offset ) const;
     off_t GetSize() const;
 
 

@@ -5,7 +5,7 @@
 #include <cstring>
 
 
-TEST(DiskSpaceMgr, ReadWrite)
+TEST(Space, ReadWrite)
 {
     const PageId pageId( 0 );
     Space space( UnixFile::GetTempPath(), UnixFile::Mode::Create );

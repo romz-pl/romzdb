@@ -94,7 +94,7 @@ void UnixFile::Write( const char* data, size_t nbyte, off_t offset ) const
     ssize_t rcw = pwrite( m_fd, data, nbyte, offset );
     if( rcw < 0 || rcw != static_cast< ssize_t >( nbyte ) )
     {
-        throw std::runtime_error( "UnixFile::Write: write" );
+        throw std::runtime_error( "UnixFile::Write" );
     }
 }
 
@@ -119,23 +119,8 @@ void UnixFile::Read( char* data, size_t nbyte, off_t offset ) const
 void UnixFile::Allocate( size_t nbyte )
 {
     const off_t fileEnd = GetSize();
-    Lseek( fileEnd + nbyte );
     std::vector< char > data( nbyte, 0 );
     Write( &(data[ 0 ]), nbyte, fileEnd );
-}
-
-//
-// Moves the "current position" to "offset" from the begin
-//
-void UnixFile::Lseek( off_t offset ) const
-{
-    assert( m_fd != m_badFd );
-
-    off_t rc = lseek( m_fd, offset, SEEK_SET );
-    if( rc < 0 )
-    {
-        throw std::runtime_error( "UnixFile::Lseek." );
-    }
 }
 
 //
@@ -170,5 +155,17 @@ off_t UnixFile::GetSize() const
         throw std::runtime_error( "UnixFile::GetSize" );
     }
     return buf.st_size;
+}
+
+//
+//
+//
+void UnixFile::Fsync() const
+{
+    const int rc = fsync( m_fd );
+    if( rc != 0 )
+    {
+        throw std::runtime_error( "UnixFile::Fsync" );
+    }
 }
 

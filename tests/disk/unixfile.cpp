@@ -72,3 +72,12 @@ TEST(UnixFile, Allocate)
     EXPECT_NO_THROW( uf.Read( &( tmp[ 0 ] ), tmp.size(), 0 ) );
 
 }
+
+TEST(UnixFile, Fsync)
+{
+    const std::string path = UnixFile::GetTempPath();
+    UnixFile uf( path, UnixFile::Mode::Create );
+
+    EXPECT_NO_THROW( uf.Fsync( ) );
+}
+
