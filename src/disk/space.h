@@ -1,27 +1,27 @@
-#ifndef ROMZDB_DISKSPACEMGR_H
-#define ROMZDB_DISKSPACEMGR_H
+#ifndef ROMZDB_DISK_SPACE_H
+#define ROMZDB_DISK_SPACE_H
 
 #include "unixfile.h"
 #include "pageid.h"
 #include "diskblock.h"
 
-class DiskSpaceMgr
+class Space
 {
 public:
-    explicit DiskSpaceMgr( UnixFile& uf );
-    ~DiskSpaceMgr() = default;
+    explicit Space( const std::string& path, UnixFile::Mode mode );
+    ~Space() = default;
 
     DiskBlock Read( PageId pageId ) const;
     void Write( const DiskBlock& block, PageId pageId ) const;
 
-    PageId AllocatePage();
+    PageId Allocate();
 
 private:
     off_t PageIdToOffset( PageId pageId ) const;
 
 
 private:
-    UnixFile& m_uf;
+    UnixFile m_uf;
 
     // Next unallocated page
     std::size_t m_nextPage;

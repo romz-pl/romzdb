@@ -6,9 +6,9 @@
 
 TEST(DirPage, InsertDeleteGet)
 {
-    Disk disk( UnixFile::GetTempPath(), UnixFile::Mode::Create );
+    Space space( UnixFile::GetTempPath(), UnixFile::Mode::Create );
     const std::size_t frameNo = 3;
-    BufferMgr bufferMgr( disk, frameNo );
+    BufferMgr bufferMgr( space, frameNo );
 
 
     PageId pageId = bufferMgr.GetNew();

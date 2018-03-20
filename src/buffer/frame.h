@@ -7,7 +7,7 @@
 
 #include <cstdint>
 #include "pageid.h"
-#include "disk.h"
+#include "space.h"
 
 class Frame
 {
@@ -24,8 +24,8 @@ public:
 
     DiskBlock* GetBlock();
 
-    void Read( const Disk& disk, PageId pageId );
-    void Write( const Disk &disk );
+    void Read( const Space& space, PageId pageId );
+    void Write( const Space &space );
 
 
 
