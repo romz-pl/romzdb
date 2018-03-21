@@ -10,10 +10,10 @@ TEST(DbFile, All)
 
     DbFile db( path, UnixFile::Mode::Create );
 
-    EXPECT_ANY_THROW( db.Read( BlockId( 0 ) ) );
+    EXPECT_ANY_THROW( db.Read( BlockId( 1 ) ) );
 
     DiskBlock block;
-    EXPECT_ANY_THROW( db.Write( block, BlockId( 0 ) ) );
+    EXPECT_ANY_THROW( db.Write( block, BlockId( 1 ) ) );
 
     BlockId blockId = db.Alloc();
     EXPECT_NO_THROW( db.Read( blockId ) );
