@@ -17,8 +17,17 @@ DbFile::DbFile( const std::string& path, UnixFile::Mode mode )
     }
     else if( mode == UnixFile::Mode::Create )
     {
+        m_spaceMap.set( 0 );
         m_uf.Write( m_spaceMap.data(), m_spaceMap.byte_no(), 0 );
     }
+}
+
+//
+//
+//
+DbFile::~DbFile()
+{
+    m_uf.Write( m_spaceMap.data(), m_spaceMap.byte_no(), 0 );
 }
 
 //
@@ -59,7 +68,9 @@ BlockId DbFile::Alloc()
         if( !m_spaceMap.test( i ) )
         {
             m_spaceMap.set( i );
-            return BlockId( i );
+            const BlockId blockId( i );
+            DiskBlock().Write( m_uf, blockId );
+            return blockId;
         }
     }
     throw std::runtime_error( "DbFile::Alloc: File full" );

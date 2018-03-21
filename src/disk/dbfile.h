@@ -11,7 +11,7 @@ class DbFile
 {
 public:
     DbFile( const std::string& path, UnixFile::Mode mode );
-    ~DbFile() = default;
+    ~DbFile();
 
     DiskBlock Read( BlockId blockId ) const;
     void Write( const DiskBlock& block, BlockId blockId ) const;
