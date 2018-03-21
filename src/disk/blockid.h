@@ -10,13 +10,10 @@
 class BlockId
 {
 public:
-    BlockId();
     explicit BlockId( std::uint32_t id );
+    ~BlockId() = default;
 
    std::uint32_t GetValue() const;
-
-private:
-    static const std::uint32_t m_invalid;
 
 private:
     std::uint32_t m_id;

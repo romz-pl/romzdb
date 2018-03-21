@@ -1,19 +1,6 @@
 #include "blockid.h"
 #include <limits>
 
-//
-//
-//
-const std::uint32_t BlockId::m_invalid = std::numeric_limits< std::uint32_t >::max();
-
-//
-//
-//
-BlockId::BlockId( )
-    : m_id ( m_invalid )
-{
-
-}
 
 //
 //
