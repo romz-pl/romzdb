@@ -12,7 +12,7 @@ TEST(HeapPage, Constructor)
     BufferMgr bufferMgr( space, frameNo );
 
 
-    PageId pageId( 0 );
+    PageId pageId( 1 );
     EXPECT_ANY_THROW( HeapPage( bufferMgr, pageId ) );
 }
 

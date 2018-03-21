@@ -6,7 +6,7 @@
 
 TEST(BufferMgr, GetPage)
 {
-    PageId pageId( 0 );
+    PageId pageId( 1 );
     Space space( UnixFile::GetTempPath(), UnixFile::Mode::Create );
     const std::size_t numPages = 10;
     BufferMgr bufferMgr( space, numPages );
@@ -42,6 +42,7 @@ TEST(BufferMgr, TooSmallBuffer)
 
     for( auto id : pageId )
         EXPECT_NO_THROW( bufferMgr.Unpin( id ) );
+
 }
 
 TEST(BufferMgr, MarkDirty)

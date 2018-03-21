@@ -87,7 +87,7 @@ void UnixFile::Close( )
 // Writes "data" of length "nbyte" to file.
 // The data are offset "offset" from the begin.
 //
-void UnixFile::Write( const char* data, size_t nbyte, off_t offset ) const
+void UnixFile::Write( const void* data, size_t nbyte, off_t offset ) const
 {
     assert( m_fd != m_badFd );
 
@@ -102,7 +102,7 @@ void UnixFile::Write( const char* data, size_t nbyte, off_t offset ) const
 // Reads data from the file.
 // If the data are read outside the file, it throws the exeption.
 //
-void UnixFile::Read( char* data, size_t nbyte, off_t offset ) const
+void UnixFile::Read( void *data, size_t nbyte, off_t offset ) const
 {
     assert( m_fd != m_badFd );
 

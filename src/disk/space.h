@@ -5,6 +5,7 @@
 #include "pageid.h"
 #include "diskblock.h"
 #include "blockid.h"
+#include "dbfile.h"
 
 class Space
 {
@@ -15,17 +16,14 @@ public:
     DiskBlock Read( PageId pageId ) const;
     void Write( const DiskBlock& block, PageId pageId ) const;
 
-    PageId Allocate();
+    PageId Alloc();
+    void Dealloc( PageId pageId );
 
 private:
-    std::pair< const UnixFile *, BlockId> Map( PageId pageId ) const;
+    std::pair< const DbFile *, BlockId > Map( PageId pageId ) const;
 
 private:
-    UnixFile m_uf;
-
-    // Next unallocated page
-    std::uint32_t m_nextPage;
-
+    DbFile m_dbFile;
 };
 
 #endif

@@ -116,7 +116,7 @@ Frame& BufferMgr::FindFrame( PageId pageId )
 //
 PageId BufferMgr::GetNew()
 {
-    PageId pageId = m_space.Allocate();
+    PageId pageId = m_space.Alloc();
     return pageId;
 }
 
