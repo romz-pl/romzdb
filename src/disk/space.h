@@ -4,6 +4,7 @@
 #include "unixfile.h"
 #include "pageid.h"
 #include "diskblock.h"
+#include "blockid.h"
 
 class Space
 {
@@ -17,10 +18,13 @@ public:
     PageId Allocate();
 
 private:
+    std::pair< const UnixFile *, BlockId> Map( PageId pageId ) const;
+
+private:
     UnixFile m_uf;
 
     // Next unallocated page
-    std::size_t m_nextPage;
+    std::uint32_t m_nextPage;
 
 };
 

@@ -49,24 +49,24 @@ bool DiskBlock::operator== ( const DiskBlock& block ) const
 //
 //
 //
-off_t DiskBlock::PageIdToOffset( PageId pageId ) const
+off_t DiskBlock::PageIdToOffset( BlockId blockId ) const
 {
-    return pageId.GetValue() * static_cast< off_t >( DiskBlock::Size );
+    return blockId.GetValue() * static_cast< off_t >( DiskBlock::Size );
 }
 
 //
 //
 //
-void DiskBlock::Read( const UnixFile& uf, PageId pageId )
+void DiskBlock::Read( const UnixFile& uf, BlockId blockId )
 {
-    const off_t offset = PageIdToOffset( pageId );
+    const off_t offset = PageIdToOffset( blockId );
     uf.Read( GetData(), DiskBlock::Size, offset );
 }
 //
 //
 //
-void DiskBlock::Write( const UnixFile& uf, PageId pageId ) const
+void DiskBlock::Write( const UnixFile& uf, BlockId blockId ) const
 {
-    const off_t offset = PageIdToOffset( pageId );
+    const off_t offset = PageIdToOffset( blockId );
     uf.Write( GetData(), DiskBlock::Size, offset );
 }
