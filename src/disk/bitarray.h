@@ -15,8 +15,11 @@ public:
     void flip( std::uint32_t k );
     bool test( std::uint32_t k ) const;
 
-    std::uint32_t* data();
-    const std::uint32_t* data() const;
+    void* data();
+    const void* data() const;
+
+    std::uint32_t bit_no() const;
+    std::uint32_t byte_no() const;
 
 private:
     std::uint32_t idx( std::uint32_t k ) const;
@@ -101,7 +104,7 @@ void BitArray< SIZE >::flip( std::uint32_t k )
 //
 //
 template< std::uint32_t SIZE >
-std::uint32_t* BitArray< SIZE >::data()
+void* BitArray< SIZE >::data()
 {
     return m_array;
 }
@@ -110,9 +113,27 @@ std::uint32_t* BitArray< SIZE >::data()
 //
 //
 template< std::uint32_t SIZE >
-const std::uint32_t* BitArray< SIZE >::data() const
+const void *BitArray<SIZE>::data() const
 {
     return m_array;
+}
+
+//
+//
+//
+template< std::uint32_t SIZE >
+std::uint32_t BitArray< SIZE >::bit_no() const
+{
+    return SIZE;
+}
+
+//
+//
+//
+template< std::uint32_t SIZE >
+std::uint32_t BitArray< SIZE >::byte_no() const
+{
+    return ( SIZE + CHAR_BIT - 1 ) / CHAR_BIT;
 }
 
 
