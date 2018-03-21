@@ -5,8 +5,7 @@
 //
 //
 Space::Space( const std::string& path, UnixFile::Mode mode )
-    : m_uf( path, mode )
-    , m_nextPage( 0 )
+    : m_dbFile( path, mode )
 {
 
 }
@@ -16,12 +15,11 @@ Space::Space( const std::string& path, UnixFile::Mode mode )
 //
 DiskBlock Space::Read( PageId pageId ) const
 {
-    std::pair< const UnixFile*, BlockId > ret = Map( pageId );
-    const UnixFile *uf = ret.first;
+    std::pair< const DbFile*, BlockId > ret = Map( pageId );
+    const DbFile *dbFile = ret.first;
     const BlockId blockId = ret.second;
-    DiskBlock block;
-    block.Read( *uf, blockId );
-    return block;
+
+    return dbFile->Read( blockId );
 }
 
 //
@@ -29,21 +27,32 @@ DiskBlock Space::Read( PageId pageId ) const
 //
 void Space::Write( const DiskBlock &block, PageId pageId ) const
 {
-    std::pair< const UnixFile*, BlockId > ret = Map( pageId );
-    const UnixFile *uf = ret.first;
+    std::pair< const DbFile*, BlockId > ret = Map( pageId );
+    const DbFile *dbFile = ret.first;
     const BlockId blockId = ret.second;
-    block.Write( *uf, blockId );
+    dbFile->Write( block, blockId );
 }
 
 //
 //
 //
-PageId Space::Allocate()
+PageId Space::Alloc()
 {
-    m_nextPage++;
+    const BlockId blockId = m_dbFile.Alloc( );
+    return PageId( blockId.GetValue() );
+}
 
-    m_uf.Allocate( DiskBlock::Size );
-    return PageId( m_nextPage - 1 );
+//
+//
+//
+void Space::Dealloc( PageId pageId )
+{
+//    std::pair< const DbFile*, BlockId > ret = Map( pageId );
+//    const DbFile *dbFile = ret.first;
+//    const BlockId blockId = ret.second;
+//    dbFile->Dealloc( blockId );
+    const BlockId blockId( pageId.GetValue() );
+    m_dbFile.Dealloc( blockId );
 }
 
 //
@@ -55,9 +64,9 @@ PageId Space::Allocate()
 //
 // Current implementation of Space has one UnixFile only, hence the mapping is trivial.
 //
-std::pair< const UnixFile*, BlockId > Space::Map( PageId pageId ) const
+std::pair< const DbFile *, BlockId > Space::Map( PageId pageId ) const
 {
     assert( pageId.IsValid() );
-    return std::make_pair( &m_uf, BlockId( pageId.GetValue() ) );
+    return std::make_pair( &m_dbFile, BlockId( pageId.GetValue() ) );
 }
 
