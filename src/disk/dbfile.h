@@ -1,8 +1,7 @@
 #ifndef ROMZDB_DISK_DBFILE_H
 #define ROMZDB_DISK_DBFILE_H
 
-
-#include <bitset>
+#include <climits>
 #include "unixfile.h"
 #include "blockid.h"
 #include "diskblock.h"
@@ -23,9 +22,7 @@ public:
 private:
     UnixFile m_uf;
 
-    DiskBlock m_header;
-
-    BitArray< 8 * DiskBlock::Size > m_spaceMap;
+    BitArray< CHAR_BIT * DiskBlock::Size > m_spaceMap;
 
 };
 
