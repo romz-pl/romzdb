@@ -35,6 +35,7 @@ DbFile::~DbFile()
 //
 DiskBlock DbFile::Read( BlockId blockId ) const
 {
+    assert( blockId.GetValue() != 0 ); // Block 0 is reserved for space map
     if( !m_spaceMap.test( blockId.GetValue() ) )
     {
         throw std::runtime_error( "DbFile::Read: Block not in file" );
@@ -50,6 +51,7 @@ DiskBlock DbFile::Read( BlockId blockId ) const
 //
 void DbFile::Write( const DiskBlock& block, BlockId blockId ) const
 {
+    assert( blockId.GetValue() != 0 ); // Block 0 is reserved for space map
     if( !m_spaceMap.test( blockId.GetValue() ) )
     {
         throw std::runtime_error( "DbFile::Write: Block not in file" );
