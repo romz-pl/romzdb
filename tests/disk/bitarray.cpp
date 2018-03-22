@@ -7,7 +7,7 @@
 TEST(BitArray, All)
 {
     const std::uint32_t bits_no = 10000;
-    BitArray< bits_no > ba;
+    BitArray ba( bits_no );
 
     for( std::uint32_t k = 0; k < bits_no; k++ )
     {
