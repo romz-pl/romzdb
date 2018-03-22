@@ -2,9 +2,11 @@
 set( LIB_NAME romzdb-disk ) 
 
 add_library( ${LIB_NAME} STATIC
+    bitarray.cpp
     blockid.cpp
     dbfile.cpp
     diskblock.cpp
+    div_ceil.cpp
     pageid.cpp
     space.cpp
     unixfile.cpp
