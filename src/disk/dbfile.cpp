@@ -9,6 +9,47 @@
 DbFile::DbFile( const std::string& path, UnixFile::Mode mode )
     : m_uf( path, mode )
 {
+    //
+    // class Util
+    // {
+    // public:
+    //  static int ceil( int numerator, int denominator )
+    //  {
+    //    assert( denominator != 0 );
+    //    const std::div_t res = std::div( numerator, denominator );
+    //    return res.quat + !!res.num;
+    //  }
+    // };
+    //
+    // class SpaceMap
+    //    {
+    //        SpaceMap( std::uint32_t blockNo );
+    //        std::uint32_t BitsOnBlock() const { return 8 * DiskBlock::Size; }
+    //        void Read( const UnixFile& uf );
+    //        void Write( const UnixFile& uf ) const;
+    //        bool Is( BlockId blockId ) const;
+    //        BlockId Alloc();
+    //        void Dealloc( BlockId blockId );
+    //    };
+    //    
+    //    
+    // maximal size of file in bytes
+    // std::uint32_t maxSize; 
+    //
+    // Number of bits per block used in space map
+    // const std::uint32_t bitsOnBlock = 8 * DiskBlock::Size;
+    //
+    // maximal number of bloks in file
+    // const std::uint32_t maxBlockNo = maxSize / DiskBlock::Size; 
+    //
+    // Number of blocks with data in file
+    // const std::uint32_t dataBlockNo = maxBlockNo * bitsOnBlock / (bitsOnBlock + 1); 
+    //
+    // Number of blocks with map space in file
+    // const std::uint32_t mapBlockNo = Utils::ceil( dataPageNo, bitsOnBlock );
+    //
+    // assert( dataBlockNo + mapBlockNo <= maxBlockNo );
+        
     assert( m_spaceMap.byte_no() == DiskBlock::Size );
 
     if( mode == UnixFile::Mode::Open )
