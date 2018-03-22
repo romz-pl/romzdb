@@ -1,5 +1,6 @@
 #include <cassert>
 #include <stdexcept>
+#include <climits>
 #include "dbfile.h"
 
 
@@ -8,6 +9,7 @@
 //
 DbFile::DbFile( const std::string& path, UnixFile::Mode mode )
     : m_uf( path, mode )
+    , m_spaceMap( CHAR_BIT * DiskBlock::Size )
 {
     //
     // class Util
