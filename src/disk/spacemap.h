@@ -14,8 +14,14 @@ public:
     ~SpaceMap();
 
     bool is_allocated( BlockId blockId ) const;
+    bool is_valid( BlockId blockId ) const;
+
     BlockId allocate();
     void free( BlockId blockId );
+
+    std::uint32_t max_data_block_no( ) const;
+    std::uint32_t curr_data_block_no( ) const;
+    std::uint32_t map_block_no( ) const;
 
 private:
     void open( );
@@ -26,7 +32,7 @@ private:
     std::uint32_t bits_on_block() const;
 
 private:
-    std::uint32_t m_version;
+    std::uint32_t m_version = 1;
 
     std::uint32_t m_map_block_no;
 

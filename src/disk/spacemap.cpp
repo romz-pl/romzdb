@@ -43,6 +43,16 @@ void SpaceMap::create( std::uint32_t max_size )
     // maximal allowed number of bloks in file
     const std::uint32_t max_block_no = max_size / DiskBlock::Size;
 
+    if( max_block_no < 2 )
+    {
+        std::string txt( "SpaceMap::create: max_size too small.\n" );
+        txt += "Current value: ";
+        txt += std::to_string( max_size ) + "\n";
+        txt += "It must be at least: ";
+        txt += std::to_string( 2 * DiskBlock::Size ) + "\n";
+        throw std::runtime_error( txt );
+    }
+
     std::uint32_t bit_no = bits_on_block() - bits_in_header();
     m_map_block_no = 1;
 
@@ -58,6 +68,7 @@ void SpaceMap::create( std::uint32_t max_size )
 
     m_bitMap = new BitArray( m_map_block_no + m_data_block_no );
 }
+
 
 //
 //
@@ -85,6 +96,9 @@ void SpaceMap::open( )
 void SpaceMap::write( )
 {
     off_t offset = 0;
+
+    m_uf.Write( &m_version, sizeof( m_version ), offset );
+    offset += sizeof( m_version );
 
     m_uf.Write( &m_map_block_no, sizeof( m_map_block_no ), offset );
     offset += sizeof( m_map_block_no );
@@ -130,6 +144,15 @@ bool SpaceMap::is_allocated( BlockId blockId ) const
 //
 //
 //
+bool SpaceMap::is_valid( BlockId blockId ) const
+{
+    const std::uint32_t v = blockId.GetValue();
+    return ( v >= m_map_block_no && m_bitMap->bit_no() );
+}
+
+//
+//
+//
 BlockId SpaceMap::allocate()
 {
     for( std::uint32_t i = m_map_block_no; i < m_bitMap->bit_no(); i++ )
@@ -155,3 +178,36 @@ void SpaceMap::free( BlockId blockId )
 
     m_bitMap->reset( blockId.GetValue() );
 }
+
+//
+//
+//
+std::uint32_t SpaceMap::max_data_block_no( ) const
+{
+    return m_data_block_no;
+}
+
+//
+//
+//
+std::uint32_t SpaceMap::curr_data_block_no( ) const
+{
+    std::uint32_t ret = 0;
+    for( std::uint32_t i = m_map_block_no; i < m_bitMap->bit_no(); i++ )
+    {
+        if( m_bitMap->test( i ) )
+        {
+            ret++;
+        }
+    }
+    return ret;
+}
+
+//
+//
+//
+std::uint32_t SpaceMap::map_block_no( ) const
+{
+    return m_map_block_no;
+}
+
