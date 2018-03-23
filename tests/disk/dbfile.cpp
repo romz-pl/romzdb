@@ -19,9 +19,11 @@ TEST(DbFile, ReadWrite)
     EXPECT_NO_THROW( db.Read( blockId ) );
     EXPECT_NO_THROW( db.Write( block, blockId ) );
 
-    db.Dealloc( blockId );
+    EXPECT_NO_THROW( db.Dealloc( blockId ) );
     EXPECT_ANY_THROW( db.Read( blockId ) );
     EXPECT_ANY_THROW( db.Write( block, blockId ) );
+
+    EXPECT_ANY_THROW( db.Dealloc( blockId ) );
 
 }
 
@@ -46,7 +48,7 @@ TEST(DbFile, ToSmall)
 
 TEST(DbFile, CreateBig)
 {
-    const uint32_t max_size = ( 1U << 24 );
+    const uint32_t max_size = ( 1U << 26 );
     const std::string path = UnixFile::GetTempPath();
 
     EXPECT_NO_THROW( DbFile( path, max_size ) );
