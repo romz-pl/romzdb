@@ -9,6 +9,7 @@ add_library( ${LIB_NAME} STATIC
     div_ceil.cpp
     pageid.cpp
     space.cpp
+    spacemap.cpp
     unixfile.cpp
 )
 

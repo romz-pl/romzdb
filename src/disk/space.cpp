@@ -2,10 +2,19 @@
 #include "space.h"
 
 //
+// Open
 //
+Space::Space( const std::string& path )
+    : m_dbFile( path )
+{
+
+}
+
 //
-Space::Space( const std::string& path, UnixFile::Mode mode )
-    : m_dbFile( path, mode )
+// Create
+//
+Space::Space( const std::string& path, std::uint32_t max_size )
+    : m_dbFile( path, max_size )
 {
 
 }

@@ -8,9 +8,11 @@ TEST(BitArray, All)
 {
     const std::uint32_t bits_no = 10000;
     BitArray ba( bits_no );
+    const BitArray bconst( bits_no );
 
     EXPECT_TRUE( ba.bit_no() == bits_no );
     EXPECT_TRUE( ba.data() != nullptr );
+    EXPECT_TRUE( bconst.data() != nullptr );
 
     for( std::uint32_t k = 0; k < bits_no; k++ )
     {
