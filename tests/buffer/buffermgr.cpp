@@ -2,13 +2,14 @@
 #include <buffermgr.h>
 #include <unixfile.h>
 #include <cstdlib>
+#include "temp_path.h"
 
 
 TEST(BufferMgr, GetPage)
 {
     PageId pageId( 1 );
     const uint32_t max_size = ( 1U << 20 );
-    Space space( UnixFile::GetTempPath(), max_size );
+    Space space( GetTempPath(), max_size );
     const std::size_t numPages = 10;
     BufferMgr bufferMgr( space, numPages );
 
@@ -27,7 +28,7 @@ TEST(BufferMgr, GetPage)
 TEST(BufferMgr, TooSmallBuffer)
 {
     const uint32_t max_size = ( 1U << 20 );
-    Space space( UnixFile::GetTempPath(), max_size );
+    Space space( GetTempPath(), max_size );
     const std::size_t numPages = 3;
     BufferMgr bufferMgr( space, numPages );
     std::vector< PageId > pageId;
@@ -51,7 +52,7 @@ TEST(BufferMgr, MarkDirty)
 {
     PageId pageId( 1 );
     const uint32_t max_size = ( 1U << 20 );
-    Space space( UnixFile::GetTempPath(), max_size );
+    Space space( GetTempPath(), max_size );
     const std::size_t numPages = 3;
     BufferMgr bufferMgr( space, numPages );
 
@@ -68,7 +69,7 @@ TEST(BufferMgr, MarkDirty)
 TEST(BufferMgr, Unpin)
 {
     const uint32_t max_size = ( 1U << 20 );
-    Space space( UnixFile::GetTempPath(), max_size );
+    Space space( GetTempPath(), max_size );
     const std::size_t numPages = 3;
     const std::size_t loopSize = 11;
     BufferMgr bufferMgr( space, numPages );

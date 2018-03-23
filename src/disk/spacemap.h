@@ -21,7 +21,6 @@ public:
 
     std::uint32_t max_data_block_no( ) const;
     std::uint32_t curr_data_block_no( ) const;
-    std::uint32_t map_block_no( ) const;
 
 private:
     void open( );

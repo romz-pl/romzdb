@@ -2,11 +2,12 @@
 #include <unixfile.h>
 #include <cstdlib>
 #include <cassert>
+#include "temp_path.h"
 
 
 TEST(UnixFile, OpenCreate)
 {
-    const std::string path = UnixFile::GetTempPath();
+    const std::string path = GetTempPath();
 
     // The file does not exist. It can not be opened
     EXPECT_ANY_THROW( UnixFile( path, UnixFile::Mode::Open ) );
@@ -31,9 +32,31 @@ std::vector< char > GetData()
     return ret;
 }
 
+TEST(UnixFile, WriteFull)
+{
+    EXPECT_NO_THROW( UnixFile( "/dev/full", UnixFile::Mode::Open ) );
+    UnixFile uf( "/dev/full", UnixFile::Mode::Open );
+
+    const off_t offset = 0;
+    std::uint32_t v = 0;
+    EXPECT_ANY_THROW( uf.Write( &v, sizeof( v ), offset ) );
+    EXPECT_ANY_THROW( uf.Fsync( ) );
+}
+
+TEST(UnixFile, ReadFull)
+{
+    EXPECT_NO_THROW( UnixFile( "/dev/null", UnixFile::Mode::Open ) );
+    UnixFile uf( "/dev/null", UnixFile::Mode::Open );
+
+    const off_t offset = 0;
+    std::uint32_t v = 0;
+    EXPECT_ANY_THROW( uf.Read( &v, sizeof( v ), offset ) );
+    EXPECT_ANY_THROW( uf.Fsync( ) );
+}
+
 TEST(UnixFile, WriteRead)
 {
-    const std::string path = UnixFile::GetTempPath();
+    const std::string path = GetTempPath();
 
     UnixFile uf( path, UnixFile::Mode::Create );
 
@@ -52,7 +75,7 @@ TEST(UnixFile, WriteRead)
 
 TEST(UnixFile, Read)
 {
-    const std::string path = UnixFile::GetTempPath();
+    const std::string path = GetTempPath();
     UnixFile uf( path, UnixFile::Mode::Create );
 
     const std::size_t ss = 10;
@@ -60,22 +83,9 @@ TEST(UnixFile, Read)
     EXPECT_ANY_THROW( uf.Read( &( tmp[ 0 ] ), tmp.size(), 0 ) );
 }
 
-TEST(UnixFile, Allocate)
-{
-    const std::string path = UnixFile::GetTempPath();
-    UnixFile uf( path, UnixFile::Mode::Create );
-
-    const std::size_t ss = 10;
-    EXPECT_NO_THROW( uf.Allocate( ss ) );
-
-    std::vector< char > tmp( ss );
-    EXPECT_NO_THROW( uf.Read( &( tmp[ 0 ] ), tmp.size(), 0 ) );
-
-}
-
 TEST(UnixFile, Fsync)
 {
-    const std::string path = UnixFile::GetTempPath();
+    const std::string path = GetTempPath();
     UnixFile uf( path, UnixFile::Mode::Create );
 
     EXPECT_NO_THROW( uf.Fsync( ) );

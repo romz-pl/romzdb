@@ -2,11 +2,12 @@
 #include <dbfile.h>
 #include <cstdlib>
 #include <cstring>
+#include "temp_path.h"
 
 
 TEST(DbFile, ReadWrite)
 {
-    const std::string path = UnixFile::GetTempPath();
+    const std::string path = GetTempPath();
     const uint32_t max_size = ( 1U << 20 );
     DbFile db( path, max_size );
 
@@ -30,7 +31,7 @@ TEST(DbFile, ReadWrite)
 TEST(DbFile, OpenCreate)
 {
     const uint32_t max_size = ( 1U << 14 );
-    const std::string path = UnixFile::GetTempPath();
+    const std::string path = GetTempPath();
 
     EXPECT_NO_THROW( DbFile( path, max_size ) );
     EXPECT_NO_THROW( DbFile{ path } );
@@ -41,15 +42,23 @@ TEST(DbFile, OpenCreate)
 TEST(DbFile, ToSmall)
 {
     const uint32_t max_size = ( 1U << 10 );
-    const std::string path = UnixFile::GetTempPath();
+    const std::string path = GetTempPath();
 
     EXPECT_ANY_THROW( DbFile( path, max_size ) );
 }
 
-TEST(DbFile, CreateBig)
+TEST(DbFile, BigFile)
 {
-    const uint32_t max_size = ( 1U << 26 );
-    const std::string path = UnixFile::GetTempPath();
+    const uint32_t max_size = ( 1U << 29 );
+    const std::string path = GetTempPath();
+
+    EXPECT_NO_THROW( DbFile( path, max_size ) );
+}
+
+TEST(DbFile, BadAlloc)
+{
+    const uint32_t max_size = ( 1U << 15 );
+    const std::string path = GetTempPath();
 
     EXPECT_NO_THROW( DbFile( path, max_size ) );
 
@@ -67,7 +76,7 @@ TEST(DbFile, CreateBig)
 
 TEST(DbFile, NotValidBlock)
 {
-    const std::string path = UnixFile::GetTempPath();
+    const std::string path = GetTempPath();
     const uint32_t max_size = ( 1U << 20 );
     DbFile db( path, max_size );
 

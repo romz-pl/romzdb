@@ -4,6 +4,7 @@
 #include <scaner.h>
 #include <random>
 #include <algorithm>
+#include "temp_path.h"
 
 
 std::vector< Record > GenerateData()
@@ -25,7 +26,7 @@ std::vector< Record > GenerateData()
 
 TEST(Scaner, Compare)
 {
-    const std::string path = UnixFile::GetTempPath();
+    const std::string path = GetTempPath();
     const std::size_t frameNo = 50;
 
     Db db( path, frameNo );
