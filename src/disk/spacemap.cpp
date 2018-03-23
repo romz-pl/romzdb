@@ -203,11 +203,3 @@ std::uint32_t SpaceMap::curr_data_block_no( ) const
     return ret;
 }
 
-//
-//
-//
-std::uint32_t SpaceMap::map_block_no( ) const
-{
-    return m_map_block_no;
-}
-
