@@ -20,7 +20,6 @@ DbFile::DbFile( const std::string& path, std::uint32_t max_size )
     : m_uf( path, UnixFile::Mode::Create )
     , m_spaceMap( m_uf, max_size )
 {
-
 }
 
 //
