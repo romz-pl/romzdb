@@ -4,6 +4,15 @@
 #include <cstdlib>
 #include <cstring>
 
+TEST(Space, OpenCreate)
+{
+    const uint32_t max_size = ( 1U << 20 );
+    const std::string path = UnixFile::GetTempPath();
+    EXPECT_NO_THROW( Space( path, max_size ) );
+    EXPECT_ANY_THROW( Space( path, max_size ) );
+    EXPECT_NO_THROW( Space{ path } );
+}
+
 
 TEST(Space, ReadWrite)
 {
