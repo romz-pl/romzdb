@@ -46,9 +46,17 @@ TEST(DbFile, ToSmall)
     EXPECT_ANY_THROW( DbFile( path, max_size ) );
 }
 
-TEST(DbFile, CreateBig)
+TEST(DbFile, BigFile)
 {
-    const uint32_t max_size = ( 1U << 26 );
+    const uint32_t max_size = ( 1U << 29 );
+    const std::string path = UnixFile::GetTempPath();
+
+    EXPECT_NO_THROW( DbFile( path, max_size ) );
+}
+
+TEST(DbFile, BadAlloc)
+{
+    const uint32_t max_size = ( 1U << 15 );
     const std::string path = UnixFile::GetTempPath();
 
     EXPECT_NO_THROW( DbFile( path, max_size ) );
