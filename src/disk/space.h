@@ -10,7 +10,8 @@
 class Space
 {
 public:
-    explicit Space( const std::string& path, UnixFile::Mode mode );
+    explicit Space( const std::string& path );
+    Space( const std::string& path, std::uint32_t max_size );
     ~Space() = default;
 
     DiskBlock Read( PageId pageId ) const;
