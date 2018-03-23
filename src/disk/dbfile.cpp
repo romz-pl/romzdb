@@ -35,9 +35,14 @@ DbFile::~DbFile()
 //
 DiskBlock DbFile::Read( BlockId blockId ) const
 {
+    if( !m_spaceMap.is_valid( blockId ) )
+    {
+        throw std::runtime_error( "DbFile::Read: Not valid block." );
+    }
+
     if( !m_spaceMap.is_allocated( blockId ) )
     {
-        throw std::runtime_error( "DbFile::Read: Block not in file" );
+        throw std::runtime_error( "DbFile::Read: Block is not allocated." );
     }
 
     DiskBlock block;
@@ -50,9 +55,14 @@ DiskBlock DbFile::Read( BlockId blockId ) const
 //
 void DbFile::Write( const DiskBlock& block, BlockId blockId ) const
 {
+    if( !m_spaceMap.is_valid( blockId ) )
+    {
+        throw std::runtime_error( "DbFile::Write: Not valid block." );
+    }
+
     if( !m_spaceMap.is_allocated( blockId ) )
     {
-        throw std::runtime_error( "DbFile::Write: Block not in file" );
+        throw std::runtime_error( "DbFile::Write: Block is not allocated." );
     }
 
     block.Write( m_uf, blockId );
@@ -73,6 +83,18 @@ BlockId DbFile::Alloc()
 //
 void DbFile::Dealloc( BlockId blockId )
 {
+    if( !m_spaceMap.is_valid( blockId ) )
+    {
+        throw std::runtime_error( "DbFile::Dealloc: Not valid block." );
+    }
     m_spaceMap.free( blockId );
+}
+
+//
+//
+//
+std::uint32_t DbFile::free_block_no() const
+{
+    return m_spaceMap.max_data_block_no() - m_spaceMap.curr_data_block_no();
 }
 
