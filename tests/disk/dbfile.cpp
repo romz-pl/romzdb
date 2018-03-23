@@ -63,3 +63,18 @@ TEST(DbFile, CreateBig)
     EXPECT_ANY_THROW( db.Alloc() );
 }
 
+TEST(DbFile, NotValidBlock)
+{
+    const std::string path = UnixFile::GetTempPath();
+    const uint32_t max_size = ( 1U << 20 );
+    DbFile db( path, max_size );
+
+    const BlockId notValid( 0 );
+    EXPECT_ANY_THROW( db.Read( notValid ) );
+
+    DiskBlock block;
+    EXPECT_ANY_THROW( db.Write( block, notValid ) );
+
+    EXPECT_ANY_THROW( db.Dealloc( notValid ) );
+}
+
