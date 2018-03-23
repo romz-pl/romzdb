@@ -2,26 +2,25 @@
 #include <stdexcept>
 #include <climits>
 #include "dbfile.h"
+#include "div_ceil.h"
 
-
 //
+// Open Db file
 //
-//
-DbFile::DbFile( const std::string& path, UnixFile::Mode mode )
-    : m_uf( path, mode )
-    , m_spaceMap( CHAR_BIT * DiskBlock::Size )
+DbFile::DbFile( const std::string& path )
+    : m_uf( path, UnixFile::Mode::Open )
+    , m_spaceMap( m_uf )
 {
-    assert( m_spaceMap.byte_no() == DiskBlock::Size );
+}
 
-    if( mode == UnixFile::Mode::Open )
-    {
-        m_uf.Read( m_spaceMap.data(), m_spaceMap.byte_no(), 0 );
-    }
-    else if( mode == UnixFile::Mode::Create )
-    {
-        m_spaceMap.set( 0 );
-        m_uf.Write( m_spaceMap.data(), m_spaceMap.byte_no(), 0 );
-    }
+//
+// Create Db file
+//
+DbFile::DbFile( const std::string& path, std::uint32_t max_size )
+    : m_uf( path, UnixFile::Mode::Create )
+    , m_spaceMap( m_uf, max_size )
+{
+
 }
 
 //
@@ -29,7 +28,7 @@ DbFile::DbFile( const std::string& path, UnixFile::Mode mode )
 //
 DbFile::~DbFile()
 {
-    m_uf.Write( m_spaceMap.data(), m_spaceMap.byte_no(), 0 );
+
 }
 
 //
@@ -37,8 +36,7 @@ DbFile::~DbFile()
 //
 DiskBlock DbFile::Read( BlockId blockId ) const
 {
-    assert( blockId.GetValue() != 0 ); // Block 0 is reserved for space map
-    if( !m_spaceMap.test( blockId.GetValue() ) )
+    if( !m_spaceMap.is_allocated( blockId ) )
     {
         throw std::runtime_error( "DbFile::Read: Block not in file" );
     }
@@ -53,8 +51,7 @@ DiskBlock DbFile::Read( BlockId blockId ) const
 //
 void DbFile::Write( const DiskBlock& block, BlockId blockId ) const
 {
-    assert( blockId.GetValue() != 0 ); // Block 0 is reserved for space map
-    if( !m_spaceMap.test( blockId.GetValue() ) )
+    if( !m_spaceMap.is_allocated( blockId ) )
     {
         throw std::runtime_error( "DbFile::Write: Block not in file" );
     }
@@ -67,17 +64,9 @@ void DbFile::Write( const DiskBlock& block, BlockId blockId ) const
 //
 BlockId DbFile::Alloc()
 {
-    for( std::uint32_t i = 0; i < m_spaceMap.byte_no(); i++ )
-    {
-        if( !m_spaceMap.test( i ) )
-        {
-            m_spaceMap.set( i );
-            const BlockId blockId( i );
-            DiskBlock().Write( m_uf, blockId );
-            return blockId;
-        }
-    }
-    throw std::runtime_error( "DbFile::Alloc: File full" );
+    const BlockId blockId = m_spaceMap.allocate();
+    DiskBlock().Write( m_uf, blockId );
+    return blockId;
 }
 
 //
@@ -85,11 +74,6 @@ BlockId DbFile::Alloc()
 //
 void DbFile::Dealloc( BlockId blockId )
 {
-    if( !m_spaceMap.test( blockId.GetValue() ) )
-    {
-        throw std::runtime_error( "DbFile::Dealloc: Page was not allocated" );
-    }
-
-    m_spaceMap.reset( blockId.GetValue() );
+    m_spaceMap.free( blockId );
 }
 

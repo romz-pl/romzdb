@@ -5,12 +5,13 @@
 #include "unixfile.h"
 #include "blockid.h"
 #include "diskblock.h"
-#include "bitarray.h"
+#include "spacemap.h"
 
 class DbFile
 {
 public:
-    DbFile( const std::string& path, UnixFile::Mode mode );
+    DbFile( const std::string& path );
+    DbFile( const std::string& path, std::uint32_t max_size );
     ~DbFile();
 
     DiskBlock Read( BlockId blockId ) const;
@@ -20,9 +21,12 @@ public:
     void Dealloc( BlockId blockId );
 
 private:
+
+
+private:
     UnixFile m_uf;
 
-    BitArray m_spaceMap;
+    SpaceMap m_spaceMap;
 
 };
 
