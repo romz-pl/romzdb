@@ -114,16 +114,6 @@ void UnixFile::Read( void *data, size_t nbyte, off_t offset ) const
 }
 
 //
-// Allocates "nbyte" bytes at the end of the file
-//
-void UnixFile::Allocate( size_t nbyte )
-{
-    const off_t fileEnd = GetSize();
-    std::vector< char > data( nbyte, 0 );
-    Write( &(data[ 0 ]), nbyte, fileEnd );
-}
-
-//
 // Return temporary path.
 // The returned path can be safely used for creation of temporary file.
 //
@@ -141,20 +131,6 @@ std::string UnixFile::GetTempPath()
     path += "a.dat";
 
     return path;
-}
-
-//
-// Returns size of the file (in bytes)
-//
-off_t UnixFile::GetSize() const
-{
-    struct stat buf;
-    const int rc = fstat( m_fd, &buf );
-    if( rc != 0 )
-    {
-        throw std::runtime_error( "UnixFile::GetSize" );
-    }
-    return buf.st_size;
 }
 
 //

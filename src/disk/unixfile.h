@@ -11,20 +11,16 @@ public:
     UnixFile( const std::string& path, Mode mode );
     ~UnixFile();
 
-    void Allocate( size_t nbyte );
-
     void Write( const void* data, size_t nbyte, off_t offset ) const;
     void Read( void* data, size_t nbyte, off_t offset ) const;
 
     void Fsync() const;
     static std::string GetTempPath();
 
-
 private:
     void Open( const std::string& path );
     void Create( const std::string& path );
     void Close( );
-    off_t GetSize() const;
 
 
 private:
