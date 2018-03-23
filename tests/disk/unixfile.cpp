@@ -31,6 +31,28 @@ std::vector< char > GetData()
     return ret;
 }
 
+TEST(UnixFile, WriteFull)
+{
+    EXPECT_NO_THROW( UnixFile( "/dev/full", UnixFile::Mode::Open ) );
+    UnixFile uf( "/dev/full", UnixFile::Mode::Open );
+
+    const off_t offset = 0;
+    std::uint32_t v = 0;
+    EXPECT_ANY_THROW( uf.Write( &v, sizeof( v ), offset ) );
+    EXPECT_ANY_THROW( uf.Fsync( ) );
+}
+
+TEST(UnixFile, ReadFull)
+{
+    EXPECT_NO_THROW( UnixFile( "/dev/null", UnixFile::Mode::Open ) );
+    UnixFile uf( "/dev/null", UnixFile::Mode::Open );
+
+    const off_t offset = 0;
+    std::uint32_t v = 0;
+    EXPECT_ANY_THROW( uf.Read( &v, sizeof( v ), offset ) );
+    EXPECT_ANY_THROW( uf.Fsync( ) );
+}
+
 TEST(UnixFile, WriteRead)
 {
     const std::string path = UnixFile::GetTempPath();
@@ -58,19 +80,6 @@ TEST(UnixFile, Read)
     const std::size_t ss = 10;
     std::vector< char > tmp( ss );
     EXPECT_ANY_THROW( uf.Read( &( tmp[ 0 ] ), tmp.size(), 0 ) );
-}
-
-TEST(UnixFile, Allocate)
-{
-    const std::string path = UnixFile::GetTempPath();
-    UnixFile uf( path, UnixFile::Mode::Create );
-
-    const std::size_t ss = 10;
-    EXPECT_NO_THROW( uf.Allocate( ss ) );
-
-    std::vector< char > tmp( ss );
-    EXPECT_NO_THROW( uf.Read( &( tmp[ 0 ] ), tmp.size(), 0 ) );
-
 }
 
 TEST(UnixFile, Fsync)
