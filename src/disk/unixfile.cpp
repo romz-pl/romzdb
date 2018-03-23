@@ -114,26 +114,6 @@ void UnixFile::Read( void *data, size_t nbyte, off_t offset ) const
 }
 
 //
-// Return temporary path.
-// The returned path can be safely used for creation of temporary file.
-//
-std::string UnixFile::GetTempPath()
-{
-    char dir[] = "/tmp/aaXXXXXXX";
-    char *p = mkdtemp( dir );
-    if( !p )
-    {
-        throw std::runtime_error( "Function 'mkdtemp failed" );
-    }
-
-    std::string path( dir );
-    path += "/";
-    path += "a.dat";
-
-    return path;
-}
-
-//
 //
 //
 void UnixFile::Fsync() const

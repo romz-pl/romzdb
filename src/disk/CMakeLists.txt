@@ -10,6 +10,7 @@ add_library( ${LIB_NAME} STATIC
     pageid.cpp
     space.cpp
     spacemap.cpp
+    temp_path.cpp
     unixfile.cpp
 )
 

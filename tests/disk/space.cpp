@@ -3,11 +3,12 @@
 #include <unixfile.h>
 #include <cstdlib>
 #include <cstring>
+#include "temp_path.h"
 
 TEST(Space, OpenCreate)
 {
     const uint32_t max_size = ( 1U << 20 );
-    const std::string path = UnixFile::GetTempPath();
+    const std::string path = GetTempPath();
     EXPECT_NO_THROW( Space( path, max_size ) );
     EXPECT_ANY_THROW( Space( path, max_size ) );
     EXPECT_NO_THROW( Space{ path } );
@@ -18,7 +19,7 @@ TEST(Space, ReadWrite)
 {
 
     const uint32_t max_size = ( 1U << 20 );
-    Space space( UnixFile::GetTempPath(), max_size );
+    Space space( GetTempPath(), max_size );
 
     const DiskBlock block ( std::string( "abc" ) );
 

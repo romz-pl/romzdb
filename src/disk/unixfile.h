@@ -15,7 +15,6 @@ public:
     void Read( void* data, size_t nbyte, off_t offset ) const;
 
     void Fsync() const;
-    static std::string GetTempPath();
 
 private:
     void Open( const std::string& path );

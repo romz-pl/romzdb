@@ -3,6 +3,7 @@
 #include <unixfile.h>
 #include <db.h>
 #include <random>
+#include "temp_path.h"
 
 
 void Insert( HeapFile& hf, std::vector< RecordId >& allId )
@@ -47,7 +48,7 @@ void Delete( HeapFile& hf, std::vector< RecordId >& allId )
 
 TEST(HeapFile, GetInsertDelete)
 {
-    const std::string path = UnixFile::GetTempPath();
+    const std::string path = GetTempPath();
     // std::cout << path << "\n";
     std::size_t frameNo = 50;
 

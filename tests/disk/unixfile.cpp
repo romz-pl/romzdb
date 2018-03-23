@@ -2,11 +2,12 @@
 #include <unixfile.h>
 #include <cstdlib>
 #include <cassert>
+#include "temp_path.h"
 
 
 TEST(UnixFile, OpenCreate)
 {
-    const std::string path = UnixFile::GetTempPath();
+    const std::string path = GetTempPath();
 
     // The file does not exist. It can not be opened
     EXPECT_ANY_THROW( UnixFile( path, UnixFile::Mode::Open ) );
@@ -55,7 +56,7 @@ TEST(UnixFile, ReadFull)
 
 TEST(UnixFile, WriteRead)
 {
-    const std::string path = UnixFile::GetTempPath();
+    const std::string path = GetTempPath();
 
     UnixFile uf( path, UnixFile::Mode::Create );
 
@@ -74,7 +75,7 @@ TEST(UnixFile, WriteRead)
 
 TEST(UnixFile, Read)
 {
-    const std::string path = UnixFile::GetTempPath();
+    const std::string path = GetTempPath();
     UnixFile uf( path, UnixFile::Mode::Create );
 
     const std::size_t ss = 10;
@@ -84,7 +85,7 @@ TEST(UnixFile, Read)
 
 TEST(UnixFile, Fsync)
 {
-    const std::string path = UnixFile::GetTempPath();
+    const std::string path = GetTempPath();
     UnixFile uf( path, UnixFile::Mode::Create );
 
     EXPECT_NO_THROW( uf.Fsync( ) );
