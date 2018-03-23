@@ -7,8 +7,8 @@
 TEST(DbFile, All)
 {
     const std::string path = UnixFile::GetTempPath();
-
-    DbFile db( path, UnixFile::Mode::Create );
+    const uint32_t max_size = ( 1U << 20 );
+    DbFile db( path, max_size );
 
     EXPECT_ANY_THROW( db.Read( BlockId( 1 ) ) );
 

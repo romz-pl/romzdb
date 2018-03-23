@@ -8,7 +8,8 @@
 TEST(Space, ReadWrite)
 {
 
-    Space space( UnixFile::GetTempPath(), UnixFile::Mode::Create );
+    const uint32_t max_size = ( 1U << 20 );
+    Space space( UnixFile::GetTempPath(), max_size );
 
     const DiskBlock block ( std::string( "abc" ) );
 
