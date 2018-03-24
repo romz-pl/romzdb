@@ -12,7 +12,13 @@ class DbFile
 public:
     explicit DbFile( const std::string& path );
     DbFile( const std::string& path, std::uint32_t max_size );
-    ~DbFile();
+    ~DbFile() = default;
+
+    DbFile( const DbFile& ) = delete;
+    DbFile& operator=( const DbFile& ) = delete;
+
+    DbFile( DbFile&& ) = delete;
+    DbFile& operator=( DbFile&& ) = delete;
 
     DiskBlock Read( BlockId blockId ) const;
     void Write( const DiskBlock& block, BlockId blockId ) const;
@@ -22,15 +28,10 @@ public:
 
     std::uint32_t free_block_no() const;
 
-
-private:
-
-
 private:
     UnixFile m_uf;
 
     SpaceMap m_spaceMap;
-
 };
 
 

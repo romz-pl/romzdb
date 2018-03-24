@@ -9,7 +9,7 @@
 class SpaceMap
 {
 public:
-    SpaceMap( UnixFile& uf );
+    explicit SpaceMap( UnixFile& uf );
     SpaceMap( UnixFile& uf, std::uint32_t max_size );
     ~SpaceMap();
 

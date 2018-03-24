@@ -25,14 +25,6 @@ DbFile::DbFile( const std::string& path, std::uint32_t max_size )
 //
 //
 //
-DbFile::~DbFile()
-{
-
-}
-
-//
-//
-//
 DiskBlock DbFile::Read( BlockId blockId ) const
 {
     if( !m_spaceMap.is_valid( blockId ) )
