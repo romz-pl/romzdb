@@ -7,7 +7,8 @@
 TEST(DirPage, InsertDeleteGet)
 {
     const uint32_t max_size = ( 1U << 20 );
-    Space space( GetTempPath(), max_size );
+    DbFile db_file( GetTempPath(), max_size );
+    Space space( db_file );
     const std::size_t frameNo = 3;
     BufferMgr bufferMgr( space, frameNo );
 

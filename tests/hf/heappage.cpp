@@ -8,7 +8,8 @@
 TEST(HeapPage, Constructor)
 {
     const uint32_t max_size = ( 1U << 20 );
-    Space space( GetTempPath(), max_size );
+    DbFile db_file( GetTempPath(), max_size );
+    Space space( db_file );
     const std::size_t frameNo = 3;
     BufferMgr bufferMgr( space, frameNo );
 
@@ -20,7 +21,8 @@ TEST(HeapPage, Constructor)
 TEST(HeapPage, Get)
 {
     const uint32_t max_size = ( 1U << 20 );
-    Space space( GetTempPath(), max_size );
+    DbFile db_file( GetTempPath(), max_size );
+    Space space( db_file );
     const std::size_t frameNo = 3;
     BufferMgr bufferMgr( space, frameNo );
 
@@ -36,7 +38,8 @@ TEST(HeapPage, Get)
 TEST(HeapPage, Insert)
 {
     const uint32_t max_size = ( 1U << 20 );
-    Space space( GetTempPath(), max_size );
+    DbFile db_file( GetTempPath(), max_size );
+    Space space( db_file );
     const std::size_t frameNo = 3;
     BufferMgr bufferMgr( space, frameNo );
 
@@ -63,7 +66,8 @@ TEST(HeapPage, Insert)
 TEST(HeapPage, Delete)
 {
     const uint32_t max_size = ( 1U << 20 );
-    Space space( GetTempPath(), max_size );
+    DbFile db_file( GetTempPath(), max_size );
+    Space space( db_file );
     const std::size_t frameNo = 3;
     BufferMgr bufferMgr( space, frameNo );
 
@@ -95,7 +99,8 @@ TEST(HeapPage, Delete)
 TEST(HeapPage, CheckDelete)
 {
     const uint32_t max_size = ( 1U << 20 );
-    Space space( GetTempPath(), max_size );
+    DbFile db_file( GetTempPath(), max_size );
+    Space space( db_file );
     const std::size_t frameNo = 3;
     BufferMgr bufferMgr( space, frameNo );
 

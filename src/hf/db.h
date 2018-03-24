@@ -20,6 +20,7 @@ private:
     void CreateHeaderPage( PageId headerPage );
 
 private:
+    DbFile m_db_file;
 
     Space m_space;
 

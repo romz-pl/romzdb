@@ -27,6 +27,7 @@ public:
     void Dealloc( BlockId blockId );
 
     std::uint32_t free_block_no() const;
+    bool full() const;
 
 private:
     UnixFile m_uf;

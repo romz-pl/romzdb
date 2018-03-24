@@ -90,3 +90,11 @@ std::uint32_t DbFile::free_block_no() const
     return m_spaceMap.max_data_block_no() - m_spaceMap.curr_data_block_no();
 }
 
+//
+//
+//
+bool DbFile::full() const
+{
+    return ( free_block_no() == 0 );
+}
+
