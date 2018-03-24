@@ -1,5 +1,5 @@
 #include "slotid.h"
-#include "page.h"
+#include "buffer/page.h"
 #include <limits>
 
 static_assert( std::numeric_limits< std::uint16_t >::max() > Page::Size,

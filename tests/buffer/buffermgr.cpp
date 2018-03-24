@@ -1,15 +1,15 @@
-#include <gtest/gtest.h>
-#include <buffermgr.h>
-#include <unixfile.h>
-#include <cstdlib>
-#include "temp_path.h"
+#include "gtest/gtest.h"
+#include "buffer/buffermgr.h"
+#include "disk/unixfile.h"
+#include "util/temp_path.h"
 
 
 TEST(BufferMgr, GetPage)
 {
-    PageId pageId( 1 );
+    PageId pageId( 1, 0 );
     const uint32_t max_size = ( 1U << 20 );
-    Space space( GetTempPath(), max_size );
+    DbFile db_file( GetTempPath(), max_size );
+    Space space( db_file );
     const std::size_t numPages = 10;
     BufferMgr bufferMgr( space, numPages );
 
@@ -28,7 +28,8 @@ TEST(BufferMgr, GetPage)
 TEST(BufferMgr, TooSmallBuffer)
 {
     const uint32_t max_size = ( 1U << 20 );
-    Space space( GetTempPath(), max_size );
+    DbFile db_file( GetTempPath(), max_size );
+    Space space( db_file );
     const std::size_t numPages = 3;
     BufferMgr bufferMgr( space, numPages );
     std::vector< PageId > pageId;
@@ -40,7 +41,7 @@ TEST(BufferMgr, TooSmallBuffer)
         pageId.push_back( v );
     }
 
-    PageId pageIdEx( numPages + 1 );
+    PageId pageIdEx( numPages + 1, 0 );
     EXPECT_ANY_THROW( bufferMgr.Get( pageIdEx, false ) );
 
     for( auto id : pageId )
@@ -50,9 +51,10 @@ TEST(BufferMgr, TooSmallBuffer)
 
 TEST(BufferMgr, MarkDirty)
 {
-    PageId pageId( 1 );
+    PageId pageId( 1, 0 );
     const uint32_t max_size = ( 1U << 20 );
-    Space space( GetTempPath(), max_size );
+    DbFile db_file( GetTempPath(), max_size );
+    Space space( db_file );
     const std::size_t numPages = 3;
     BufferMgr bufferMgr( space, numPages );
 
@@ -69,7 +71,8 @@ TEST(BufferMgr, MarkDirty)
 TEST(BufferMgr, Unpin)
 {
     const uint32_t max_size = ( 1U << 20 );
-    Space space( GetTempPath(), max_size );
+    DbFile db_file( GetTempPath(), max_size );
+    Space space( db_file );
     const std::size_t numPages = 3;
     const std::size_t loopSize = 11;
     BufferMgr bufferMgr( space, numPages );

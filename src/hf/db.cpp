@@ -6,7 +6,8 @@
 //
 //
 Db::Db( const std::string &path, std::size_t frameNo )
-    : m_space( path, 10 * 1024 * 1024 )
+    : m_db_file( path, 10 * 1024 * 1024 )
+    , m_space( m_db_file )
     , m_bufferMgr( m_space, frameNo )
 {
 

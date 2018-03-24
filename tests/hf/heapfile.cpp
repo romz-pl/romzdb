@@ -1,9 +1,9 @@
-#include <gtest/gtest.h>
-#include <heapfile.h>
-#include <unixfile.h>
-#include <db.h>
 #include <random>
-#include "temp_path.h"
+#include "gtest/gtest.h"
+#include "hf/heapfile.h"
+#include "disk/unixfile.h"
+#include "hf/db.h"
+#include "util/temp_path.h"
 
 
 void Insert( HeapFile& hf, std::vector< RecordId >& allId )

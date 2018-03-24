@@ -9,8 +9,8 @@
 // 3. All operations in Database must be done on pages
 //
 
-#include "diskblock.h"
-#include "pageid.h"
+#include "disk/diskblock.h"
+#include "disk/pageid.h"
 #include "buffermgr.h"
 
 

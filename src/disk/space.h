@@ -1,6 +1,7 @@
 #ifndef ROMZDB_DISK_SPACE_H
 #define ROMZDB_DISK_SPACE_H
 
+#include <map>
 #include "unixfile.h"
 #include "pageid.h"
 #include "diskblock.h"
@@ -10,9 +11,18 @@
 class Space
 {
 public:
-    explicit Space( const std::string& path );
-    Space( const std::string& path, std::uint32_t max_size );
+    Space();
+    explicit Space( DbFile& db_file );
     ~Space() = default;
+
+    Space( const Space& ) = delete;
+    Space& operator=( const Space& ) = delete;
+
+    Space( Space&& ) = delete;
+    Space& operator=( Space&& ) = delete;
+
+    DbFileId Add( DbFile& file );
+    void Remove( DbFileId id );
 
     DiskBlock Read( PageId pageId ) const;
     void Write( const DiskBlock& block, PageId pageId ) const;
@@ -20,11 +30,14 @@ public:
     PageId Alloc();
     void Dealloc( PageId pageId );
 
-private:
-    std::pair< const DbFile *, BlockId > Map( PageId pageId ) const;
+    bool full() const;
 
 private:
-    DbFile m_dbFile;
+    DbFile* get_db_file( PageId pageId );
+    const DbFile* get_db_file( PageId pageId ) const;
+
+private:
+    std::map< DbFileId, DbFile* > m_db_file_map;
 };
 
 #endif

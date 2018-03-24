@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <climits>
 #include "dbfile.h"
-#include "div_ceil.h"
+#include "util/div_ceil.h"
 
 //
 // Open Db file
@@ -20,14 +20,6 @@ DbFile::DbFile( const std::string& path, std::uint32_t max_size )
     : m_uf( path, UnixFile::Mode::Create )
     , m_spaceMap( m_uf, max_size )
 {
-}
-
-//
-//
-//
-DbFile::~DbFile()
-{
-
 }
 
 //
@@ -96,5 +88,13 @@ void DbFile::Dealloc( BlockId blockId )
 std::uint32_t DbFile::free_block_no() const
 {
     return m_spaceMap.max_data_block_no() - m_spaceMap.curr_data_block_no();
+}
+
+//
+//
+//
+bool DbFile::full() const
+{
+    return ( free_block_no() == 0 );
 }
 

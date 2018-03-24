@@ -11,6 +11,12 @@ public:
     UnixFile( const std::string& path, Mode mode );
     ~UnixFile();
 
+    UnixFile( const UnixFile& ) = delete;
+    UnixFile& operator=( const UnixFile& ) = delete;
+
+    UnixFile( UnixFile&& ) = delete;
+    UnixFile& operator=( UnixFile&& ) = delete;
+
     void Write( const void* data, size_t nbyte, off_t offset ) const;
     void Read( void* data, size_t nbyte, off_t offset ) const;
 

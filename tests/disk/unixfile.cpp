@@ -1,8 +1,6 @@
-#include <gtest/gtest.h>
-#include <unixfile.h>
-#include <cstdlib>
-#include <cassert>
-#include "temp_path.h"
+#include "gtest/gtest.h"
+#include "disk/unixfile.h"
+#include "util/temp_path.h"
 
 
 TEST(UnixFile, OpenCreate)

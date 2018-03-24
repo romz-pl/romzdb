@@ -12,6 +12,11 @@ public:
     BitArray( std::uint32_t bit_no );
     ~BitArray() = default;
 
+    BitArray( const BitArray& ) = default;
+    BitArray& operator=( const BitArray& ) = default;
+
+    BitArray( BitArray&& ) = default;
+    BitArray& operator=( BitArray&& ) = default;
 
     void set( std::uint32_t k );
     void reset( std::uint32_t k );
@@ -35,8 +40,7 @@ private:
     // Number of bits
     const std::uint32_t m_bit_no;
 
-    std::vector< std::uint32_t > m_array;// [ ( SIZE + m_bits_no - 1 ) / m_bits_no ];
-
+    std::vector< std::uint32_t > m_array;
 
 };
 

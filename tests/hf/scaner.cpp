@@ -1,10 +1,10 @@
-#include <gtest/gtest.h>
-#include <heapfile.h>
-#include <db.h>
-#include <scaner.h>
 #include <random>
 #include <algorithm>
-#include "temp_path.h"
+#include "gtest/gtest.h"
+#include "hf/heapfile.h"
+#include "hf/db.h"
+#include "hf/scaner.h"
+#include "util/temp_path.h"
 
 
 std::vector< Record > GenerateData()

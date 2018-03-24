@@ -6,14 +6,24 @@
 //
 
 #include <cstdint>
+#include "util/totally_ordered.h"
 
-class BlockId
+class BlockId : public totally_ordered< BlockId >
 {
 public:
     explicit BlockId( std::uint32_t id );
     ~BlockId() = default;
 
-   std::uint32_t GetValue() const;
+    BlockId( const BlockId& ) = default;
+    BlockId& operator=( const BlockId& ) = default;
+
+    BlockId( BlockId&& ) = default;
+    BlockId& operator=( BlockId&& ) = default;
+
+    bool operator==( const BlockId& v ) const;
+    bool operator< ( const BlockId& v ) const;
+
+    std::uint32_t GetValue() const;
 
 private:
     std::uint32_t m_id;

@@ -1,13 +1,11 @@
 
-set( TEST_NAME test-disk )
+set( TEST_NAME test-util )
 
 add_executable( ${TEST_NAME}
-    blockid.cpp
-    dbfile.cpp
-    dbfileid.cpp
+    bitarray.cpp
+    div_ceil.cpp
+    temp_path.cpp
     main.cpp
-    space.cpp
-    unixfile.cpp
 )
 
 target_compile_options( ${TEST_NAME} PRIVATE -Wall -pedantic -pthread -g -O0 -fprofile-arcs -ftest-coverage -std=c++11 )
@@ -22,11 +20,8 @@ target_link_libraries( ${TEST_NAME}
     gtest 
     gtest_main 
     pthread 
-    romzdb-disk 
-    romzdb-util 
-)
+    romzdb-util )
 
 add_test( NAME ${TEST_NAME} COMMAND ${TEST_NAME} )
 
-set_tests_properties ( ${TEST_NAME} PROPERTIES DEPENDS test-util )
 

@@ -2,21 +2,44 @@
 #include "space.h"
 
 //
-// Open
 //
-Space::Space( const std::string& path )
-    : m_dbFile( path )
+//
+Space::Space( )
 {
 
 }
 
-//
-// Create
-//
-Space::Space( const std::string& path, std::uint32_t max_size )
-    : m_dbFile( path, max_size )
-{
 
+//
+//
+//
+Space::Space( DbFile &db_file )
+{
+    Add( db_file );
+}
+
+//
+//
+//
+DbFileId Space::Add( DbFile& db_file )
+{
+    DbFileId db_file_id( m_db_file_map.size() );
+    m_db_file_map[ db_file_id ] = &db_file;
+    return db_file_id;
+}
+
+//
+//
+//
+void Space::Remove( DbFileId id )
+{
+    auto it = m_db_file_map.find( id );
+    if( it == m_db_file_map.end() )
+    {
+        throw std::runtime_error( "Space::Remove: Db File does not exist." );
+    }
+
+    m_db_file_map.erase( it );
 }
 
 //
@@ -24,9 +47,8 @@ Space::Space( const std::string& path, std::uint32_t max_size )
 //
 DiskBlock Space::Read( PageId pageId ) const
 {
-    std::pair< const DbFile*, BlockId > ret = Map( pageId );
-    const DbFile *dbFile = ret.first;
-    const BlockId blockId = ret.second;
+    const DbFile *dbFile = get_db_file( pageId );
+    const BlockId blockId = pageId.get_block_id();
 
     return dbFile->Read( blockId );
 }
@@ -36,9 +58,9 @@ DiskBlock Space::Read( PageId pageId ) const
 //
 void Space::Write( const DiskBlock &block, PageId pageId ) const
 {
-    std::pair< const DbFile*, BlockId > ret = Map( pageId );
-    const DbFile *dbFile = ret.first;
-    const BlockId blockId = ret.second;
+    const DbFile *dbFile = get_db_file( pageId );
+    const BlockId blockId = pageId.get_block_id();
+
     dbFile->Write( block, blockId );
 }
 
@@ -47,8 +69,17 @@ void Space::Write( const DiskBlock &block, PageId pageId ) const
 //
 PageId Space::Alloc()
 {
-    const BlockId blockId = m_dbFile.Alloc( );
-    return PageId( blockId.GetValue() );
+    for( auto it : m_db_file_map )
+    {
+        DbFile* f = it.second;
+        if( !f->full() )
+        {
+            const BlockId blockId = f->Alloc( );
+            return PageId( blockId, it.first );
+        }
+    }
+
+    throw std::runtime_error( "Space::Alloc: Space is full" );
 }
 
 //
@@ -56,26 +87,52 @@ PageId Space::Alloc()
 //
 void Space::Dealloc( PageId pageId )
 {
-//    std::pair< const DbFile*, BlockId > ret = Map( pageId );
-//    const DbFile *dbFile = ret.first;
-//    const BlockId blockId = ret.second;
-//    dbFile->Dealloc( blockId );
-    const BlockId blockId( pageId.GetValue() );
-    m_dbFile.Dealloc( blockId );
+    DbFile *dbFile = get_db_file( pageId );
+    const BlockId blockId = pageId.get_block_id();
+
+    dbFile->Dealloc( blockId );
 }
 
 //
-// The function maps "pageId" to the pair (UnixFile, BlockId).
 //
-// The PageId represents the logical page in HeapFile.
-// The Space can be represented by an array of UnixFile.
-// Each UnixFile is the array of disk blocks identyfied by BlockId.
 //
-// Current implementation of Space has one UnixFile only, hence the mapping is trivial.
-//
-std::pair< const DbFile *, BlockId > Space::Map( PageId pageId ) const
+DbFile* Space::get_db_file( PageId pageId )
 {
-    assert( pageId.IsValid() );
-    return std::make_pair( &m_dbFile, BlockId( pageId.GetValue() ) );
+    auto it = m_db_file_map.find( pageId.get_db_file_id() );
+    if( it == m_db_file_map.end() )
+    {
+        throw std::runtime_error( "Space::get_db_file: Db File does not exist." );
+    }
+
+    return it->second;
 }
 
+//
+//
+//
+const DbFile* Space::get_db_file( PageId pageId ) const
+{
+    auto it = m_db_file_map.find( pageId.get_db_file_id() );
+    if( it == m_db_file_map.end() )
+    {
+        throw std::runtime_error( "Space::get_db_file const: Db File does not exist." );
+    }
+
+    return it->second;
+}
+
+//
+//
+//
+bool Space::full() const
+{
+    for( auto it : m_db_file_map )
+    {
+        DbFile* f = it.second;
+        if( !f->full() )
+        {
+            return false;
+        }
+    }
+    return true;
+}

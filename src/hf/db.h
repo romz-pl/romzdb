@@ -1,11 +1,11 @@
 #ifndef ROMZDB_DB_H
 #define ROMZDB_DB_H
 
-#include "pageid.h"
+#include "disk/pageid.h"
 #include <string>
-#include "unixfile.h"
-#include "space.h"
-#include "buffermgr.h"
+#include "disk/unixfile.h"
+#include "disk/space.h"
+#include "buffer/buffermgr.h"
 #include "heapfile.h"
 
 class Db
@@ -20,6 +20,7 @@ private:
     void CreateHeaderPage( PageId headerPage );
 
 private:
+    DbFile m_db_file;
 
     Space m_space;
 

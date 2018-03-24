@@ -5,14 +5,24 @@
 // Uniquely identifies the logical page.
 //
 
-#include <cstdint>
+#include "blockid.h"
+#include "dbfileid.h"
 
 class PageId
 {
 public:
-    explicit PageId( std::uint32_t id );
+    PageId( std::uint32_t block_id, std::uint32_t db_file_id );
 
-    std::uint32_t GetValue() const;
+    PageId( BlockId block_id, DbFileId db_file_id );
+
+    PageId( const PageId& ) = default;
+    PageId& operator=( const PageId& ) = default;
+
+    PageId( PageId&& ) = default;
+    PageId& operator=( PageId&& ) = default;
+
+    BlockId get_block_id() const;
+    DbFileId get_db_file_id() const;
 
     bool IsValid() const;
 
@@ -22,7 +32,9 @@ public:
     static const std::uint32_t m_invalid;
 
 private:
-    std::uint32_t m_id;
+    BlockId m_block_id;
+
+    DbFileId m_db_file_id;
 
 
 };

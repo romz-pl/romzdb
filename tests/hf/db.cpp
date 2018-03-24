@@ -1,7 +1,7 @@
-#include <gtest/gtest.h>
-#include <db.h>
-#include <unixfile.h>
-#include "temp_path.h"
+#include "gtest/gtest.h"
+#include "hf/db.h"
+#include "disk/unixfile.h"
+#include "util/temp_path.h"
 
 TEST(Db, CreteHeapFile)
 {
