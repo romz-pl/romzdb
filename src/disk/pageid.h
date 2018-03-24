@@ -12,6 +12,12 @@ class PageId
 public:
     explicit PageId( std::uint32_t id );
 
+    PageId( const PageId& ) = default;
+    PageId& operator=( const PageId& ) = default;
+
+    PageId( PageId&& ) = default;
+    PageId& operator=( PageId&& ) = default;
+
     std::uint32_t GetValue() const;
 
     bool IsValid() const;
