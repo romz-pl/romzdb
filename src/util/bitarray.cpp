@@ -16,7 +16,7 @@ BitArray::BitArray( std::uint32_t bit_no )
 //
 std::uint32_t BitArray::idx( std::uint32_t k ) const
 {
-    assert( k < m_array.size() );
+    assert( k < m_bit_no );
     return k / m_width;
 }
 
@@ -25,7 +25,7 @@ std::uint32_t BitArray::idx( std::uint32_t k ) const
 //
 std::uint32_t BitArray::mask( std::uint32_t k ) const
 {
-    assert( k < m_array.size() );
+    assert( k < m_bit_no );
     return 1U << ( k % m_width );
 }
 
