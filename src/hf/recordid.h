@@ -10,7 +10,7 @@
 //
 
 
-#include "pageid.h"
+#include "disk/pageid.h"
 #include "slotid.h"
 
 class RecordId

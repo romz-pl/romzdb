@@ -1,8 +1,8 @@
 #ifndef ROMZDB_DIR_H
 #define ROMZDB_DIR_H
 
-#include "buffermgr.h"
-#include "pageid.h"
+#include "buffer/buffermgr.h"
+#include "disk/pageid.h"
 #include <list>
 #include "dirpage.h"
 #include "record.h"

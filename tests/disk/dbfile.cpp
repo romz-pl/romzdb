@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
-#include <dbfile.h>
+#include "disk/dbfile.h"
 #include <cstdlib>
 #include <cstring>
-#include "temp_path.h"
+#include "util/temp_path.h"
 
 
 TEST(DbFile, ReadWrite)

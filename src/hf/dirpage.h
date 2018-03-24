@@ -1,9 +1,9 @@
 #ifndef ROMZDB_DIRPAGE_H
 #define ROMZDB_DIRPAGE_H
 
-#include "page.h"
+#include "buffer/page.h"
 #include <vector>
-#include "buffermgr.h"
+#include "buffer/buffermgr.h"
 #include "record.h"
 #include "recordid.h"
 #include "dirslot.h"

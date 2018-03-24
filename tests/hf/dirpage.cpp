@@ -1,7 +1,7 @@
-#include <gtest/gtest.h>
-#include <dirpage.h>
-#include <unixfile.h>
-#include "temp_path.h"
+#include "gtest/gtest.h"
+#include "hf/dirpage.h"
+#include "disk/unixfile.h"
+#include "util/temp_path.h"
 
 
 TEST(DirPage, InsertDeleteGet)

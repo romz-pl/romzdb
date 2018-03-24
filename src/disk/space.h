@@ -1,6 +1,7 @@
 #ifndef ROMZDB_DISK_SPACE_H
 #define ROMZDB_DISK_SPACE_H
 
+#include <map>
 #include "unixfile.h"
 #include "pageid.h"
 #include "diskblock.h"
@@ -20,6 +21,9 @@ public:
     Space( Space&& ) = delete;
     Space& operator=( Space&& ) = delete;
 
+    //DbFileId Add( DbFile* file );
+    //void Remove( DbFileId id );
+
     DiskBlock Read( PageId pageId ) const;
     void Write( const DiskBlock& block, PageId pageId ) const;
 
@@ -30,6 +34,8 @@ private:
     std::pair< const DbFile *, BlockId > Map( PageId pageId ) const;
 
 private:
+    //std::map< DbFileId, DbFile* > m_file;
+
     DbFile m_dbFile;
 };
 

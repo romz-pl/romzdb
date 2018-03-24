@@ -3,7 +3,7 @@
 
 #include "unixfile.h"
 #include "blockid.h"
-#include "bitarray.h"
+#include "util/bitarray.h"
 
 
 class SpaceMap

@@ -1,10 +1,10 @@
-#include <gtest/gtest.h>
 #include <cstdlib>
-#include <heappage.h>
-#include <record.h>
 #include <algorithm>
 #include <random>
-#include "temp_path.h"
+#include "gtest/gtest.h"
+#include "hf/heappage.h"
+#include "hf/record.h"
+#include "util/temp_path.h"
 
 TEST(HeapPage, Constructor)
 {

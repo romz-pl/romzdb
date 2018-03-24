@@ -21,12 +21,7 @@ target_compile_options( ${TEST_NAME} PRIVATE
 target_include_directories( ${TEST_NAME} PRIVATE 
     ${gtest_SOURCE_DIR}/include 
     ${gtest_SOURCE_DIR} 
-)
-
-target_include_directories( ${TEST_NAME} PRIVATE 
-    ${PROJECT_SOURCE_DIR}/src/disk 
-    ${PROJECT_SOURCE_DIR}/src/buffer 
-    ${PROJECT_SOURCE_DIR}/src/hf
+    ${PROJECT_SOURCE_DIR}/src
 )
 
 target_link_libraries( ${TEST_NAME} 
@@ -37,8 +32,10 @@ target_link_libraries( ${TEST_NAME}
     romzdb-disk 
     romzdb-buffer 
     romzdb-hf
+    romzdb-util
 )
 
 add_test( NAME ${TEST_NAME} COMMAND ${TEST_NAME} )
 
+set_tests_properties ( ${TEST_NAME} PROPERTIES DEPENDS test-buffer )
 

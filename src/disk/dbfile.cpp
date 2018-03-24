@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <climits>
 #include "dbfile.h"
-#include "div_ceil.h"
+#include "util/div_ceil.h"
 
 //
 // Open Db file

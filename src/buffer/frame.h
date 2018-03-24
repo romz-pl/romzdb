@@ -6,8 +6,8 @@
 //
 
 #include <cstdint>
-#include "pageid.h"
-#include "space.h"
+#include "disk/pageid.h"
+#include "disk/space.h"
 
 class Frame
 {

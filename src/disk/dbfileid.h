@@ -6,7 +6,7 @@
 //
 
 #include <cstdint>
-#include "totally_ordered.h"
+#include "util/totally_ordered.h"
 
 class DbFileId : public totally_ordered< DbFileId >
 {

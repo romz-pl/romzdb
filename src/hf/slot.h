@@ -1,7 +1,7 @@
 #ifndef ROMZDB_SLOT_H
 #define ROMZDB_SLOT_H
 
-#include "page.h"
+#include "buffer/page.h"
 #include "pageoffset.h"
 
 class Slot

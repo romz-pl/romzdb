@@ -35,10 +35,10 @@
 
 
 
-#include "pageid.h"
+#include "disk/pageid.h"
 #include "record.h"
 #include "recordid.h"
-#include "buffermgr.h"
+#include "buffer/buffermgr.h"
 #include "dir.h"
 
 class HeapFile

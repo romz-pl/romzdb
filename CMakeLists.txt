@@ -11,8 +11,9 @@ add_subdirectory(3rdparty/googletest)
 add_subdirectory(src/disk)
 add_subdirectory(src/buffer)
 add_subdirectory(src/hf)
+add_subdirectory(src/util)
 
 add_subdirectory(tests/disk)
 add_subdirectory(tests/buffer)
 add_subdirectory(tests/hf)
-
+add_subdirectory(tests/util)

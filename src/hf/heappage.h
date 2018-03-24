@@ -50,9 +50,9 @@
 
 #include "slotid.h"
 #include "slot.h"
-#include "page.h"
+#include "buffer/page.h"
 #include "record.h"
-#include "buffermgr.h"
+#include "buffer/buffermgr.h"
 #include <vector>
 #include "pageoffset.h"
 #include "recordid.h"

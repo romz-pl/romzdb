@@ -1,7 +1,7 @@
 #ifndef ROMZDB_DIRSLOT_H
 #define ROMZDB_DIRSLOT_H
 
-#include "pageid.h"
+#include "disk/pageid.h"
 #include "pageoffset.h"
 #include "record.h"
 

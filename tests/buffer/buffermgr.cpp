@@ -1,8 +1,8 @@
-#include <gtest/gtest.h>
-#include <buffermgr.h>
-#include <unixfile.h>
 #include <cstdlib>
-#include "temp_path.h"
+#include "gtest/gtest.h"
+#include "buffer/buffermgr.h"
+#include "disk/unixfile.h"
+#include "util/temp_path.h"
 
 
 TEST(BufferMgr, GetPage)

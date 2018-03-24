@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
-#include <space.h>
-#include <unixfile.h>
+#include "disk/space.h"
+#include "disk/unixfile.h"
 #include <cstdlib>
 #include <cstring>
-#include "temp_path.h"
+#include "util/temp_path.h"
 
 TEST(Space, OpenCreate)
 {

@@ -59,7 +59,7 @@
 
 #include <vector>
 #include "frame.h"
-#include "space.h"
+#include "disk/space.h"
 
 
 class BufferMgr
