@@ -2,6 +2,7 @@
 set( TEST_NAME test-disk )
 
 add_executable( ${TEST_NAME}
+    blockid.cpp
     dbfile.cpp
     dbfileid.cpp
     main.cpp
