@@ -13,7 +13,7 @@
 //
 DirPage::DirPage( BufferMgr& bufferMgr, PageId self )
     : Page( bufferMgr, self, false )
-    , m_nextPage( PageId::m_invalid )
+    , m_nextPage( PageId::m_invalid, 0 )
 {
 
 }
@@ -81,7 +81,7 @@ std::pair< bool, RecordId > DirPage::Insert( const Record &rec )
     }
     else
     {
-        return std::make_pair( false, RecordId( PageId( 0 ), SlotId( 0 ) ) );
+        return std::make_pair( false, RecordId( PageId( 0, 0 ), SlotId( 0 ) ) );
     }
 }
 
@@ -174,7 +174,7 @@ void DirPage::FromPage()
     p = GetData();
     for( std::size_t i = 0; i < s; i++ )
     {
-        PageId pageId( 0 );
+        PageId pageId( 0, 0 );
         PageOffset freeSpace( 0 );
         std::memcpy( &pageId, p, sizeof( pageId ) );
         p += sizeof( pageId );

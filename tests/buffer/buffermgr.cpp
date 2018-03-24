@@ -6,7 +6,7 @@
 
 TEST(BufferMgr, GetPage)
 {
-    PageId pageId( 1 );
+    PageId pageId( 1, 0 );
     const uint32_t max_size = ( 1U << 20 );
     Space space( GetTempPath(), max_size );
     const std::size_t numPages = 10;
@@ -39,7 +39,7 @@ TEST(BufferMgr, TooSmallBuffer)
         pageId.push_back( v );
     }
 
-    PageId pageIdEx( numPages + 1 );
+    PageId pageIdEx( numPages + 1, 0 );
     EXPECT_ANY_THROW( bufferMgr.Get( pageIdEx, false ) );
 
     for( auto id : pageId )
@@ -49,7 +49,7 @@ TEST(BufferMgr, TooSmallBuffer)
 
 TEST(BufferMgr, MarkDirty)
 {
-    PageId pageId( 1 );
+    PageId pageId( 1, 0 );
     const uint32_t max_size = ( 1U << 20 );
     Space space( GetTempPath(), max_size );
     const std::size_t numPages = 3;

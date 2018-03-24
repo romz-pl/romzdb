@@ -21,7 +21,7 @@ TEST(Space, ReadWrite)
 
     const DiskBlock block ( std::string( "abc" ) );
 
-    EXPECT_ANY_THROW( space.Write( block, PageId( 1 ) ) );
+    EXPECT_ANY_THROW( space.Write( block, PageId( 1, 0 ) ) );
 
     const PageId pageId = space.Alloc();
     EXPECT_NO_THROW( space.Write( block, pageId ) );

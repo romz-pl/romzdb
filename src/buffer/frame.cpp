@@ -7,7 +7,7 @@
 // In the constructor "m_pageId" is initialized to the invalid page ID
 //
 Frame::Frame()
-    : m_pageId( PageId::m_invalid )
+    : m_pageId( PageId::m_invalid, 0 )
     , m_pinCount( 0 )
     , m_dirty( false )
 {

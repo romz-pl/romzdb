@@ -48,7 +48,7 @@ void Space::Write( const DiskBlock &block, PageId pageId ) const
 PageId Space::Alloc()
 {
     const BlockId blockId = m_dbFile.Alloc( );
-    return PageId( blockId.GetValue() );
+    return PageId( blockId, DbFileId( 0 ) );
 }
 
 //
@@ -60,7 +60,7 @@ void Space::Dealloc( PageId pageId )
 //    const DbFile *dbFile = ret.first;
 //    const BlockId blockId = ret.second;
 //    dbFile->Dealloc( blockId );
-    const BlockId blockId( pageId.GetValue() );
+    const BlockId blockId( pageId.get_block_id() );
     m_dbFile.Dealloc( blockId );
 }
 
@@ -75,7 +75,6 @@ void Space::Dealloc( PageId pageId )
 //
 std::pair< const DbFile *, BlockId > Space::Map( PageId pageId ) const
 {
-    assert( pageId.IsValid() );
-    return std::make_pair( &m_dbFile, BlockId( pageId.GetValue() ) );
+    return std::make_pair( &m_dbFile, BlockId( pageId.get_block_id() ) );
 }
 
