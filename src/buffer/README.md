@@ -60,6 +60,56 @@ the buffer manager has to perform the following actions:
 to search the buffer. Since this is a frequent event, the search strategy implemented
 must be efficient. This is implemented as hash table.
 
+## Characteristic
+
+The buffer manager provides:
+1. Sharing. Pages  are  made  addressable  in  the  buffer
+pool,  which  is  an  area  of  shared  virtual  memory
+accessible to all processes that run the database code.
+
+
+2. Addressability. Each  access  module  is  returned  an
+address  in  the  buffer  pool,  denoting  the  beginning  of
+the frame containing the requested page.
+
+3. Semaphore  protection. Many  processes  can  request
+accesses to the same page at the same time; the buffer
+manager  gives  them  the  same  frame  address.  The
+synchronization  of  these  parallel  accesses  in  order  to
+preserve   serializability   is   not   the   buffer   manager
+problem. It has only to provide a semaphore per page
+that   can   be   used   for   implementing   e.g.   locking
+protocol.
+
+4. Durable  storage. The  access  modules  inform  the
+buffer  manager  if  their  page  access  has  modified  the
+page,  however,  the  page  is  written  out  to  disk  by  the
+buffer  manager,  probably,  at  a  time  when  update
+transaction is already committed.
+
+
+## Access to pages
+
+All modules operating at the buffer interface must
+strictly  follow  the  FIX-USE-UNFIX  protocol, with  the
+additional requirements of keeping the duration of a fix
+as  short as possible (even if a  module knows that it
+might need access to a page again later on).
+
+* FIX. The  client  requests  access  to  a  page  using  the
+bufferfix  interface.  The  page  is  fixed  in  the  buffer,
+that is, it is not eligible for replacement.
+
+* USE. The client uses the page with the guarantee that
+the  pointer  to  the  frame  containing  the  page  will
+remain valid.
+
+* UNFIX. The client explicitly waives further usage of the
+frame pointer, that is, it tells the buffer manager that
+it  no  longer  wants  to  use  that  page.  The  buffer
+manager can therefore unfix the page, which means
+that the page is eligible for replacement.
+
 
 ## Replacement algorithms for the database buffer
 
