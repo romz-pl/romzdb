@@ -101,7 +101,7 @@ DbFile* Space::get_db_file( PageId pageId )
     auto it = m_db_file_map.find( pageId.get_db_file_id() );
     if( it == m_db_file_map.end() )
     {
-        throw std::runtime_error( "Space::Map: Db File does not exist." );
+        throw std::runtime_error( "Space::get_db_file: Db File does not exist." );
     }
 
     return it->second;
@@ -115,7 +115,7 @@ const DbFile* Space::get_db_file( PageId pageId ) const
     auto it = m_db_file_map.find( pageId.get_db_file_id() );
     if( it == m_db_file_map.end() )
     {
-        throw std::runtime_error( "Space::Map: Db File does not exist." );
+        throw std::runtime_error( "Space::get_db_file const: Db File does not exist." );
     }
 
     return it->second;

@@ -48,7 +48,7 @@ TEST(Space, Full)
     EXPECT_ANY_THROW( space.Alloc() );
 }
 
-TEST(Space, ReadWrite)
+TEST(Space, WriteIncorrect)
 {
     const uint32_t max_size = ( 1U << 20 );
     DbFile db_file( GetTempPath(), max_size );
@@ -58,6 +58,25 @@ TEST(Space, ReadWrite)
 
     EXPECT_ANY_THROW( space.Write( block, PageId( 1, 0 ) ) );
     EXPECT_ANY_THROW( space.Write( block, PageId( 1, 1 ) ) );
+}
+
+TEST(Space, ReadIncorrect)
+{
+    const uint32_t max_size = ( 1U << 20 );
+    DbFile db_file( GetTempPath(), max_size );
+    Space space( db_file );
+
+    EXPECT_ANY_THROW( space.Read( PageId( 1, 0 ) ) );
+    EXPECT_ANY_THROW( space.Read( PageId( 1, 1 ) ) );
+}
+
+TEST(Space, ReadWrite)
+{
+    const uint32_t max_size = ( 1U << 20 );
+    DbFile db_file( GetTempPath(), max_size );
+    Space space( db_file );
+
+    const DiskBlock block ( std::string( "abc" ) );
 
     const PageId pageId = space.Alloc();
     EXPECT_NO_THROW( space.Write( block, pageId ) );
@@ -69,6 +88,16 @@ TEST(Space, ReadWrite)
 
     EXPECT_ANY_THROW( space.Write( block, pageId ) );
     EXPECT_ANY_THROW( space.Read( pageId ) );
+}
+
+TEST(Space, Dealloc)
+{
+    const uint32_t max_size = ( 1U << 20 );
+    DbFile db_file( GetTempPath(), max_size );
+    Space space( db_file );
+
+    EXPECT_ANY_THROW( space.Dealloc( PageId( 1, 0 ) ) );
+    EXPECT_ANY_THROW( space.Dealloc( PageId( 1, 1 ) ) );
 
 }
 
