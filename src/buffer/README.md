@@ -60,6 +60,95 @@ the buffer manager has to perform the following actions:
 to search the buffer. Since this is a frequent event, the search strategy implemented
 must be efficient. This is implemented as hash table.
 
+
+## Replacement algorithms for the database buffer
+
+1. The goal of each replacement algorithm is the minimization of the buffer fault
+rate for a given buffer size and allocation.
+
+2. If a logical reference to the buffer fails, a page in the buffer must be selected for
+replacement to make room for the requested page. Although a comparable
+problem arises in OS virtual memory management, there are some important
+differences:
+
+   * Any virtual memory page can be replaced at any time, because every reference
+   is done by address translation hardware. However, in order to guarantee their
+   addressability, some database pages can be fixed in the database buffer and are
+   not eligible for replacement.
+
+   * A FIX-UNFIX interval of a database page, in which the calling system
+   component issues addressing operations to data objects within that page, is
+   treated as one database page reference. However, in OS memory management,
+   every machine instruction touching the page is a page reference, resulting in
+   substantially different replacement decisions.
+
+3. Replacement algorithms can be classified into prepaging algorithms and demand paging algorithms.
+
+   * Prepaging algorithms fetch not only the requested page, but also m
+   additional pages that are physically close to the requested page, thus saving
+   considerable access time, compared to (m + 1) individual accesses.
+
+   * Demand paging algorithms fetch only the requested page when there is a page fault.
+
+4. Replacement algorithms replace the buffer page having the lowest probability of
+rereference. They usually rely on the characteristics of the past reference string
+in order to extrapolate future reference behavior. Their general assumption is
+that there is locality of reference; that is, recent reference behavior is a good
+indicator for the near future. Hence, the age and the references of a buffer page
+can be applied as suitable criteria to predict future reference behavior. By using
+logical references as units of time, the age of a page can be measured in an
+appropriate way.
+
+   * The algorithm FIFO (first-in, first-out) replaces the oldest buffer page. Independent
+   of its reference frequency, the age of a page since the first reference is
+   the only decision criterion. Hence, FIFO is only appropriate for sequential access
+   behavior.
+
+   * The algorithm LFU (least frequently used) replaces the buffer page with the
+   lowest reference frequency. Reference counters (RC) are needed to record all references
+   to a buffer page. When a page is fetched, the corresponding RC is initialized to
+   1; every rereference increments it by 1. When replacement is necessary, the
+   buffer page with the smallest value of RC is chosen; a tie is resolved by some
+   mechanism. In this strict LFU realization, the age of a page is not taken into
+   account at all; pages with very high reference activity during a short interval can
+   obtain such high RC values that they will never be displaced, even if they are
+   never referenced again. For this reason, the pure LFU mechanism should not be
+   implemented in a database environment.
+
+   * The algorithm LRU (least recently used ) replaces the buffer page that was
+   least recently used, and can be explained easily by means of a so-called LRU stack.
+   The replacement decision is determined by which page is referenced and by
+   the age of each buffer page since its most recent reference. The FIX mechanism
+   for pages causes LRU to be optionally implemented by two versions, depending
+   on how the term “used” is interpreted, as
+      * least recently referenced, or
+      * least recently unfixed.
+   The version considering the UNFIX time is preferable in DBMS buffer management
+   because FIX phases can last a very long time due to delays caused by a
+   transaction’s blocking times and action interrupts. Thus, only this (UNFIX time)
+   version guarantees the intended observation of the basic LRU idea.
+
+   * The CLOCK algorithm attempts to simulate LRU behavior by means of a
+   simpler implementation. CLOCK is a modification of the FIFO mechanism.
+   A use-bit is added to every buffer page,
+   indicating whether or not the page was referenced during the recent circulation
+   of the selection pointer. The page to be replaced is determined by the stepwise
+   examination of the use-bits. Encountering a l-bit causes a reset to 0 and the
+   move of the selection pointer to the next page. The first page found with a O-bit
+   is the victim for replacement.
+
+   * In combining the idea of LFU with the implementation of CLOCK, the basic
+   version of GCLOCK (generalized CLOCK) arises. The use-bit of a buffer
+   page Pi is replaced by a reference counter (RC). References to Pi increment the
+   corresponding counter RC(i). In the basic GCLOCK version, RC(i) is initialized
+   to 1 upon first fetch of Pi and incremented by 1 at each rereference of Pi.
+   When a buffer fault occurs, a circular search is initiated, decrementing
+   stepwise the reference counters until the first with a value of 0 is found.
+   This method accomplishes an essential improvement compared to a pure LFU
+   algorithm. Nevertheless, this basic GCLOCK version tends to replace the youngest
+   buffer pages, independent of their type and actual probability of rereference.
+   To improve this undesired behavior, a number of variations were introduced.
+
 ## References
 
 1. W. EFFELSBERG, T. HAERDER, "Principles of Database Buffer Management"
