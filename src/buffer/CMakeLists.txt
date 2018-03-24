@@ -2,8 +2,11 @@
 set( LIB_NAME romzdb-buffer )
 
 add_library( ${LIB_NAME} STATIC
+    buffclock.cpp
     buffermgr.cpp
     frame.cpp
+    frameclock.cpp
+    frameid.cpp
     page.cpp
 )
 
