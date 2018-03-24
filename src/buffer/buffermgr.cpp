@@ -1,9 +1,7 @@
-#include "buffermgr.h"
 #include <cassert>
 #include <stdexcept>
-#include <iostream>
 #include <algorithm>
-#include <iostream>
+#include "buffermgr.h"
 
 //
 // Constructor
@@ -28,7 +26,7 @@ BufferMgr::~BufferMgr()
 // Returns  a pointer to a disk block pinned in the buffer.
 //
 //
-// 1. Check the buffer pool to see if it contains the requated page.
+// 1. Check the buffer pool to see if it contains the requested page.
 //    If the page is already in the buffer:
 //        a) (re)pin the page,
 //        b) return a pointer to it.
@@ -38,7 +36,7 @@ BufferMgr::~BufferMgr()
 //    a) Choose a frame for replacement, using the repacement policy.
 //    b) Increment its "pin count"
 //    c) If its "dirty bit" is on, write the page it contains to disk
-//       (taht is, the disk copy of the page is overwritten with the contents of the frame).
+//       (that is, the disk copy of the page is overwritten with the contents of the frame).
 //    d) Read the requested page into the frame.
 //    e) Return a pointer to it.
 //
@@ -69,7 +67,7 @@ DiskBlock* BufferMgr::Get( PageId pageId, bool multiplePins )
 }
 
 //
-// Reads the page from the disk and sotes it in the buffer
+// Reads the page from the disk and stores it in the buffer
 //
 DiskBlock* BufferMgr::GetFromDisk( PageId pageId )
 {
