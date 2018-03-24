@@ -26,6 +26,12 @@ public:
     DiskBlock( const std::string& data );
     ~DiskBlock() = default;
 
+    DiskBlock( const DiskBlock& ) = default;
+    DiskBlock& operator=( const DiskBlock& ) = default;
+
+    DiskBlock( DiskBlock&& ) = default;
+    DiskBlock& operator=( DiskBlock&& ) = default;
+
     bool operator== ( const DiskBlock& block ) const;
 
     void Read( const UnixFile& uf, BlockId blockId );

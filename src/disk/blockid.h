@@ -13,6 +13,12 @@ public:
     explicit BlockId( std::uint32_t id );
     ~BlockId() = default;
 
+    BlockId( const BlockId& ) = default;
+    BlockId& operator=( const BlockId& ) = default;
+
+    BlockId( BlockId&& ) = default;
+    BlockId& operator=( BlockId&& ) = default;
+
    std::uint32_t GetValue() const;
 
 private:
