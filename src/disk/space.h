@@ -14,6 +14,12 @@ public:
     Space( const std::string& path, std::uint32_t max_size );
     ~Space() = default;
 
+    Space( const Space& ) = delete;
+    Space& operator=( const Space& ) = delete;
+
+    Space( Space&& ) = delete;
+    Space& operator=( Space&& ) = delete;
+
     DiskBlock Read( PageId pageId ) const;
     void Write( const DiskBlock& block, PageId pageId ) const;
 
