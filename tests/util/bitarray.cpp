@@ -1,7 +1,5 @@
-#include <gtest/gtest.h>
-#include <bitarray.h>
-#include <cstdlib>
-#include <cstring>
+#include "gtest/gtest.h"
+#include "util/bitarray.h"
 
 
 TEST(BitArray, All)
