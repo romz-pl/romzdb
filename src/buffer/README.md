@@ -5,10 +5,6 @@ This library implements buffer manager
 
 ## Principles
 
-See article
-W. EFFELSBERG, T. HAERDER, "Principles of Database Buffer Management"
-ACM Transactions on Database Systems, Vol. 9, No. 4, December 1984, Pages 560-595.
-
 1. A database buffer has to be maintained for purposes of interfacing main memory and disk.
 
 2. In order to facilitate the exchange of data between disk and main storage,
