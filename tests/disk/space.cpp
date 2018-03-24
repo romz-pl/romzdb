@@ -3,6 +3,26 @@
 #include "disk/unixfile.h"
 #include "util/temp_path.h"
 
+TEST(Space, OpenCreate)
+{
+    const uint32_t max_size = ( 1U << 20 );
+    const std::string path = GetTempPath();
+
+    {
+        // Create file
+        DbFile file( path, max_size );
+        Space space{ file };
+        EXPECT_NO_THROW( space.Alloc() );
+    }
+
+    {
+        // Open file
+        DbFile file( path );
+        Space space{ file };
+        EXPECT_NO_THROW( space.Alloc() );
+    }
+}
+
 TEST(Space, Add)
 {
     Space space;
