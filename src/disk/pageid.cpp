@@ -63,3 +63,16 @@ bool PageId::operator== ( const PageId& v ) const
     return ( m_block_id == v.m_block_id ) && ( m_db_file_id == v.m_db_file_id );
 }
 
+//
+//
+//
+bool PageId::operator< ( const PageId& v ) const
+{
+    if( m_block_id == v.m_block_id )
+    {
+        return ( m_db_file_id < v.m_db_file_id );
+    }
+
+    return ( m_block_id < v.m_block_id );
+}
+
