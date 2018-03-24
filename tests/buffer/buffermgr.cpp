@@ -1,4 +1,3 @@
-#include <cstdlib>
 #include "gtest/gtest.h"
 #include "buffer/buffermgr.h"
 #include "disk/unixfile.h"

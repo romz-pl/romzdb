@@ -1,7 +1,5 @@
-#include <gtest/gtest.h>
+#include "gtest/gtest.h"
 #include "disk/unixfile.h"
-#include <cstdlib>
-#include <cassert>
 #include "util/temp_path.h"
 
 

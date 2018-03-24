@@ -1,4 +1,3 @@
-#include <cstdlib>
 #include <algorithm>
 #include <random>
 #include "gtest/gtest.h"

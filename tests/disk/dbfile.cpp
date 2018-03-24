@@ -1,7 +1,5 @@
-#include <gtest/gtest.h>
+#include "gtest/gtest.h"
 #include "disk/dbfile.h"
-#include <cstdlib>
-#include <cstring>
 #include "util/temp_path.h"
 
 
