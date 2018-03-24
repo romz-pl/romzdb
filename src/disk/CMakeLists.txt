@@ -5,6 +5,7 @@ add_library( ${LIB_NAME} STATIC
     bitarray.cpp
     blockid.cpp
     dbfile.cpp
+    dbfileid.cpp
     diskblock.cpp
     div_ceil.cpp
     pageid.cpp
