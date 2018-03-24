@@ -24,8 +24,6 @@ UnixFile::UnixFile( const std::string& path, Mode mode )
         Create( path );
         return;
     }
-
-    assert( 0 );
 }
 
 //

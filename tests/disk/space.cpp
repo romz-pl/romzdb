@@ -32,6 +32,22 @@ TEST(Space, Remove)
     EXPECT_ANY_THROW( space.Remove( id ) );
 }
 
+TEST(Space, Full)
+{
+    const uint32_t max_size = ( 1U << 20 );
+    DbFile db_file( GetTempPath(), max_size );
+    Space space( db_file );
+    const DiskBlock block ( std::string( "abc" ) );
+
+    while( !space.full() )
+    {
+        const PageId pageId = space.Alloc();
+        EXPECT_NO_THROW( space.Write( block, pageId ) );
+    }
+
+    EXPECT_ANY_THROW( space.Alloc() );
+}
+
 TEST(Space, ReadWrite)
 {
     const uint32_t max_size = ( 1U << 20 );
@@ -41,6 +57,7 @@ TEST(Space, ReadWrite)
     const DiskBlock block ( std::string( "abc" ) );
 
     EXPECT_ANY_THROW( space.Write( block, PageId( 1, 0 ) ) );
+    EXPECT_ANY_THROW( space.Write( block, PageId( 1, 1 ) ) );
 
     const PageId pageId = space.Alloc();
     EXPECT_NO_THROW( space.Write( block, pageId ) );

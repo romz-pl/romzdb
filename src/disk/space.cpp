@@ -69,7 +69,6 @@ void Space::Write( const DiskBlock &block, PageId pageId ) const
 //
 PageId Space::Alloc()
 {
-
     for( auto it : m_db_file_map )
     {
         DbFile* f = it.second;
@@ -122,3 +121,18 @@ const DbFile* Space::get_db_file( PageId pageId ) const
     return it->second;
 }
 
+//
+//
+//
+bool Space::full() const
+{
+    for( auto it : m_db_file_map )
+    {
+        DbFile* f = it.second;
+        if( !f->full() )
+        {
+            return false;
+        }
+    }
+    return true;
+}

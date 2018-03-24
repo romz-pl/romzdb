@@ -30,6 +30,8 @@ public:
     PageId Alloc();
     void Dealloc( PageId pageId );
 
+    bool full() const;
+
 private:
     DbFile* get_db_file( PageId pageId );
     const DbFile* get_db_file( PageId pageId ) const;
