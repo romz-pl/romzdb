@@ -5,7 +5,6 @@
 //
 FrameClock::FrameClock( )
     : m_page_id( 0, 0 )
-    , m_frame_id( 0 )
 {
     clear();
 }
@@ -17,7 +16,6 @@ void FrameClock::clear()
 {
     m_pin_count = 0;
     m_page_id = PageId( 0, 0 );
-    // m_frame_id = FrameId( 0 );
     m_dirty = false;
     m_refbit = false;
     m_valid = false;
@@ -31,7 +29,6 @@ void FrameClock::clear()
 void FrameClock::set( PageId page_id )
 {
     m_page_id = page_id;
-    // m_frame_id = FrameId( 0 );
     m_pin_count = 1;
     m_dirty = false;
     m_valid = true;

@@ -24,7 +24,7 @@ private:
     PageId m_page_id;
 
     // Frame ID of the frame, in the buffer pool, being used
-    FrameId m_frame_id;
+    // FrameId m_frame_id;
 
     // Number of times this page has been pinned
     std::uint16_t m_pin_count;

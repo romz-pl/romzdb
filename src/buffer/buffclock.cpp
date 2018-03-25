@@ -13,7 +13,7 @@ BuffClock::BuffClock( Space& space, std::uint32_t frame_no )
 
     for( std::size_t i = 0; i < m_frame.size(); i++ )
      {
-         m_frame[ i ].m_frame_id = FrameId( i );
+         // m_frame[ i ].m_frame_id = FrameId( i );
          m_frame[ i ].m_valid = false;
      }
 }
@@ -65,13 +65,11 @@ void BuffClock::allocBuff()
                 {
                     if( ff.m_dirty )
                     {
-                        m_space.Write( m_pool[ m_clock_hand.to_uint32() ], ff.m_page_id );
                         //flush page to disk
-                        // m_frame[ m_clock_hand ].file->writePage(bufPool[ m_clock_hand ]);
+                        m_space.Write( m_pool[ m_clock_hand.to_uint32() ], ff.m_page_id );
                         ff.m_dirty = false;
                     }
                     //dealloc
-                    // hashTable->remove(m_frame[ m_clock_hand ].file, m_frame[ m_clock_hand ].pageNo);
                     m_map.erase( ff.m_page_id );
                     ff.clear();
                     frameFreed = true;
@@ -185,7 +183,7 @@ void BuffClock::dispose( const PageId page_id )
         m_space.Write( m_pool[ m_clock_hand.to_uint32() ], page_id );
     }
     m_map.erase( page_id );
-    m_frame[ m_clock_hand.to_uint32() ].clear();
+    ff.clear();
     m_space.Dealloc( page_id );
 }
 
@@ -217,8 +215,6 @@ void BuffClock::flush()
             f.m_dirty = false;
         }
         m_map.erase( f.m_page_id );
-        //remove frame from hashtable
-        // hashTable->remove(bufDescTable[i].file, bufDescTable[i].pageNo);
         f.clear();
 
         i++;
