@@ -15,7 +15,7 @@ public:
     ~BufferMgr();
 
     DiskBlock* Get( PageId pageId );
-    void Unpin( PageId pageId );
+    void Unpin( PageId pageId, bool dirty );
 
     PageId GetNew();
 

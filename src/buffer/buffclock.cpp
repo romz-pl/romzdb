@@ -73,7 +73,7 @@ void BuffClock::allocBuff()
 // If the requested page is already present in the buffer pool pointer to that frame is returned
 // otherwise a new frame is allocated from the buffer pool for reading the page.
 //
-DiskBlock* BuffClock::get( const PageId page_id )
+DiskBlock* BuffClock::get( PageId page_id )
 {
     auto it = m_map.find( page_id );
 
@@ -93,7 +93,7 @@ DiskBlock* BuffClock::get( const PageId page_id )
 //
 // Unpin a page from memory since it is no longer required for it to remain in memory.
 //
-void BuffClock::unpin( const PageId page_id, const bool dirty )
+void BuffClock::unpin( PageId page_id, bool dirty )
 {
     auto it = m_map.find( page_id );
     if( it == m_map.end() )
@@ -122,7 +122,7 @@ std::pair< PageId, DiskBlock* > BuffClock::alloc()
 // Delete page from file and also from buffer pool if present.
 // Since the page is entirely deleted from file, its unnecessary to see if the page is dirty.
 //
-void BuffClock::dispose( const PageId page_id )
+void BuffClock::dispose( PageId page_id )
 {
     auto it = m_map.find( page_id );
     if( it == m_map.end() )

@@ -78,9 +78,13 @@ DiskBlock* BufferMgr::GetFromDisk( PageId pageId )
 //
 // Unpin a page so that it can be discarded from the buffer.
 //
-void BufferMgr::Unpin( PageId pageId )
+void BufferMgr::Unpin( PageId pageId , bool dirty )
 {
     Frame& frame = FindFrame( pageId );
+    if( dirty )
+    {
+        frame.MarkDirty();
+    }
     frame.UnpinPage();
 }
 

@@ -16,7 +16,7 @@ Page::Page( BufferMgr& bufferMgr, PageId pageId )
 //
 Page::~Page()
 {
-    m_bufferMgr.Unpin( m_pageId );
+    m_bufferMgr.Unpin( m_pageId, true );
 }
 
 //

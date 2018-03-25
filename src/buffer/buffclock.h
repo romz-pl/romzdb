@@ -14,10 +14,10 @@ public:
     BuffClock( Space& space, std::uint32_t frame_no );
     ~BuffClock();
 
-    DiskBlock* get( const PageId page_id );
-    void unpin( const PageId page_id, const bool dirty );
+    DiskBlock* get( PageId page_id );
+    void unpin( PageId page_id, bool dirty );
     std::pair< PageId, DiskBlock * > alloc( );
-    void dispose( const PageId page_id );
+    void dispose( PageId page_id );
     void flush();
 
 private:
