@@ -11,6 +11,9 @@ public:
     DirSlot( PageId page_id, std::uint32_t free_space );
 
     bool is_free( std::uint32_t free_space ) const;
+    bool is_empty( ) const;
+
+    void empty();
 
 public:
     // Page into the "DirSlot" points
