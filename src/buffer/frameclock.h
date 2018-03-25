@@ -7,7 +7,6 @@
 
 #include <cstdint>
 #include "disk/pageid.h"
-#include "frameid.h"
 #include "disk/diskblock.h"
 #include "disk/space.h"
 

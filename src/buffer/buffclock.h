@@ -5,7 +5,6 @@
 #include <map>
 #include "disk/diskblock.h"
 #include "disk/pageid.h"
-#include "frameid.h"
 #include "frameclock.h"
 #include "disk/space.h"
 
