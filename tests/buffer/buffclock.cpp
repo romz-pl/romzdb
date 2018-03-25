@@ -97,6 +97,7 @@ TEST(BuffClock, Dispose)
     EXPECT_NO_THROW( buff.read ( ida ) );
     EXPECT_NO_THROW( buff.unpin( ida, true ) );
     EXPECT_NO_THROW( buff.unpin( ida, false ) );
+    EXPECT_ANY_THROW( buff.unpin( ida, false ) );
     EXPECT_NO_THROW( buff.dispose( ida ) );
 
     PageId idb( 0, 0 );
@@ -105,7 +106,11 @@ TEST(BuffClock, Dispose)
     EXPECT_NO_THROW( buff.read ( idb ) );
     EXPECT_NO_THROW( buff.unpin( idb, true ) );
     EXPECT_NO_THROW( buff.unpin( idb, false ) );
+    EXPECT_ANY_THROW( buff.unpin( idb, false ) );
     EXPECT_NO_THROW( buff.dispose( idb ) );
+
+    EXPECT_ANY_THROW( buff.unpin( PageId( 10, 0 ), false ) );
+    EXPECT_ANY_THROW( buff.unpin( PageId( 11, 0 ), false ) );
 }
 
 TEST(BuffClock, Full)
@@ -133,3 +138,19 @@ TEST(BuffClock, Full)
     }
 }
 
+TEST(BuffClock, Flush)
+{
+    const uint32_t max_size = ( 1U << 20 );
+    DbFile db_file( GetTempPath(), max_size );
+    Space space( db_file );
+    const std::size_t numPages = 10;
+    BuffClock buff( space, numPages );
+
+    PageId id( 0, 0 );
+    EXPECT_NO_THROW( buff.alloc( id ) );
+    EXPECT_ANY_THROW( buff.flush( ) );
+
+    EXPECT_NO_THROW( buff.unpin( id, false ) );
+    EXPECT_NO_THROW( buff.flush( ) );
+
+}
