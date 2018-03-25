@@ -26,14 +26,11 @@ private:
     void allocBuff();
 
 private:
-    // Numer of frames in the buffer pool
-    const std::uint32_t m_frame_no;
-
     // clock hand for clock algorithm
-    FrameId m_clock_hand;
+    FrameClock* m_clock_hand;
 
     // mapping form PageId to FrameId
-    std::map< PageId, FrameId > m_map;
+    std::map< PageId, FrameClock* > m_map;
 
     // buffer pool
     std::vector< FrameClock > m_frame;

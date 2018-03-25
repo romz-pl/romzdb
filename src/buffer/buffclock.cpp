@@ -4,12 +4,10 @@
 //
 //
 BuffClock::BuffClock( Space& space, std::uint32_t frame_no )
-    : m_frame_no( frame_no )
-    , m_clock_hand( frame_no - 1 )
-    , m_frame( frame_no )
+    : m_frame( frame_no )
     , m_space( space )
 {
-
+    m_clock_hand = m_frame.data();
 }
 
 //
@@ -25,7 +23,9 @@ BuffClock::~BuffClock()
 //
 void BuffClock::advance()
 {
-    m_clock_hand.inc( m_frame_no );
+    m_clock_hand++;
+    if( m_clock_hand == m_frame.data() + m_frame.size() )
+        m_clock_hand = m_frame.data();
 }
 
 //
@@ -35,37 +35,36 @@ void BuffClock::allocBuff()
 {
     std::uint32_t countPinned = 0;
     // the frame hasn't been set and not all frames are pinned
-    while( countPinned < m_frame_no )
+    while( countPinned < m_frame.size() )
     {
         advance();
-        FrameClock& ff = m_frame[ m_clock_hand.to_uint32() ];
 
-        if( !ff.m_valid )
+        if( !m_clock_hand->m_valid )
         {
             return;
         }
 
-        if( ff.m_refbit )
+        if( m_clock_hand->m_refbit )
         {
-            ff.m_refbit = false;
+            m_clock_hand->m_refbit = false;
             continue;
         }
 
-        if( ff.m_pin_count != 0 )
+        if( m_clock_hand->m_pin_count != 0 )
         {
             countPinned++;
             continue;
         }
 
-        ff.write( m_space );
-        m_map.erase( ff.m_page_id );
-        ff.clear();
+        m_clock_hand->write( m_space );
+        m_map.erase( m_clock_hand->m_page_id );
+        m_clock_hand->clear();
         return;
     }
 
 
     //if all pages are pinned throw excepton
-    throw std::runtime_error( "BuffClock::allocBuff: Bufferis full" );
+    throw std::runtime_error( "BuffClock::allocBuff: Buffer is full" );
 
 }
 
@@ -78,21 +77,17 @@ DiskBlock* BuffClock::read( const PageId page_id )
 {
     auto it = m_map.find( page_id );
 
-
     if( it != m_map.end() )
     {
         //look up was successful
-        FrameClock& ff = m_frame[ m_clock_hand.to_uint32() ];
-        return ff.pin();
+        return m_clock_hand->pin();
     }
 
     //look up was unsucessful
     allocBuff();
     m_map.insert( std::make_pair( page_id, m_clock_hand ) );
 
-    FrameClock& ff = m_frame[ m_clock_hand.to_uint32() ];
-    return ff.read( m_space, page_id );
-
+    return m_clock_hand->read( m_space, page_id );
 }
 
 //
@@ -106,8 +101,7 @@ void BuffClock::unpin( const PageId page_id, const bool dirty )
         throw std::runtime_error( "BuffClock::unpin: Page is not in buffer" );
     }
 
-    FrameClock& ff = m_frame[ it->second.to_uint32() ];
-    ff.unpin( dirty );
+    it->second->unpin( dirty );
 }
 
 //
@@ -118,10 +112,10 @@ DiskBlock* BuffClock::alloc( PageId& page_id )
 {
     page_id = m_space.Alloc();
     allocBuff();
-    m_frame[ m_clock_hand.to_uint32() ].m_block = m_space.Read( page_id );
+    m_clock_hand->m_block = m_space.Read( page_id );
     m_map.insert( std::make_pair( page_id, m_clock_hand ) );
-    m_frame[ m_clock_hand.to_uint32() ].set( page_id );
-    return &( m_frame[ m_clock_hand.to_uint32() ].m_block );
+    m_clock_hand->set( page_id );
+    return &( m_clock_hand->m_block );
 }
 
 //
@@ -136,10 +130,8 @@ void BuffClock::dispose( const PageId page_id )
         throw std::runtime_error( "BuffClock::dispose: Page is not in buffer" );
     }
 
-    FrameClock& ff = m_frame[ m_clock_hand.to_uint32() ];  
-    ff.dispose( m_space, page_id );
+    m_clock_hand->dispose( m_space, page_id );
     m_map.erase( page_id );
-
 }
 
 //
