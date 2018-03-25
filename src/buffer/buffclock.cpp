@@ -10,10 +10,6 @@ BuffClock::BuffClock( Space& space, std::uint32_t frame_no )
     , m_space( space )
 {
 
-    for( std::size_t i = 0; i < m_frame.size(); i++ )
-     {
-         m_frame[ i ].m_valid = false;
-     }
 }
 
 //
@@ -61,13 +57,7 @@ void BuffClock::allocBuff()
             continue;
         }
 
-        if( ff.m_dirty )
-        {
-            //flush page to disk
-            m_space.Write( ff.m_block, ff.m_page_id );
-            ff.m_dirty = false;
-        }
-        //dealloc
+        ff.write( m_space );
         m_map.erase( ff.m_page_id );
         ff.clear();
         return;
@@ -88,20 +78,20 @@ DiskBlock* BuffClock::read( const PageId page_id )
 {
     auto it = m_map.find( page_id );
 
+
     if( it != m_map.end() )
     {
         //look up was successful
         FrameClock& ff = m_frame[ m_clock_hand.to_uint32() ];
-        return ff.read();
+        return ff.pin();
     }
 
     //look up was unsucessful
     allocBuff();
-    DiskBlock p = m_space.Read( page_id );
-    m_frame[  m_clock_hand.to_uint32() ].m_block = p;
     m_map.insert( std::make_pair( page_id, m_clock_hand ) );
-    m_frame[ m_clock_hand.to_uint32() ].set( page_id );
-    return &( m_frame[ m_clock_hand.to_uint32() ].m_block );
+
+    FrameClock& ff = m_frame[ m_clock_hand.to_uint32() ];
+    return ff.read( m_space, page_id );
 
 }
 

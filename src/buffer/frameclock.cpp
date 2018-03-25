@@ -100,10 +100,31 @@ void FrameClock::unpin( bool dirty )
 //
 //
 //
-DiskBlock* FrameClock::read()
+DiskBlock* FrameClock::pin()
 {
     m_refbit = true;
     m_pin_count++;
     return &m_block;
 }
 
+//
+//
+//
+void FrameClock::write( Space& space )
+{
+    if( m_dirty )
+    {
+        space.Write( m_block, m_page_id );
+        m_dirty = false;
+    }
+}
+
+//
+//
+//
+DiskBlock *FrameClock::read( Space& space, PageId page_id )
+{
+    m_block = space.Read( page_id );
+    set( page_id );
+    return &m_block;
+}
