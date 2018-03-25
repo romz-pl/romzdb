@@ -14,12 +14,9 @@ public:
     BufferMgr( Space& space, std::size_t frameNo );
     ~BufferMgr();
 
-    DiskBlock* Get( PageId pageId );
-    void Unpin( PageId pageId, bool dirty );
-
+    DiskBlock* get( PageId pageId );
+    void unpin( PageId pageId, bool dirty );
     std::pair< PageId, DiskBlock * > alloc();
-
-
 
 private:
     void MarkDirty( PageId pageId );

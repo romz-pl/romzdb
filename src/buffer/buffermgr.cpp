@@ -43,7 +43,7 @@ BufferMgr::~BufferMgr()
 //
 // If the buffer is full, replace an unpinned page.
 //
-DiskBlock* BufferMgr::Get( PageId pageId )
+DiskBlock* BufferMgr::get( PageId pageId )
 {
     auto pred = [ pageId ]( const Frame& f ){ return f.GetPageId() == pageId; };
     auto it = std::find_if( m_pool.begin(), m_pool.end(), pred );
@@ -78,7 +78,7 @@ DiskBlock* BufferMgr::GetFromDisk( PageId pageId )
 //
 // Unpin a page so that it can be discarded from the buffer.
 //
-void BufferMgr::Unpin( PageId pageId , bool dirty )
+void BufferMgr::unpin( PageId pageId , bool dirty )
 {
     Frame& frame = FindFrame( pageId );
     if( dirty )
@@ -111,7 +111,7 @@ Frame& BufferMgr::FindFrame( PageId pageId )
 std::pair< PageId, DiskBlock * > BufferMgr::alloc()
 {
     const PageId pageId = m_space.Alloc();
-    DiskBlock* block = Get( pageId );
+    DiskBlock* block = get( pageId );
     return std::make_pair( pageId, block );
 }
 

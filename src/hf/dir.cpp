@@ -57,7 +57,7 @@ RecordId Dir::Insert( const Record& rec )
 void Dir::InsertHeapPage()
 {
     PageId pageId = m_bufferMgr.alloc( ).first;
-    m_bufferMgr.Unpin( pageId, false );
+    m_bufferMgr.unpin( pageId, false );
 
     for( DirPage& d : m_dirPage )
     {
@@ -74,7 +74,7 @@ void Dir::InsertHeapPage()
     DirPage dp( m_bufferMgr, pageId );
 
     pageId = m_bufferMgr.alloc( ).first;
-    m_bufferMgr.Unpin( pageId, false );
+    m_bufferMgr.unpin( pageId, false );
     dp.InsertHeapPage( pageId );
 
     m_dirPage.push_back( dp );

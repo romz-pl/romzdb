@@ -13,15 +13,15 @@ TEST(BufferMgr, GetPage)
     const std::size_t numPages = 10;
     BufferMgr bufferMgr( space, numPages );
 
-    EXPECT_ANY_THROW( bufferMgr.Get( pageId ) );
+    EXPECT_ANY_THROW( bufferMgr.get( pageId ) );
 
     pageId = bufferMgr.alloc().first;
-    EXPECT_NO_THROW( bufferMgr.Get( pageId ) );
-    EXPECT_NO_THROW( bufferMgr.Get( pageId ) );
+    EXPECT_NO_THROW( bufferMgr.get( pageId ) );
+    EXPECT_NO_THROW( bufferMgr.get( pageId ) );
 
-    EXPECT_NO_THROW( bufferMgr.Unpin( pageId, true ) );
-    EXPECT_NO_THROW( bufferMgr.Unpin( pageId, true ) );
-    EXPECT_NO_THROW( bufferMgr.Unpin( pageId, true ) );
+    EXPECT_NO_THROW( bufferMgr.unpin( pageId, true ) );
+    EXPECT_NO_THROW( bufferMgr.unpin( pageId, true ) );
+    EXPECT_NO_THROW( bufferMgr.unpin( pageId, true ) );
 
 }
 
@@ -37,17 +37,17 @@ TEST(BufferMgr, TooSmallBuffer)
     for( std::size_t i = 0; i < numPages; i++ )
     {
         PageId v = bufferMgr.alloc( ).first;
-        EXPECT_NO_THROW( bufferMgr.Get( v ) );
+        EXPECT_NO_THROW( bufferMgr.get( v ) );
         pageId.push_back( v );
     }
 
     PageId pageIdEx( numPages + 1, 0 );
-    EXPECT_ANY_THROW( bufferMgr.Get( pageIdEx ) );
+    EXPECT_ANY_THROW( bufferMgr.get( pageIdEx ) );
 
     for( auto id : pageId )
     {
-        EXPECT_NO_THROW( bufferMgr.Unpin( id, true ) );
-        EXPECT_NO_THROW( bufferMgr.Unpin( id, true ) );
+        EXPECT_NO_THROW( bufferMgr.unpin( id, true ) );
+        EXPECT_NO_THROW( bufferMgr.unpin( id, true ) );
     }
 
 }
@@ -61,12 +61,12 @@ TEST(BufferMgr, MarkDirty)
     const std::size_t numPages = 3;
     BufferMgr bufferMgr( space, numPages );
 
-    EXPECT_ANY_THROW( bufferMgr.Unpin( pageId, true ) );
+    EXPECT_ANY_THROW( bufferMgr.unpin( pageId, true ) );
 
     pageId = bufferMgr.alloc( ).first;
-    EXPECT_NO_THROW( bufferMgr.Get( pageId ) );
-    EXPECT_NO_THROW( bufferMgr.Unpin( pageId, true ) );
-    EXPECT_NO_THROW( bufferMgr.Unpin( pageId, true ) );
+    EXPECT_NO_THROW( bufferMgr.get( pageId ) );
+    EXPECT_NO_THROW( bufferMgr.unpin( pageId, true ) );
+    EXPECT_NO_THROW( bufferMgr.unpin( pageId, true ) );
 }
 
 TEST(BufferMgr, Unpin)
@@ -81,12 +81,12 @@ TEST(BufferMgr, Unpin)
     const PageId pageId = bufferMgr.alloc().first;
 
     for( std::size_t i = 0; i < loopSize; i++ )
-        EXPECT_NO_THROW( bufferMgr.Get( pageId ) );
+        EXPECT_NO_THROW( bufferMgr.get( pageId ) );
 
     for( std::size_t i = 0; i < loopSize + 1; i++ )
-        EXPECT_NO_THROW( bufferMgr.Unpin( pageId, true ) );
+        EXPECT_NO_THROW( bufferMgr.unpin( pageId, true ) );
 
-    EXPECT_ANY_THROW( bufferMgr.Unpin( pageId, true ) );
+    EXPECT_ANY_THROW( bufferMgr.unpin( pageId, true ) );
 }
 
 

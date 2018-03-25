@@ -14,14 +14,14 @@ TEST(DirPage, InsertDeleteGet)
 
 
     PageId pageId = bufferMgr.alloc().first;
-    bufferMgr.Unpin( pageId, false );
+    bufferMgr.unpin( pageId, false );
     DirPage dp( bufferMgr, pageId );
 
     const Record rec( "ABC" );
     EXPECT_FALSE( dp.Insert( rec ).first );
 
     pageId = bufferMgr.alloc().first;
-    bufferMgr.Unpin( pageId, false );
+    bufferMgr.unpin( pageId, false );
     EXPECT_NO_THROW( dp.InsertHeapPage( pageId ) );
 
     EXPECT_TRUE( dp.Insert( rec ).first );

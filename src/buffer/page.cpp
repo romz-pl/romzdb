@@ -8,7 +8,7 @@ Page::Page( BufferMgr& bufferMgr, PageId pageId )
     : m_bufferMgr( bufferMgr )
     , m_pageId( pageId )
 {
-    m_block = m_bufferMgr.Get( pageId );
+    m_block = m_bufferMgr.get( pageId );
 }
 
 //
@@ -16,7 +16,7 @@ Page::Page( BufferMgr& bufferMgr, PageId pageId )
 //
 Page::~Page()
 {
-    m_bufferMgr.Unpin( m_pageId, true );
+    m_bufferMgr.unpin( m_pageId, true );
 }
 
 //
@@ -26,7 +26,7 @@ Page::Page( const Page& v )
     : m_bufferMgr( v.m_bufferMgr )
     , m_pageId( v.m_pageId )
 {
-    m_block = m_bufferMgr.Get( m_pageId );
+    m_block = m_bufferMgr.get( m_pageId );
 }
 
 
