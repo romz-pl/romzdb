@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "frameclock.h"
 
 //
@@ -33,5 +34,28 @@ void FrameClock::set( PageId page_id )
     m_dirty = false;
     m_valid = true;
     m_refbit = true;
+}
+
+//
+//
+//
+void FrameClock::flush( Space& space )
+{
+    if( !m_valid )
+    {
+        return;
+    }
+
+    if( m_pin_count > 0)
+    {
+        throw std::runtime_error( "FrameClock::flush: Page is pinned" );
+    }
+
+    if( m_dirty )
+    {
+        //flush page to disk
+        space.Write( m_block, m_page_id );
+        m_dirty = false;
+    }
 }
 

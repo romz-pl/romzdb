@@ -192,29 +192,8 @@ void BuffClock::dispose( const PageId page_id )
 //
 void BuffClock::flush()
 {
-    uint32_t i = 0;
-    //interate through bufdesctable
     for( auto& f : m_frame )
     {
-        if( !f.m_valid )
-        {
-            continue;
-        }
-
-        if( f.m_pin_count > 0)
-        {
-            throw std::runtime_error( "BuffClock::flush: Page is pinned" );
-        }
-
-        if( f.m_dirty )
-        {
-            //flush page to disk
-            m_space.Write( m_frame[ i ].m_block, f.m_page_id );
-            f.m_dirty = false;
-        }
-        m_map.erase( f.m_page_id );
-        f.clear();
-
-        i++;
+        f.flush( m_space );
     }
 }

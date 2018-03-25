@@ -9,6 +9,7 @@
 #include "disk/pageid.h"
 #include "frameid.h"
 #include "disk/diskblock.h"
+#include "disk/space.h"
 
 class FrameClock
 {
@@ -19,6 +20,8 @@ public:
 
     void clear();
     void set( PageId page_id );
+
+    void flush( Space& space );
 
 private:
     DiskBlock m_block;
