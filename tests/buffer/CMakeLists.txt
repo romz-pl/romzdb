@@ -6,6 +6,8 @@ add_executable( ${TEST_NAME}
     main.cpp
 )
 
+target_compile_options( ${TEST_NAME} PRIVATE ${ROMZDB_CXX_FLAGS} )
+
 
 target_include_directories( ${TEST_NAME} PRIVATE 
     ${gtest_SOURCE_DIR}/include 
@@ -22,6 +24,7 @@ target_link_libraries( ${TEST_NAME}
     romzdb-buffer
     romzdb-util
 )
+
 
 add_test( NAME ${TEST_NAME} COMMAND ${TEST_NAME} )
 

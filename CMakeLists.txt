@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.0)
 project (romzdb)
 
-SET( CMAKE_CXX_FLAGS "-Wall -pedantic -pthread -g -O0 -fprofile-arcs -ftest-coverage -std=c++17")
+SET( ROMZDB_CXX_FLAGS -Wall -pedantic -pthread -g -O0 -fprofile-arcs -ftest-coverage -std=c++17 )
 
 include(CTest)
 enable_testing(true)

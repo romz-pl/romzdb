@@ -7,5 +7,4 @@ add_library( ${LIB_NAME} STATIC
     temp_path.cpp
 )
 
-target_compile_options( ${LIB_NAME} PRIVATE -Wall -pedantic -pthread -g -O0 -fprofile-arcs -ftest-coverage -std=c++17 )
-
+target_compile_options( ${LIB_NAME} PRIVATE ${ROMZDB_CXX_FLAGS} )

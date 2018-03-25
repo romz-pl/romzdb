@@ -10,4 +10,6 @@ add_library( ${LIB_NAME} STATIC
 
 target_include_directories( ${LIB_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/src )
 
+target_compile_options( ${LIB_NAME} PRIVATE ${ROMZDB_CXX_FLAGS} )
+
 

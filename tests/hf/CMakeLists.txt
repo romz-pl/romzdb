@@ -11,6 +11,8 @@ add_executable( ${TEST_NAME}
     #scaner.cpp
 )
 
+target_compile_options( ${TEST_NAME} PRIVATE ${ROMZDB_CXX_FLAGS} )
+
 target_include_directories( ${TEST_NAME} PRIVATE 
     ${gtest_SOURCE_DIR}/include 
     ${gtest_SOURCE_DIR} 
