@@ -44,40 +44,33 @@ void BuffClock::allocBuff()
         advance();
         FrameClock& ff = m_frame[ m_clock_hand.to_uint32() ];
 
-        if( ff.m_valid )
+        if( !ff.m_valid )
         {
-
-            if( ff.m_refbit )
-            {
-                ff.m_refbit = false;
-            }
-            else
-            {
-                if( ff.m_pin_count != 0 )
-                {
-                    countPinned++;
-                }
-                else
-                {
-                    if( ff.m_dirty )
-                    {
-                        //flush page to disk
-                        m_space.Write( ff.m_block, ff.m_page_id );
-                        ff.m_dirty = false;
-                    }
-                    //dealloc
-                    m_map.erase( ff.m_page_id );
-                    ff.clear();
-                    return;
-                }
-            }
-        }
-        else
-        {
-            //dealloc
-            ff.clear();
             return;
         }
+
+        if( ff.m_refbit )
+        {
+            ff.m_refbit = false;
+            continue;
+        }
+
+        if( ff.m_pin_count != 0 )
+        {
+            countPinned++;
+            continue;
+        }
+
+        if( ff.m_dirty )
+        {
+            //flush page to disk
+            m_space.Write( ff.m_block, ff.m_page_id );
+            ff.m_dirty = false;
+        }
+        //dealloc
+        m_map.erase( ff.m_page_id );
+        ff.clear();
+        return;
     }
 
 
