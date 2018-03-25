@@ -22,6 +22,7 @@ public:
     void set( PageId page_id );
 
     void flush( Space& space );
+    void dispose( Space& space, PageId page_id );
 
 private:
     DiskBlock m_block;

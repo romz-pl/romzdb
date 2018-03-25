@@ -59,3 +59,22 @@ void FrameClock::flush( Space& space )
     }
 }
 
+//
+//
+//
+void FrameClock::dispose( Space& space, PageId page_id )
+{
+    if( !m_valid )
+    {
+        return;
+    }
+
+    if( m_dirty )
+    {
+        space.Write( m_block, page_id );
+    }
+
+    clear();
+    space.Dealloc( page_id );
+}
+

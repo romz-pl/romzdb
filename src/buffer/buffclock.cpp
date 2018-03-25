@@ -171,18 +171,10 @@ void BuffClock::dispose( const PageId page_id )
         throw std::runtime_error( "BuffClock::dispose: Page is not in buffer" );
     }
 
-    FrameClock& ff = m_frame[ m_clock_hand.to_uint32() ];
-    if( !ff.m_valid )
-    {
-        ff.clear();
-    }
-    if( ff.m_dirty )
-    {
-        m_space.Write( ff.m_block, page_id );
-    }
+    FrameClock& ff = m_frame[ m_clock_hand.to_uint32() ];  
+    ff.dispose( m_space, page_id );
     m_map.erase( page_id );
-    ff.clear();
-    m_space.Dealloc( page_id );
+
 }
 
 //
