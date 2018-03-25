@@ -73,7 +73,7 @@ void BuffClock::allocBuff()
 // If the requested page is already present in the buffer pool pointer to that frame is returned
 // otherwise a new frame is allocated from the buffer pool for reading the page.
 //
-DiskBlock* BuffClock::read( const PageId page_id )
+DiskBlock* BuffClock::get( const PageId page_id )
 {
     auto it = m_map.find( page_id );
 

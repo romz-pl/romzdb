@@ -14,7 +14,7 @@ public:
     BuffClock( Space& space, std::uint32_t frame_no );
     ~BuffClock();
 
-    DiskBlock* read( const PageId page_id );
+    DiskBlock* get( const PageId page_id );
     void unpin( const PageId page_id, const bool dirty );
     DiskBlock* alloc( PageId& page_id );
     void dispose( const PageId page_id );
