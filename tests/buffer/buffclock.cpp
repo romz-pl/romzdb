@@ -84,3 +84,28 @@ TEST(BuffClock, Dispose)
     EXPECT_NO_THROW( buff.dispose( idb ) );
 }
 
+TEST(BuffClock, Full)
+{
+    const uint32_t max_size = ( 1U << 20 );
+    DbFile db_file( GetTempPath(), max_size );
+    Space space( db_file );
+    const std::size_t numPages = 10;
+    BuffClock buff( space, numPages );
+    std::vector< PageId > pages;
+
+    for( std::uint32_t i = 0; i < numPages; i++ )
+    {
+        PageId id( 0, 0 );
+        EXPECT_NO_THROW( buff.alloc( id ) );
+        pages.push_back( id );
+    }
+
+    PageId id( 0, 0 );
+    EXPECT_ANY_THROW( buff.alloc( id ) );
+
+    for( std::uint32_t i = 0; i < numPages; i++ )
+    {
+        EXPECT_NO_THROW( buff.unpin( pages[ i ], false ) );
+    }
+}
+
