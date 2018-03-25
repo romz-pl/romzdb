@@ -3,17 +3,17 @@
 #include <algorithm>
 #include <stdexcept>
 #include <algorithm>
+#include "heappage.h"
 #include <string>
 #include <cstring>
 #include <utility>
-#include "dirslot.h"
-
 
 //
 //
 //
-DirPage::DirPage( DiskBlock* block )
-    : m_block( block )
+DirPage::DirPage( BufferMgr& bufferMgr, PageId self )
+    : Page( bufferMgr, self )
+    , m_nextPage( PageId::m_invalid, 0 )
 {
 
 }
@@ -26,43 +26,6 @@ DirPage::~DirPage()
 
 }
 
-//
-//
-//
-std::optional< PageId > DirPage::get( std::uint32_t free_space )
-{
-    DirSlot* slot = (DirSlot*)m_block;
-
-    for( std::uint32_t i = 0; i < slot_no(); i++, slot++ )
-    {
-        if( slot->is_free( free_space ) )
-            return slot->m_page_id;
-    }
-
-    return std::nullopt;
-
-}
-
-//
-//
-//
-void DirPage::clean( PageId page_id, std::uint32_t space )
-{
-
-}
-
-//
-//
-//
-std::uint32_t DirPage::slot_no() const
-{
-    constexpr std::uint32_t v = ( DiskBlock::Size - sizeof( PageId ) - sizeof( std::uint32_t ) ) / ( sizeof( DirSlot ) );
-
-    return v;
-}
-
-
-/*
 //
 // Returns true, if there is no free space on the Dir Page
 //
@@ -263,4 +226,3 @@ void DirPage::GetRid( std::vector< RecordId >& rid ) const
         hp.GetRid( rid );
     }
 }
-*/

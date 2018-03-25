@@ -2,13 +2,13 @@
 set( TEST_NAME test-hf )
 
 add_executable( ${TEST_NAME}
-    #    db.cpp
+    db.cpp
     dirpage.cpp
-    #dir.cpp
-    #heapfile.cpp
-    #heappage.cpp
+    dir.cpp
+    heapfile.cpp
+    heappage.cpp
     main.cpp
-    #scaner.cpp
+    scaner.cpp
 )
 
 target_compile_options( ${TEST_NAME} PRIVATE 
@@ -16,7 +16,7 @@ target_compile_options( ${TEST_NAME} PRIVATE
     -pthread 
     -g -O0 
     -fprofile-arcs -ftest-coverage 
-    -std=c++17 -DNDEBUG )
+    -std=c++11 -DNDEBUG )
 
 target_include_directories( ${TEST_NAME} PRIVATE 
     ${gtest_SOURCE_DIR}/include 

@@ -6,7 +6,7 @@ add_executable( ${TEST_NAME}
     main.cpp
 )
 
-target_compile_options( ${TEST_NAME} PRIVATE -Wall -pedantic -pthread -g -O0 -fprofile-arcs -ftest-coverage -std=c++11 -DNDEBUG )
+target_compile_options( ${TEST_NAME} PRIVATE -Wall -pedantic -pthread -g -O0 -fprofile-arcs -ftest-coverage -std=c++17 -DNDEBUG )
 
 target_include_directories( ${TEST_NAME} PRIVATE 
     ${gtest_SOURCE_DIR}/include 

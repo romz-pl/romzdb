@@ -6,7 +6,7 @@
 
 TEST(DirPage, InsertDeleteGet)
 {
-/*    const uint32_t max_size = ( 1U << 20 );
+    const uint32_t max_size = ( 1U << 20 );
     DbFile db_file( GetTempPath(), max_size );
     Space space( db_file );
     const std::size_t frameNo = 3;
@@ -42,5 +42,5 @@ TEST(DirPage, InsertDeleteGet)
 
     EXPECT_ANY_THROW( dp.Delete( recb.second ) );
     EXPECT_ANY_THROW( dp.Delete( reca.second ) );
-*/
+
 }

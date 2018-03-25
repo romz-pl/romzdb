@@ -1,42 +1,27 @@
 #ifndef ROMZDB_DIRPAGE_H
 #define ROMZDB_DIRPAGE_H
 
-#include "buffer/page.h"
-#include <vector>
+#include <optional>
 #include "buffer/buffermgr.h"
-#include "record.h"
-#include "recordid.h"
-#include "dirslot.h"
 
 
-class DirPage : public Page
+
+class DirPage
 {
 public:
-    DirPage( BufferMgr &bufferMgr, PageId self );
+    DirPage( DiskBlock* block );
     ~DirPage();
 
-    std::pair< bool, Record > Get( RecordId rid ) const;
-    std::pair< bool, RecordId > Insert( const Record& rec );
-    bool InsertHeapPage( PageId pageId );
+    std::optional< PageId > get( std::uint32_t free_space );
+    void clean( PageId page_id, std::uint32_t space );
 
-    bool Delete( RecordId rid);
+    std::uint32_t slot_no() const;
 
-    PageId GetNextPage() const;
-    void SetNextPage( PageId id );
-
-    void ToPage();
-    void FromPage();
-
-    std::size_t GetRecordNo() const;
-    void GetRid( std::vector< RecordId >& rid ) const;
+    PageId get_next_page() const;
+    void set_next_page( PageId id );
 
 private:
-    bool IsFull() const;
-
-private:
-    PageId m_nextPage;
-
-    std::vector< DirSlot > m_dirSlot;
+    DiskBlock* m_block;
 };
 
 #endif
