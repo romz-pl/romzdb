@@ -19,7 +19,8 @@ Db::Db( const std::string &path, std::size_t frameNo )
 //
 HeapFile Db::CreteHeapFile()
 {
-    const PageId headerPage = m_bufferMgr.GetNew();
+    const PageId headerPage = m_bufferMgr.alloc().first;
+    m_bufferMgr.Unpin( headerPage, false );
 
     CreateHeaderPage( headerPage );
     HeapFile hf( m_bufferMgr, headerPage );

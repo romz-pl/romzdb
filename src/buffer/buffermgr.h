@@ -17,7 +17,7 @@ public:
     DiskBlock* Get( PageId pageId );
     void Unpin( PageId pageId, bool dirty );
 
-    PageId GetNew();
+    std::pair< PageId, DiskBlock * > alloc();
 
 
 
