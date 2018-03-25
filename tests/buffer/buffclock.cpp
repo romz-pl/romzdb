@@ -66,12 +66,20 @@ TEST(BuffClock, Alloc)
     Space space( db_file );
     const std::size_t numPages = 10;
     BuffClock buff( space, numPages );
+    std::vector< PageId > pages;
 
     for( std::size_t i = 0; i < 3 * numPages; i++ )
     {
         PageId id( 0, 0 );
         EXPECT_NO_THROW( buff.alloc( id ) );
+        pages.push_back( id );
         EXPECT_NO_THROW( buff.unpin( id, true ) );
+    }
+
+    for( std::size_t i = 0; i < pages.size(); i++ )
+    {
+        EXPECT_NO_THROW( buff.read( pages[ i ] ) );
+        EXPECT_NO_THROW( buff.unpin( pages[ i ], true ) );
     }
 }
 
