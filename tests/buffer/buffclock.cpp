@@ -59,6 +59,22 @@ TEST(BuffClock, ReadFaild)
     EXPECT_ANY_THROW( buff.read( PageId( 2, 1 ) ) );
 }
 
+TEST(BuffClock, Alloc)
+{
+    const uint32_t max_size = ( 1U << 20 );
+    DbFile db_file( GetTempPath(), max_size );
+    Space space( db_file );
+    const std::size_t numPages = 10;
+    BuffClock buff( space, numPages );
+
+    for( std::size_t i = 0; i < 3 * numPages; i++ )
+    {
+        PageId id( 0, 0 );
+        EXPECT_NO_THROW( buff.alloc( id ) );
+        EXPECT_NO_THROW( buff.unpin( id, true ) );
+    }
+}
+
 TEST(BuffClock, Dispose)
 {
     const uint32_t max_size = ( 1U << 20 );
