@@ -37,11 +37,9 @@ void BuffClock::advance()
 //
 void BuffClock::allocBuff()
 {
-    //variables
-    bool frameFreed = false;
     std::uint32_t countPinned = 0;
     // the frame hasn't been set and not all frames are pinned
-    while( frameFreed == false && countPinned < m_frame_no )
+    while( countPinned < m_frame_no )
     {
         advance();
         FrameClock& ff = m_frame[ m_clock_hand.to_uint32() ];
@@ -70,7 +68,6 @@ void BuffClock::allocBuff()
                     //dealloc
                     m_map.erase( ff.m_page_id );
                     ff.clear();
-                    frameFreed = true;
                     return;
                 }
             }
@@ -79,15 +76,14 @@ void BuffClock::allocBuff()
         {
             //dealloc
             ff.clear();
-            frameFreed = true;
             return;
         }
     }
+
+
     //if all pages are pinned throw excepton
-    if( countPinned >= m_frame_no && frameFreed == false )
-    {
-        throw std::runtime_error( "BuffClock::allocBuff: Bufferis full" );
-    }
+    throw std::runtime_error( "BuffClock::allocBuff: Bufferis full" );
+
 }
 
 //
