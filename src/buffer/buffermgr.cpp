@@ -43,9 +43,7 @@ BufferMgr::~BufferMgr()
 //
 // If the buffer is full, replace an unpinned page.
 //
-// If multiplePins is true, the page can have "pin_count > 1"
-//
-DiskBlock* BufferMgr::Get( PageId pageId, bool multiplePins )
+DiskBlock* BufferMgr::Get( PageId pageId )
 {
     auto pred = [ pageId ]( const Frame& f ){ return f.GetPageId() == pageId; };
     auto it = std::find_if( m_pool.begin(), m_pool.end(), pred );
@@ -53,12 +51,6 @@ DiskBlock* BufferMgr::Get( PageId pageId, bool multiplePins )
     // The page is already in the buffer
     if( it != m_pool.end() )
     {
-        // Error if we don't want to get already pinned page
-        if( !multiplePins && it->IsPinned() )
-        {
-            throw std::runtime_error( "BufferMgr::GetPage. Multiple pins not allowed and the page is already pinned." );
-        }
-
         return it->GetBlock();
     }
 

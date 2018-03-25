@@ -14,7 +14,7 @@ public:
     BufferMgr( Space& space, std::size_t frameNo );
     ~BufferMgr();
 
-    DiskBlock* Get( PageId pageId, bool multiplePins );
+    DiskBlock* Get( PageId pageId );
     void Unpin( PageId pageId );
 
     PageId GetNew();

@@ -12,7 +12,7 @@
 //
 //
 DirPage::DirPage( BufferMgr& bufferMgr, PageId self )
-    : Page( bufferMgr, self, false )
+    : Page( bufferMgr, self )
     , m_nextPage( PageId::m_invalid, 0 )
 {
 

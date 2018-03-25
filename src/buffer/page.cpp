@@ -4,11 +4,11 @@
 //
 //
 //
-Page::Page( BufferMgr& bufferMgr, PageId pageId, bool multiplePins )
+Page::Page( BufferMgr& bufferMgr, PageId pageId )
     : m_bufferMgr( bufferMgr )
     , m_pageId( pageId )
 {
-    m_block = m_bufferMgr.Get( pageId, multiplePins );
+    m_block = m_bufferMgr.Get( pageId );
 }
 
 //
@@ -26,7 +26,7 @@ Page::Page( const Page& v )
     : m_bufferMgr( v.m_bufferMgr )
     , m_pageId( v.m_pageId )
 {
-    m_block = m_bufferMgr.Get( m_pageId, true );
+    m_block = m_bufferMgr.Get( m_pageId );
 }
 
 

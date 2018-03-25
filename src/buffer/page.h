@@ -19,7 +19,7 @@ class Page
 public:
     enum { Size = DiskBlock::Size };
 public:
-    Page( BufferMgr& bufferMgr, PageId pageId, bool multiplePins );
+    Page( BufferMgr& bufferMgr, PageId pageId );
     ~Page();
 
     Page( const Page& v );
