@@ -1,4 +1,3 @@
-#include <iostream>
 #include "frameclock.h"
 
 //
@@ -39,14 +38,3 @@ void FrameClock::set( PageId page_id )
     m_refbit = true;
 }
 
-//
-//
-//
-void FrameClock::print()
-{
-    // std::cout << "page_id:" << m_page_id << " ";
-    std::cout << "valid:" << m_valid << " ";
-    std::cout << "pin_count:" << m_pin_count << " ";
-    std::cout << "dirty:" << m_dirty << " ";
-    std::cout << "refbit:" << m_refbit << "\n";
-}

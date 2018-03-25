@@ -18,7 +18,6 @@ public:
 
     void clear();
     void set( PageId page_id );
-    void print();
 
 private:
     // Page to which corresponding frame is assigned
