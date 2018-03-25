@@ -129,20 +129,7 @@ void BuffClock::unpin( const PageId page_id, const bool dirty )
     }
 
     FrameClock& ff = m_frame[ it->second.to_uint32() ];
-
-    if( ff.m_pin_count > 0 )
-    {
-        ff.m_pin_count--;
-        if( dirty )
-        {
-            ff.m_dirty = true;
-        }
-    }
-    else
-    {
-        throw std::runtime_error( "BuffClock::unpin: Page not pinned" );
-    }
-
+    ff.unpin( dirty );
 }
 
 //

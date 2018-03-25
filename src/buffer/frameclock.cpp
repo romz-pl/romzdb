@@ -78,3 +78,22 @@ void FrameClock::dispose( Space& space, PageId page_id )
     space.Dealloc( page_id );
 }
 
+//
+//
+//
+void FrameClock::unpin( bool dirty )
+{
+    if( m_pin_count > 0 )
+    {
+        m_pin_count--;
+        if( dirty )
+        {
+            m_dirty = true;
+        }
+    }
+    else
+    {
+        throw std::runtime_error( "FrameClock::unpin: Page not pinned" );
+    }
+}
+
