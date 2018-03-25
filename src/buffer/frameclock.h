@@ -24,6 +24,7 @@ public:
     void flush( Space& space );
     void dispose( Space& space, PageId page_id );
     void unpin( bool dirty );
+    DiskBlock* read();
 
 private:
     DiskBlock m_block;

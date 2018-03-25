@@ -102,9 +102,8 @@ DiskBlock* BuffClock::read( const PageId page_id )
     if( it != m_map.end() )
     {
         //look up was successful
-        m_frame[ m_clock_hand.to_uint32() ].m_refbit = true;
-        m_frame[ m_clock_hand.to_uint32() ].m_pin_count++;
-        return &( m_frame[ m_clock_hand.to_uint32() ].m_block );
+        FrameClock& ff = m_frame[ m_clock_hand.to_uint32() ];
+        return ff.read();
     }
 
     //look up was unsucessful

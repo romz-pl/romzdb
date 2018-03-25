@@ -97,3 +97,13 @@ void FrameClock::unpin( bool dirty )
     }
 }
 
+//
+//
+//
+DiskBlock* FrameClock::read()
+{
+    m_refbit = true;
+    m_pin_count++;
+    return &m_block;
+}
+
