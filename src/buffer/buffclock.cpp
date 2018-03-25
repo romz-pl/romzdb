@@ -203,7 +203,7 @@ void BuffClock::flush()
 
         if( !f.m_valid )
         {
-            throw std::runtime_error( "BuffClock::flush: Bad Buffer" );
+            continue;
         }
 
         if( f.m_dirty )
