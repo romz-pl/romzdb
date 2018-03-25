@@ -7,7 +7,7 @@
 //
 //
 HeapPage::HeapPage(BufferMgr& bufferMgr, PageId pageId )
-    : Page( bufferMgr, pageId, true )
+    : Page( bufferMgr, pageId )
 {
     FromPage( );
 }
@@ -151,8 +151,6 @@ void HeapPage::ToPage( )
     {
         s.ToPage( p );
     }
-
-    MarkDirty( );
 }
 
 //

@@ -19,7 +19,7 @@ class Page
 public:
     enum { Size = DiskBlock::Size };
 public:
-    Page( BufferMgr& bufferMgr, PageId pageId, bool multiplePins );
+    Page( BufferMgr& bufferMgr, PageId pageId );
     ~Page();
 
     Page( const Page& v );
@@ -30,7 +30,6 @@ public:
 protected:
     const char* GetData() const;
     char* GetData();
-    void MarkDirty();
 
 protected:
     BufferMgr& m_bufferMgr;

@@ -12,7 +12,7 @@
 //
 //
 DirPage::DirPage( BufferMgr& bufferMgr, PageId self )
-    : Page( bufferMgr, self, false )
+    : Page( bufferMgr, self )
     , m_nextPage( PageId::m_invalid, 0 )
 {
 
@@ -153,8 +153,6 @@ void DirPage::ToPage()
         std::memcpy( p, &v.m_freeSpace, sizeof( v.m_freeSpace ) );
         p += sizeof( v.m_freeSpace );
     }
-
-    MarkDirty( );
 }
 
 //

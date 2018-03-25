@@ -4,11 +4,11 @@
 //
 //
 //
-Page::Page( BufferMgr& bufferMgr, PageId pageId, bool multiplePins )
+Page::Page( BufferMgr& bufferMgr, PageId pageId )
     : m_bufferMgr( bufferMgr )
     , m_pageId( pageId )
 {
-    m_block = m_bufferMgr.Get( pageId, multiplePins );
+    m_block = m_bufferMgr.get( pageId );
 }
 
 //
@@ -16,7 +16,7 @@ Page::Page( BufferMgr& bufferMgr, PageId pageId, bool multiplePins )
 //
 Page::~Page()
 {
-    m_bufferMgr.Unpin( m_pageId );
+    m_bufferMgr.unpin( m_pageId, true );
 }
 
 //
@@ -26,7 +26,7 @@ Page::Page( const Page& v )
     : m_bufferMgr( v.m_bufferMgr )
     , m_pageId( v.m_pageId )
 {
-    m_block = m_bufferMgr.Get( m_pageId, true );
+    m_block = m_bufferMgr.get( m_pageId );
 }
 
 
@@ -46,13 +46,6 @@ char* Page::GetData()
     return m_block->GetData();
 }
 
-//
-//
-//
-void Page::MarkDirty()
-{
-    m_bufferMgr.MarkDirty( m_pageId );
-}
 
 //
 //

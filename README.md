@@ -45,6 +45,14 @@ The project romzdb is based on:
 5. Paper: "Principles of Database Buffer Management" by WOLFGANG EFFELSBERG and THEO HAERDER
    ACM Transactions on Database Systems, Vol. 9, No. 4, December 1984, Pages 560-595.
 
+6. RocksDB: A Persistent Key-Value Store for Flash and RAM Storage. http://rocksdb.org/
+
+7. BadgerDb: Fast key-value DB in Go. https://open.dgraph.io/post/badger/
+
+8. BadgerDb: Software for lecture CS 564: Database Management Systems on
+University Wisconsin-Medison
+http://pages.cs.wisc.edu/~cs564-1/projects/BadgerDB/
+
 ## Compilation
 
 In order to compile, and run all tests execute bash script: `./build-all.sh`

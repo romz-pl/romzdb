@@ -7,8 +7,9 @@
 
 #include "blockid.h"
 #include "dbfileid.h"
+#include "util/totally_ordered.h"
 
-class PageId
+class PageId : public totally_ordered< PageId >
 {
 public:
     PageId( std::uint32_t block_id, std::uint32_t db_file_id );
@@ -27,6 +28,7 @@ public:
     bool IsValid() const;
 
     bool operator==( const PageId& v ) const;
+    bool operator< ( const PageId& v ) const;
 
 public:
     static const std::uint32_t m_invalid;

@@ -1,9 +1,7 @@
-#include "buffermgr.h"
 #include <cassert>
 #include <stdexcept>
-#include <iostream>
 #include <algorithm>
-#include <iostream>
+#include "buffermgr.h"
 
 //
 // Constructor
@@ -28,7 +26,7 @@ BufferMgr::~BufferMgr()
 // Returns  a pointer to a disk block pinned in the buffer.
 //
 //
-// 1. Check the buffer pool to see if it contains the requated page.
+// 1. Check the buffer pool to see if it contains the requested page.
 //    If the page is already in the buffer:
 //        a) (re)pin the page,
 //        b) return a pointer to it.
@@ -38,16 +36,14 @@ BufferMgr::~BufferMgr()
 //    a) Choose a frame for replacement, using the repacement policy.
 //    b) Increment its "pin count"
 //    c) If its "dirty bit" is on, write the page it contains to disk
-//       (taht is, the disk copy of the page is overwritten with the contents of the frame).
+//       (that is, the disk copy of the page is overwritten with the contents of the frame).
 //    d) Read the requested page into the frame.
 //    e) Return a pointer to it.
 //
 //
 // If the buffer is full, replace an unpinned page.
 //
-// If multiplePins is true, the page can have "pin_count > 1"
-//
-DiskBlock* BufferMgr::Get( PageId pageId, bool multiplePins )
+DiskBlock* BufferMgr::get( PageId pageId )
 {
     auto pred = [ pageId ]( const Frame& f ){ return f.GetPageId() == pageId; };
     auto it = std::find_if( m_pool.begin(), m_pool.end(), pred );
@@ -55,12 +51,6 @@ DiskBlock* BufferMgr::Get( PageId pageId, bool multiplePins )
     // The page is already in the buffer
     if( it != m_pool.end() )
     {
-        // Error if we don't want to get already pinned page
-        if( !multiplePins && it->IsPinned() )
-        {
-            throw std::runtime_error( "BufferMgr::GetPage. Multiple pins not allowed and the page is already pinned." );
-        }
-
         return it->GetBlock();
     }
 
@@ -69,7 +59,7 @@ DiskBlock* BufferMgr::Get( PageId pageId, bool multiplePins )
 }
 
 //
-// Reads the page from the disk and sotes it in the buffer
+// Reads the page from the disk and stores it in the buffer
 //
 DiskBlock* BufferMgr::GetFromDisk( PageId pageId )
 {
@@ -88,9 +78,13 @@ DiskBlock* BufferMgr::GetFromDisk( PageId pageId )
 //
 // Unpin a page so that it can be discarded from the buffer.
 //
-void BufferMgr::Unpin( PageId pageId )
+void BufferMgr::unpin( PageId pageId , bool dirty )
 {
     Frame& frame = FindFrame( pageId );
+    if( dirty )
+    {
+        frame.MarkDirty();
+    }
     frame.UnpinPage();
 }
 
@@ -114,10 +108,11 @@ Frame& BufferMgr::FindFrame( PageId pageId )
 //
 //
 //
-PageId BufferMgr::GetNew()
+std::pair< PageId, DiskBlock * > BufferMgr::alloc()
 {
-    PageId pageId = m_space.Alloc();
-    return pageId;
+    const PageId pageId = m_space.Alloc();
+    DiskBlock* block = get( pageId );
+    return std::make_pair( pageId, block );
 }
 
 
