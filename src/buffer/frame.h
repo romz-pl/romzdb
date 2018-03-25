@@ -1,5 +1,5 @@
-#ifndef ROMZDB_FRAME_H
-#define ROMZDB_FRAME_H
+#ifndef ROMZDB_FRAMECLOCK_H
+#define ROMZDB_FRAMECLOCK_H
 
 //
 // It contains the data about a page in the buffer manager.
@@ -7,42 +7,43 @@
 
 #include <cstdint>
 #include "disk/pageid.h"
+#include "disk/diskblock.h"
 #include "disk/space.h"
 
 class Frame
 {
+    friend class BufferMgr;
 public:
     Frame( );
     ~Frame() = default;
 
-    PageId GetPageId( ) const;
+    void clear();
+    void set( PageId page_id );
 
-    bool IsPinned() const;
-    void UnpinPage();
-
-    void MarkDirty( );
-
-    DiskBlock* GetBlock();
-
-    void Read( const Space& space, PageId pageId );
-    void Write( const Space &space );
-
-
-
+    void flush( Space& space );
+    void dispose( Space& space, PageId page_id );
+    void unpin( bool dirty );
+    DiskBlock* pin();
+    void write( Space& space );
+    DiskBlock* read( Space& space, PageId page_id );
 
 private:
-
-    // Page identyfier associated with the disk block
-    PageId m_pageId;
-
-    // The diskblock stored in the frame
     DiskBlock m_block;
 
-    // pin count
-    std::uint8_t m_pinCount;
+    // Page to which corresponding frame is assigned
+    PageId m_page_id;
 
-    // true if page is dirty
+    // Number of times this page has been pinned
+    std::uint16_t m_pin_count;
+
+    // True if page is dirty;  false otherwise
     bool m_dirty;
+
+    // True if page is valid
+    bool m_valid;
+
+    // Has this buffer frame been reference recently
+    bool m_refbit;
 
 };
 

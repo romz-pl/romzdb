@@ -1,36 +1,46 @@
-#ifndef ROMZDB_BUFFERMGR_H
-#define ROMZDB_BUFFERMGR_H
-
+#ifndef ROMZDB_BUFFCLOCK_H
+#define ROMZDB_BUFFCLOCK_H
 
 #include <vector>
+#include <map>
+#include "disk/diskblock.h"
+#include "disk/pageid.h"
 #include "frame.h"
 #include "disk/space.h"
 
-
 class BufferMgr
 {
-
 public:
-    BufferMgr( Space& space, std::size_t frameNo );
+    BufferMgr( Space& space, std::uint32_t frame_no );
     ~BufferMgr();
 
-    DiskBlock* get( PageId pageId );
-    void unpin( PageId pageId, bool dirty );
-    std::pair< PageId, DiskBlock * > alloc();
+    DiskBlock* get( PageId page_id );
+    void unpin( PageId page_id, bool dirty );
+    std::pair< PageId, DiskBlock * > alloc( );
+    void dispose( PageId page_id );
+    void flush();
 
 private:
-    void MarkDirty( PageId pageId );
-    DiskBlock* GetFromDisk( PageId pageId );
-    Frame& FindFrame( PageId pageId );
-
-    void Flush( );
+    void advance();
+    void allocBuff();
 
 private:
+    // clock hand for clock algorithm
+    Frame* m_clock_hand;
+
+    // mapping form PageId to FrameId
+    std::map< PageId, Frame* > m_map;
+
+    // buffer pool
+    std::vector< Frame > m_frame;
+
+    // Statistics about buffer pool usage
+    // BufStats bufStats;
+
     Space& m_space;
 
-    // Pool of frames stored in the buffer manager
-    std::vector< Frame > m_pool;
 
 };
+
 
 #endif
