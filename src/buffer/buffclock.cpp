@@ -132,7 +132,7 @@ void BuffClock::unpin( const PageId page_id, const bool dirty )
         throw std::runtime_error( "BuffClock::unpin: Page is not in buffer" );
     }
 
-    FrameClock& ff = m_frame[ m_clock_hand.to_uint32() ];
+    FrameClock& ff = m_frame[ it->second.to_uint32() ];
 
     if( ff.m_pin_count > 0 )
     {
@@ -196,14 +196,14 @@ void BuffClock::flush()
     //interate through bufdesctable
     for( auto& f : m_frame )
     {
-        if( f.m_pin_count > 0)
-        {
-            throw std::runtime_error( "BuffClock::flush: Page is pinned" );
-        }
-
         if( !f.m_valid )
         {
             continue;
+        }
+
+        if( f.m_pin_count > 0)
+        {
+            throw std::runtime_error( "BuffClock::flush: Page is pinned" );
         }
 
         if( f.m_dirty )
