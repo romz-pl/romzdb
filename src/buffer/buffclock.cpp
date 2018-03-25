@@ -7,13 +7,11 @@ BuffClock::BuffClock( Space& space, std::uint32_t frame_no )
     : m_frame_no( frame_no )
     , m_clock_hand( frame_no - 1 )
     , m_frame( frame_no )
-    , m_pool( frame_no )
     , m_space( space )
 {
 
     for( std::size_t i = 0; i < m_frame.size(); i++ )
      {
-         // m_frame[ i ].m_frame_id = FrameId( i );
          m_frame[ i ].m_valid = false;
      }
 }
@@ -66,7 +64,7 @@ void BuffClock::allocBuff()
                     if( ff.m_dirty )
                     {
                         //flush page to disk
-                        m_space.Write( m_pool[ m_clock_hand.to_uint32() ], ff.m_page_id );
+                        m_space.Write( ff.m_block, ff.m_page_id );
                         ff.m_dirty = false;
                     }
                     //dealloc
@@ -106,16 +104,16 @@ DiskBlock* BuffClock::read( const PageId page_id )
         //look up was successful
         m_frame[ m_clock_hand.to_uint32() ].m_refbit = true;
         m_frame[ m_clock_hand.to_uint32() ].m_pin_count++;
-        return &m_pool[ m_clock_hand.to_uint32() ];
+        return &( m_frame[ m_clock_hand.to_uint32() ].m_block );
     }
 
     //look up was unsucessful
     allocBuff();
     DiskBlock p = m_space.Read( page_id );
-    m_pool[  m_clock_hand.to_uint32() ] = p;
+    m_frame[  m_clock_hand.to_uint32() ].m_block = p;
     m_map.insert( std::make_pair( page_id, m_clock_hand ) );
     m_frame[ m_clock_hand.to_uint32() ].set( page_id );
-    return &m_pool[ m_clock_hand.to_uint32() ];
+    return &( m_frame[ m_clock_hand.to_uint32() ].m_block );
 
 }
 
@@ -155,10 +153,10 @@ DiskBlock* BuffClock::alloc( PageId& page_id )
 {
     page_id = m_space.Alloc();
     allocBuff();
-    m_pool[ m_clock_hand.to_uint32() ] = m_space.Read( page_id );
+    m_frame[ m_clock_hand.to_uint32() ].m_block = m_space.Read( page_id );
     m_map.insert( std::make_pair( page_id, m_clock_hand ) );
     m_frame[ m_clock_hand.to_uint32() ].set( page_id );
-    return &m_pool[ m_clock_hand.to_uint32() ];
+    return &( m_frame[ m_clock_hand.to_uint32() ].m_block );
 }
 
 //
@@ -180,7 +178,7 @@ void BuffClock::dispose( const PageId page_id )
     }
     if( ff.m_dirty )
     {
-        m_space.Write( m_pool[ m_clock_hand.to_uint32() ], page_id );
+        m_space.Write( ff.m_block, page_id );
     }
     m_map.erase( page_id );
     ff.clear();
@@ -211,7 +209,7 @@ void BuffClock::flush()
         if( f.m_dirty )
         {
             //flush page to disk
-            m_space.Write( m_pool[ i ], f.m_page_id );
+            m_space.Write( m_frame[ i ].m_block, f.m_page_id );
             f.m_dirty = false;
         }
         m_map.erase( f.m_page_id );

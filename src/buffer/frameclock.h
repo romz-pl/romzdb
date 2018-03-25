@@ -8,6 +8,7 @@
 #include <cstdint>
 #include "disk/pageid.h"
 #include "frameid.h"
+#include "disk/diskblock.h"
 
 class FrameClock
 {
@@ -20,11 +21,10 @@ public:
     void set( PageId page_id );
 
 private:
+    DiskBlock m_block;
+
     // Page to which corresponding frame is assigned
     PageId m_page_id;
-
-    // Frame ID of the frame, in the buffer pool, being used
-    // FrameId m_frame_id;
 
     // Number of times this page has been pinned
     std::uint16_t m_pin_count;

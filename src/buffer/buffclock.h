@@ -35,11 +35,8 @@ private:
     // mapping form PageId to FrameId
     std::map< PageId, FrameId > m_map;
 
-    // BufDesc objects, one per frame
-    std::vector< FrameClock > m_frame;
-
     // buffer pool
-    std::vector< DiskBlock > m_pool;
+    std::vector< FrameClock > m_frame;
 
     // Statistics about buffer pool usage
     // BufStats bufStats;
