@@ -153,8 +153,6 @@ void DirPage::ToPage()
         std::memcpy( p, &v.m_freeSpace, sizeof( v.m_freeSpace ) );
         p += sizeof( v.m_freeSpace );
     }
-
-    MarkDirty( );
 }
 
 //

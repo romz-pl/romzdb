@@ -19,9 +19,10 @@ public:
 
     PageId GetNew();
 
-    void MarkDirty( PageId pageId );
+
 
 private:
+    void MarkDirty( PageId pageId );
     DiskBlock* GetFromDisk( PageId pageId );
     Frame& FindFrame( PageId pageId );
 

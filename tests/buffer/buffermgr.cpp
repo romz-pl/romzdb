@@ -58,13 +58,10 @@ TEST(BufferMgr, MarkDirty)
     const std::size_t numPages = 3;
     BufferMgr bufferMgr( space, numPages );
 
-    EXPECT_ANY_THROW( bufferMgr.MarkDirty( pageId ) );
     EXPECT_ANY_THROW( bufferMgr.Unpin( pageId, true ) );
-
 
     pageId = bufferMgr.GetNew( );
     EXPECT_NO_THROW( bufferMgr.Get( pageId ) );
-    EXPECT_NO_THROW( bufferMgr.MarkDirty( pageId ) );
     EXPECT_NO_THROW( bufferMgr.Unpin( pageId, true ) );
 }
 

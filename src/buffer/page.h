@@ -30,7 +30,6 @@ public:
 protected:
     const char* GetData() const;
     char* GetData();
-    void MarkDirty();
 
 protected:
     BufferMgr& m_bufferMgr;

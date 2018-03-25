@@ -151,8 +151,6 @@ void HeapPage::ToPage( )
     {
         s.ToPage( p );
     }
-
-    MarkDirty( );
 }
 
 //

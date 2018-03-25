@@ -46,13 +46,6 @@ char* Page::GetData()
     return m_block->GetData();
 }
 
-//
-//
-//
-void Page::MarkDirty()
-{
-    m_bufferMgr.MarkDirty( m_pageId );
-}
 
 //
 //
