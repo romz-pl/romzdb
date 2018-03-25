@@ -2,7 +2,6 @@
 set( TEST_NAME test-buffer )
 
 add_executable( ${TEST_NAME}
-    buffclock.cpp
     buffermgr.cpp
     main.cpp
 )

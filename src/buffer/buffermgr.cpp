@@ -1,17 +1,14 @@
-#include <cassert>
-#include <stdexcept>
-#include <algorithm>
 #include "buffermgr.h"
+// #include <iostream>
 
 //
-// Constructor
-// frameNo - number of frames in the buffer manager.
 //
-BufferMgr::BufferMgr( Space &space, std::size_t frameNo )
-    : m_space( space )
-    , m_pool( frameNo )
+//
+BufferMgr::BufferMgr( Space& space, std::uint32_t frame_no )
+    : m_frame( frame_no )
+    , m_space( space )
 {
-
+    m_clock_hand = m_frame.data();
 }
 
 //
@@ -19,124 +16,141 @@ BufferMgr::BufferMgr( Space &space, std::size_t frameNo )
 //
 BufferMgr::~BufferMgr()
 {
-    Flush();
+    flush();
 }
 
 //
-// Returns  a pointer to a disk block pinned in the buffer.
+// Advance clock to next frame in the buffer pool
 //
-//
-// 1. Check the buffer pool to see if it contains the requested page.
-//    If the page is already in the buffer:
-//        a) (re)pin the page,
-//        b) return a pointer to it.
-//
-//
-// 2. When the page is not in the buffer pool, do the following:
-//    a) Choose a frame for replacement, using the repacement policy.
-//    b) Increment its "pin count"
-//    c) If its "dirty bit" is on, write the page it contains to disk
-//       (that is, the disk copy of the page is overwritten with the contents of the frame).
-//    d) Read the requested page into the frame.
-//    e) Return a pointer to it.
-//
-//
-// If the buffer is full, replace an unpinned page.
-//
-DiskBlock* BufferMgr::get( PageId pageId )
+void BufferMgr::advance()
 {
-    auto pred = [ pageId ]( const Frame& f ){ return f.GetPageId() == pageId; };
-    auto it = std::find_if( m_pool.begin(), m_pool.end(), pred );
+    m_clock_hand++;
+    if( m_clock_hand == m_frame.data() + m_frame.size() )
+        m_clock_hand = m_frame.data();
+}
 
-    // The page is already in the buffer
-    if( it != m_pool.end() )
+//
+// Allocate a free frame.
+//
+void BufferMgr::allocBuff()
+{
+    std::uint32_t countPinned = 0;
+    // the frame hasn't been set and not all frames are pinned
+    while( countPinned < m_frame.size() )
     {
-        return it->GetBlock();
-    }
+        advance();
 
-    return GetFromDisk( pageId );
-
-}
-
-//
-// Reads the page from the disk and stores it in the buffer
-//
-DiskBlock* BufferMgr::GetFromDisk( PageId pageId )
-{
-    auto pred = []( const Frame& f ){ return f.IsPinned(); };
-    auto it = std::find_if_not( m_pool.begin(), m_pool.end(), pred );
-    if( it == m_pool.end() )
-    {
-        throw std::runtime_error( "BufferMgr::GetPageFree: All pages are pinned. The buffer is full." );
-    }
-
-    it->Write( m_space );
-    it->Read( m_space, pageId );
-    return it->GetBlock();
-}
-
-//
-// Unpin a page so that it can be discarded from the buffer.
-//
-void BufferMgr::unpin( PageId pageId , bool dirty )
-{
-    Frame& frame = FindFrame( pageId );
-    if( dirty )
-    {
-        frame.MarkDirty();
-    }
-    frame.UnpinPage();
-}
-
-//
-// Returns a reference to a frame storing the page with the identyfier "pageId".
-//
-Frame& BufferMgr::FindFrame( PageId pageId )
-{
-    auto pred = [ pageId ]( const Frame& f ){ return f.GetPageId() == pageId; };
-    auto it = std::find_if( m_pool.begin(), m_pool.end(), pred );
-
-    if( it == m_pool.end() )
-    {
-        throw std::runtime_error( "BufferMgr::FindFrame: Page not in the buffer." );
-    }
-
-    return *it;
-}
-
-
-//
-//
-//
-std::pair< PageId, DiskBlock * > BufferMgr::alloc()
-{
-    const PageId pageId = m_space.Alloc();
-    DiskBlock* block = get( pageId );
-    return std::make_pair( pageId, block );
-}
-
-
-//
-// Mark a page dirty so that when it is discarded from the buffer
-// it will be written back to the file.
-//
-void BufferMgr::MarkDirty( PageId pageId )
-{
-    Frame& frame = FindFrame( pageId );
-    frame.MarkDirty();
-}
-
-//
-// Flush all pages hold in the buffer into disk.
-//
-void BufferMgr::Flush( )
-{
-    for( Frame& f : m_pool )
-    {
-        if( f.IsPinned() )
+        if( !m_clock_hand->m_valid )
         {
-            throw std::runtime_error( "BufferMgr::FlushPages. There are pinned pages." );
+            return;
         }
-        f.Write( m_space );
+
+        if( m_clock_hand->m_refbit )
+        {
+            m_clock_hand->m_refbit = false;
+            continue;
+        }
+
+        if( m_clock_hand->m_pin_count != 0 )
+        {
+            countPinned++;
+            continue;
+        }
+
+        m_clock_hand->write( m_space );
+        m_map.erase( m_clock_hand->m_page_id );
+        m_clock_hand->clear();
+        return;
+    }
+
+
+    //if all pages are pinned throw excepton
+    throw std::runtime_error( "BufferMgr::allocBuff: Buffer is full" );
+
+}
+
+//
+// Reads the given page from the Space into a frame and returns the pointer to page.
+// If the requested page is already present in the buffer pool pointer to that frame is returned
+// otherwise a new frame is allocated from the buffer pool for reading the page.
+//
+DiskBlock* BufferMgr::get( PageId page_id )
+{
+    // std::cout << "G " << std::flush;
+
+    auto it = m_map.find( page_id );
+
+    if( it != m_map.end() )
+    {
+        //look up was successful
+        return m_clock_hand->pin();
+    }
+
+    //look up was unsucessful
+    allocBuff();
+    m_map.insert( std::make_pair( page_id, m_clock_hand ) );
+
+    return m_clock_hand->read( m_space, page_id );
+}
+
+//
+// Unpin a page from memory since it is no longer required for it to remain in memory.
+//
+void BufferMgr::unpin( PageId page_id, bool dirty )
+{
+    // std::cout << "U " << std::flush;
+    auto it = m_map.find( page_id );
+    if( it == m_map.end() )
+    {
+        throw std::runtime_error( "BufferMgr::unpin: Page is not in buffer" );
+    }
+
+
+
+    it->second->unpin( dirty );
+}
+
+//
+// Allocates a new, empty page in the file and returns the Page object.
+// The newly allocated page is also assigned a frame in the buffer pool.
+//
+std::pair< PageId, DiskBlock* > BufferMgr::alloc()
+{
+    // std::cout << "A " << std::flush;
+
+    const PageId page_id = m_space.Alloc();
+    allocBuff();
+    m_clock_hand->m_block = m_space.Read( page_id );
+    m_map.insert( std::make_pair( page_id, m_clock_hand ) );
+    m_clock_hand->set( page_id );
+    return std::make_pair( page_id, &( m_clock_hand->m_block ) );
+}
+
+//
+// Delete page from file and also from buffer pool if present.
+// Since the page is entirely deleted from file, its unnecessary to see if the page is dirty.
+//
+void BufferMgr::dispose( PageId page_id )
+{
+    auto it = m_map.find( page_id );
+    if( it == m_map.end() )
+    {
+        throw std::runtime_error( "BufferMgr::dispose: Page is not in buffer" );
+    }
+
+    m_clock_hand->dispose( m_space, page_id );
+    m_map.erase( page_id );
+}
+
+//
+// Writes out all dirty pages of the file to disk.
+// All the frames assigned to the file need to be unpinned from buffer pool before this function can be successfully called.
+// Otherwise Error returned.
+//
+void BufferMgr::flush()
+{
+    for( auto& f : m_frame )
+    {
+        f.flush( m_space );
     }
 }

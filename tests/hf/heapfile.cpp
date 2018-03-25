@@ -8,9 +8,10 @@
 
 void Insert( HeapFile& hf, std::vector< RecordId >& allId )
 {
-    std::size_t loopSize = 40000;
+    std::size_t loopSize = 128;
     for( std::size_t i = 0; i < loopSize; i++ )
     {
+        std::cout << i << "\n" << std::flush;
         const std::string txt = Record::RandomString();
         const Record recA( txt );
         const RecordId rid = hf.Insert( recA );
@@ -63,6 +64,4 @@ TEST(HeapFile, GetInsertDelete)
 
     Insert( hf, allId );
     Delete( hf, allId );
-
-
 }

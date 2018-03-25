@@ -79,7 +79,7 @@ std::string Record::RandomString( )
     std::mt19937 g( rd() );
     std::uniform_int_distribution< std::string::size_type > pick( 0, alphabet.size() );
 
-    std::string::size_type length = pick( g );
+    std::string::size_type length = 1 + pick( g );
     std::string s;
     s.reserve( length );
 
