@@ -20,16 +20,14 @@ TEST(BuffClock, Read)
     const std::size_t numPages = 10;
     BuffClock buff( space, numPages );
 
-    PageId ida( 0, 0 );
-    EXPECT_NO_THROW( buff.alloc( ida ) );
+
+    const PageId ida = buff.alloc( ).first;
     EXPECT_NO_THROW( buff.get ( ida ) );
 
-    PageId idb( 0, 0 );
-    EXPECT_NO_THROW( buff.alloc( idb ) );
+    const PageId idb = buff.alloc( ).first;
     EXPECT_NO_THROW( buff.get ( idb ) );
 
-    PageId idc( 0, 0 );
-    EXPECT_NO_THROW( buff.alloc( idc ) );
+    const PageId idc = buff.alloc( ).first;
     EXPECT_NO_THROW( buff.get ( idc ) );
 
     EXPECT_NO_THROW( buff.unpin( ida, true ) );
@@ -70,8 +68,7 @@ TEST(BuffClock, Alloc)
 
     for( std::size_t i = 0; i < 3 * numPages; i++ )
     {
-        PageId id( 0, 0 );
-        EXPECT_NO_THROW( buff.alloc( id ) );
+        const PageId id = buff.alloc( ).first;
         pages.push_back( id );
         EXPECT_NO_THROW( buff.unpin( id, true ) );
     }
@@ -91,18 +88,17 @@ TEST(BuffClock, Dispose)
     const std::size_t numPages = 10;
     BuffClock buff( space, numPages );
 
-    PageId ida( 0, 0 );
-    EXPECT_ANY_THROW( buff.dispose( ida ) );
-    EXPECT_NO_THROW( buff.alloc( ida ) );
+
+    EXPECT_ANY_THROW( buff.dispose( PageId( 0, 0 ) ) );
+    const PageId ida = buff.alloc( ).first;
     EXPECT_NO_THROW( buff.get ( ida ) );
     EXPECT_NO_THROW( buff.unpin( ida, true ) );
     EXPECT_NO_THROW( buff.unpin( ida, false ) );
     EXPECT_ANY_THROW( buff.unpin( ida, false ) );
     EXPECT_NO_THROW( buff.dispose( ida ) );
 
-    PageId idb( 0, 0 );
-    EXPECT_ANY_THROW( buff.dispose( idb ) );
-    EXPECT_NO_THROW( buff.alloc( idb ) );
+    EXPECT_ANY_THROW( buff.dispose( PageId( 1, 0 ) ) );
+    const PageId idb = buff.alloc( ).first;
     EXPECT_NO_THROW( buff.get ( idb ) );
     EXPECT_NO_THROW( buff.unpin( idb, true ) );
     EXPECT_NO_THROW( buff.unpin( idb, false ) );
@@ -124,13 +120,10 @@ TEST(BuffClock, Full)
 
     for( std::uint32_t i = 0; i < numPages; i++ )
     {
-        PageId id( 0, 0 );
-        EXPECT_NO_THROW( buff.alloc( id ) );
-        pages.push_back( id );
+        EXPECT_NO_THROW( pages.push_back( buff.alloc( ).first ) );
     }
 
-    PageId id( 0, 0 );
-    EXPECT_ANY_THROW( buff.alloc( id ) );
+    EXPECT_ANY_THROW( buff.alloc( ) );
 
     for( std::uint32_t i = 0; i < numPages; i++ )
     {
@@ -146,8 +139,7 @@ TEST(BuffClock, Flush)
     const std::size_t numPages = 10;
     BuffClock buff( space, numPages );
 
-    PageId id( 0, 0 );
-    EXPECT_NO_THROW( buff.alloc( id ) );
+    const PageId id = buff.alloc( ).first;
     EXPECT_ANY_THROW( buff.flush( ) );
 
     EXPECT_NO_THROW( buff.unpin( id, false ) );

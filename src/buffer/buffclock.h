@@ -16,7 +16,7 @@ public:
 
     DiskBlock* get( const PageId page_id );
     void unpin( const PageId page_id, const bool dirty );
-    DiskBlock* alloc( PageId& page_id );
+    std::pair< PageId, DiskBlock * > alloc( );
     void dispose( const PageId page_id );
     void flush();
 

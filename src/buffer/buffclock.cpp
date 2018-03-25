@@ -108,14 +108,14 @@ void BuffClock::unpin( const PageId page_id, const bool dirty )
 // Allocates a new, empty page in the file and returns the Page object.
 // The newly allocated page is also assigned a frame in the buffer pool.
 //
-DiskBlock* BuffClock::alloc( PageId& page_id )
+std::pair< PageId, DiskBlock* > BuffClock::alloc()
 {
-    page_id = m_space.Alloc();
+    const PageId page_id = m_space.Alloc();
     allocBuff();
     m_clock_hand->m_block = m_space.Read( page_id );
     m_map.insert( std::make_pair( page_id, m_clock_hand ) );
     m_clock_hand->set( page_id );
-    return &( m_clock_hand->m_block );
+    return std::make_pair( page_id, &( m_clock_hand->m_block ) );
 }
 
 //
