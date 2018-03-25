@@ -1,5 +1,5 @@
 #include "buffermgr.h"
-#include <iostream>
+// #include <iostream>
 
 //
 //
@@ -76,7 +76,7 @@ void BufferMgr::allocBuff()
 //
 DiskBlock* BufferMgr::get( PageId page_id )
 {
-    std::cout << "G " << std::flush;
+    // std::cout << "G " << std::flush;
 
     auto it = m_map.find( page_id );
 
@@ -98,7 +98,7 @@ DiskBlock* BufferMgr::get( PageId page_id )
 //
 void BufferMgr::unpin( PageId page_id, bool dirty )
 {
-    std::cout << "U " << std::flush;
+    // std::cout << "U " << std::flush;
     auto it = m_map.find( page_id );
     if( it == m_map.end() )
     {
@@ -116,7 +116,7 @@ void BufferMgr::unpin( PageId page_id, bool dirty )
 //
 std::pair< PageId, DiskBlock* > BufferMgr::alloc()
 {
-    std::cout << "A " << std::flush;
+    // std::cout << "A " << std::flush;
 
     const PageId page_id = m_space.Alloc();
     allocBuff();
