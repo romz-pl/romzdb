@@ -163,6 +163,10 @@ DiskBlock* BuffClock::alloc( PageId& page_id )
     return &m_pool[ m_clock_hand.to_uint32() ];
 }
 
+//
+// Delete page from file and also from buffer pool if present.
+// Since the page is entirely deleted from file, its unnecessary to see if the page is dirty.
+//
 void BuffClock::dispose( const PageId page_id )
 {
     auto it = m_map.find( page_id );
