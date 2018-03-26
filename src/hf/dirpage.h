@@ -13,7 +13,6 @@ public:
     ~DirPage();
 
     std::optional< PageId > find( std::uint32_t free_space );
-    void clean( PageId page_id, std::uint32_t space );
 
     std::uint32_t get_slot_no() const;
     void set_slot_no( std::uint32_t v ) const;
@@ -24,7 +23,9 @@ public:
     void set_next_page( PageId id );
 
     bool add( PageId page_id, std::uint32_t free_space );
-    bool remove( PageId page_id );
+    bool remove( PageId page_id, std::uint32_t space );
+
+    bool free( PageId page_id );
 
     void init( );
 

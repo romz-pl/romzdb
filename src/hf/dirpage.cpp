@@ -62,7 +62,7 @@ std::optional< PageId > DirPage::find( std::uint32_t free_space )
 //
 bool DirPage::add( PageId page_id, std::uint32_t free_space )
 {
-    if( get_slot_no() >= max_slot_no() )
+    if( get_slot_no() == max_slot_no() )
         return false;
 
     DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
@@ -84,7 +84,25 @@ bool DirPage::add( PageId page_id, std::uint32_t free_space )
 //
 //
 //
-bool DirPage::remove( PageId page_id )
+bool DirPage::remove( PageId page_id, std::uint32_t space )
+{
+    DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
+
+    for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
+    {
+        if( !slot->is_empty( ) && slot->m_page_id == page_id )
+        {
+            slot->m_free_space -= space;
+            return true;
+        }
+    }
+    return false;
+}
+
+//
+//
+//
+bool DirPage::free( PageId page_id )
 {
     DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
 
@@ -100,13 +118,6 @@ bool DirPage::remove( PageId page_id )
     return false;
 }
 
-//
-//
-//
-void DirPage::clean( PageId page_id, std::uint32_t space )
-{
-
-}
 
 //
 //
