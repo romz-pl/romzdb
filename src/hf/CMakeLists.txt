@@ -9,7 +9,7 @@ add_library( ${LIB_NAME} STATIC
     #heapfile.cpp
     #heappage.cpp
     #pageoffset.cpp
-    #record.cpp
+    record.cpp
     recordid.cpp
     #scaner.cpp
     #slot.cpp
