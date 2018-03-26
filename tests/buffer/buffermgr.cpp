@@ -88,6 +88,11 @@ TEST(BufferMgr, Dispose)
     const std::size_t numPages = 10;
     BufferMgr buff( space, numPages );
 
+    for( std::size_t i = 0; i < 5 * numPages; i++ )
+    {
+        EXPECT_ANY_THROW( buff.dispose( PageId( i, 0 ) ) );
+    }
+
 
     EXPECT_ANY_THROW( buff.dispose( PageId( 0, 0 ) ) );
     const PageId ida = buff.alloc( ).first;

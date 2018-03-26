@@ -36,3 +36,13 @@ TEST(RecordId, Comparision)
 
 }
 
+TEST(RecordId, get)
+{
+    const PageId page_id( 1, 2 );
+    const SlotId slot_id( 3 );
+    RecordId rid( page_id, slot_id );
+
+
+    EXPECT_TRUE( rid.get_page_id() == page_id );
+    EXPECT_TRUE( rid.get_slot_id() == slot_id );
+}
