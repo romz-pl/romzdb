@@ -3,12 +3,13 @@ set( TEST_NAME test-hf )
 
 add_executable( ${TEST_NAME}
     #    db.cpp
-    dirpage.cpp
+    # dirpage.cpp
     #dir.cpp
     #heapfile.cpp
     #heappage.cpp
     main.cpp
     #scaner.cpp
+    slotid.cpp
 )
 
 target_compile_options( ${TEST_NAME} PRIVATE ${ROMZDB_CXX_FLAGS} )

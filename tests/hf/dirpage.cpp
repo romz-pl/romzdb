@@ -38,7 +38,7 @@ TEST(DirPage, add_remove)
     const PageId ida( 3 , 4 );
     EXPECT_NO_THROW( dp.init() );
     EXPECT_TRUE( dp.add( ida, 10 ) );
-    EXPECT_TRUE( dp.remove( ida ) );
-    EXPECT_FALSE( dp.remove( ida ) );
+    EXPECT_TRUE( dp.free( ida ) );
+    EXPECT_FALSE( dp.free( ida ) );
     bufferMgr.unpin( ret.first, false );
 }
