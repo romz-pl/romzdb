@@ -10,8 +10,7 @@
 class DbFile
 {
 public:
-    explicit DbFile( const std::string& path );
-    DbFile( const std::string& path, std::uint32_t max_size );
+    DbFile( UnixFile& uf, std::uint32_t max_size );
     ~DbFile() = default;
 
     DbFile( const DbFile& ) = delete;
@@ -30,7 +29,7 @@ public:
     bool full() const;
 
 private:
-    UnixFile m_uf;
+    UnixFile& m_uf;
 
     SpaceMap m_spaceMap;
 };

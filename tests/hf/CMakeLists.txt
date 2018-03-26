@@ -8,6 +8,7 @@ add_executable( ${TEST_NAME}
     #heapfile.cpp
     #heappage.cpp
     main.cpp
+    # record.cpp
     recordid.cpp
     #scaner.cpp
     slotid.cpp
