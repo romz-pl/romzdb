@@ -3,18 +3,9 @@
 #include "util/temp_path.h"
 
 
-TEST(UnixFile, Temporary)
-{
-    const std::string dir_a = "/tmp";
-    EXPECT_NO_THROW( UnixFile{ dir_a } );
-
-    const std::string dir_b = "./dev/full";
-    EXPECT_ANY_THROW( UnixFile{ dir_b } );
-}
-
 TEST(UnixFile, OpenCreate)
 {
-    const std::string path = GetTempPath();
+    const std::string path = get_temp_path();
 
     // The file does not exist. It can not be opened
     EXPECT_ANY_THROW( UnixFile( path, UnixFile::Mode::Open ) );
@@ -62,7 +53,7 @@ TEST(UnixFile, ReadFull)
 
 TEST(UnixFile, WriteRead)
 {
-    UnixFile uf( "/tmp" );
+    UnixFile uf( ::get_temp_path(), UnixFile::Mode::Create );
 
     const std::vector< char > data = GetData();
     
@@ -79,7 +70,7 @@ TEST(UnixFile, WriteRead)
 
 TEST(UnixFile, Read)
 {
-    UnixFile uf( "/tmp" );
+    UnixFile uf( ::get_temp_path(), UnixFile::Mode::Create );
 
     const std::size_t ss = 10;
     std::vector< char > tmp( ss );
@@ -88,7 +79,7 @@ TEST(UnixFile, Read)
 
 TEST(UnixFile, Fsync)
 {
-    UnixFile uf( "/tmp" );
+    UnixFile uf( ::get_temp_path(), UnixFile::Mode::Create );
 
     EXPECT_NO_THROW( uf.Fsync( ) );
 }

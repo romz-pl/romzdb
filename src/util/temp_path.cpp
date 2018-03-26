@@ -6,7 +6,7 @@
 // Return temporary path.
 // The returned path can be safely used for creation of temporary file.
 //
-std::string GetTempPath()
+std::string get_temp_path()
 {
     char dir[] = "/tmp/romzdb_XXXXXXX";
     char *p = mkdtemp( dir );

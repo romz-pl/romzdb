@@ -3,7 +3,7 @@
 
 #include <string>
 
-std::string GetTempPath();
+std::string get_temp_path();
 
 #endif
 

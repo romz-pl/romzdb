@@ -1,12 +1,12 @@
 #include "gtest/gtest.h"
 #include "buffer/buffermgr.h"
 #include "disk/unixfile.h"
+#include "util/temp_path.h"
 
 TEST(BufferMgr, Create)
 {
     const uint32_t max_size = ( 1U << 20 );
-    UnixFile uf( "/tmp" );
-    DbFile db_file( uf, max_size );
+    DbFile db_file( ::get_temp_path(), max_size );
     Space space( db_file );
     const std::size_t numPages = 10;
     EXPECT_NO_THROW( BufferMgr ( space, numPages ) );
@@ -15,8 +15,7 @@ TEST(BufferMgr, Create)
 TEST(BufferMgr, Read)
 {
     const uint32_t max_size = ( 1U << 20 );
-    UnixFile uf( "/tmp" );
-    DbFile db_file( uf, max_size );
+    DbFile db_file( ::get_temp_path(), max_size );
     Space space( db_file );
     const std::size_t numPages = 10;
     BufferMgr buff( space, numPages );
@@ -44,8 +43,7 @@ TEST(BufferMgr, Read)
 TEST(BufferMgr, ReadFaild)
 {
     const uint32_t max_size = ( 1U << 20 );
-    UnixFile uf( "/tmp" );
-    DbFile db_file( uf, max_size );
+    DbFile db_file( ::get_temp_path(), max_size );
     Space space( db_file );
     const std::size_t numPages = 10;
     BufferMgr buff( space, numPages );
@@ -62,8 +60,7 @@ TEST(BufferMgr, ReadFaild)
 TEST(BufferMgr, Alloc)
 {
     const uint32_t max_size = ( 1U << 20 );
-    UnixFile uf( "/tmp" );
-    DbFile db_file( uf, max_size );
+    DbFile db_file( ::get_temp_path(), max_size );
     Space space( db_file );
     const std::size_t numPages = 10;
     BufferMgr buff( space, numPages );
@@ -86,8 +83,7 @@ TEST(BufferMgr, Alloc)
 TEST(BufferMgr, Dispose)
 {
     const uint32_t max_size = ( 1U << 20 );
-    UnixFile uf( "/tmp" );
-    DbFile db_file( uf, max_size );
+    DbFile db_file( ::get_temp_path(), max_size );
     Space space( db_file );
     const std::size_t numPages = 10;
     BufferMgr buff( space, numPages );
@@ -121,8 +117,7 @@ TEST(BufferMgr, Dispose)
 TEST(BufferMgr, Full)
 {
     const uint32_t max_size = ( 1U << 20 );
-    UnixFile uf( "/tmp" );
-    DbFile db_file( uf, max_size );
+    DbFile db_file( ::get_temp_path(), max_size );
     Space space( db_file );
     const std::size_t numPages = 10;
     BufferMgr buff( space, numPages );
@@ -144,8 +139,7 @@ TEST(BufferMgr, Full)
 TEST(BufferMgr, Flush)
 {
     const uint32_t max_size = ( 1U << 20 );
-    UnixFile uf( "/tmp" );
-    DbFile db_file( uf, max_size );
+    DbFile db_file( ::get_temp_path(), max_size );
     Space space( db_file );
     const std::size_t numPages = 10;
     BufferMgr buff( space, numPages );

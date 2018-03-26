@@ -8,7 +8,6 @@ class UnixFile
 public:
     enum class Mode{ Open, Create };
 public:
-    explicit UnixFile( const std::string& dir );
     UnixFile( const std::string& path, Mode mode );
     ~UnixFile();
 

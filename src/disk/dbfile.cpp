@@ -4,8 +4,11 @@
 #include "dbfile.h"
 #include "util/div_ceil.h"
 
-DbFile::DbFile( UnixFile& uf )
-    : m_uf( uf )
+//
+//
+//
+DbFile::DbFile( const std::string& path )
+    : m_uf( path, UnixFile::Mode::Open )
     , m_spaceMap( m_uf )
 {
 
@@ -15,8 +18,8 @@ DbFile::DbFile( UnixFile& uf )
 //
 //
 //
-DbFile::DbFile( UnixFile& uf, std::uint32_t max_size )
-    : m_uf( uf )
+DbFile::DbFile( const std::string& path, std::uint32_t max_size )
+    : m_uf( path, UnixFile::Mode::Create )
     , m_spaceMap( m_uf, max_size )
 {
 }

@@ -7,18 +7,6 @@
 #include <cstring>
 #include <vector>
 
-//
-//
-//
-UnixFile::UnixFile( const std::string& dir )
-{
-    std::string templ = dir + "/romzdb_XXXXXX";
-    m_fd = mkstemp( templ.data() );
-    if( m_fd == -1 )
-    {
-        throw std::runtime_error( "UnixFile::UnixFile. Cannot create temporary file" );
-    }
-}
 
 //
 //

@@ -1,12 +1,12 @@
 #include "gtest/gtest.h"
 #include "disk/space.h"
 #include "disk/unixfile.h"
+#include "util/temp_path.h"
 
 TEST(Space, OpenCreate)
 {
     const uint32_t max_size = ( 1U << 20 );
-    UnixFile uf( "/tmp" );
-    DbFile file( uf, max_size );
+    DbFile file( ::get_temp_path(), max_size );
     Space space{ file };
     EXPECT_NO_THROW( space.Alloc() );
 }
@@ -17,16 +17,13 @@ TEST(Space, Add)
 
     const uint32_t max_size = ( 1U << 20 );
 
-    UnixFile uf_a( "/tmp" );
-    DbFile file_a( uf_a, max_size );
+    DbFile file_a( ::get_temp_path(), max_size );
     EXPECT_NO_THROW( space.Add( file_a ) );
 
-    UnixFile uf_b( "/tmp" );
-    DbFile file_b( uf_b, max_size );
+    DbFile file_b( ::get_temp_path(), max_size );
     EXPECT_NO_THROW( space.Add( file_b ) );
 
-    UnixFile uf_c( "/tmp" );
-    DbFile file_c( uf_c, max_size );
+    DbFile file_c( ::get_temp_path(), max_size );
     EXPECT_NO_THROW( space.Add( file_c ) );
 }
 
@@ -36,8 +33,7 @@ TEST(Space, Remove)
 
     const uint32_t max_size = ( 1U << 20 );
 
-    UnixFile uf( "/tmp" );
-    DbFile file( uf, max_size );
+    DbFile file( ::get_temp_path(), max_size );
     DbFileId id = space.Add( file );
 
     EXPECT_NO_THROW( space.Remove( id ) );
@@ -47,8 +43,7 @@ TEST(Space, Remove)
 TEST(Space, Full)
 {
     const uint32_t max_size = ( 1U << 20 );
-    UnixFile uf( "/tmp" );
-    DbFile db_file( uf, max_size );
+    DbFile db_file( ::get_temp_path(), max_size );
     Space space( db_file );
     const DiskBlock block ( std::string( "abc" ) );
 
@@ -64,8 +59,7 @@ TEST(Space, Full)
 TEST(Space, WriteIncorrect)
 {
     const uint32_t max_size = ( 1U << 20 );
-    UnixFile uf( "/tmp" );
-    DbFile db_file( uf, max_size );
+    DbFile db_file( ::get_temp_path(), max_size );
     Space space( db_file );
 
     const DiskBlock block ( std::string( "abc" ) );
@@ -77,8 +71,7 @@ TEST(Space, WriteIncorrect)
 TEST(Space, ReadIncorrect)
 {
     const uint32_t max_size = ( 1U << 20 );
-    UnixFile uf( "/tmp" );
-    DbFile db_file( uf, max_size );
+    DbFile db_file( ::get_temp_path(), max_size );
     Space space( db_file );
 
     EXPECT_ANY_THROW( space.Read( PageId( 1, 0 ) ) );
@@ -88,8 +81,7 @@ TEST(Space, ReadIncorrect)
 TEST(Space, ReadWrite)
 {
     const uint32_t max_size = ( 1U << 20 );
-    UnixFile uf( "/tmp" );
-    DbFile db_file( uf, max_size );
+    DbFile db_file( ::get_temp_path(), max_size );
     Space space( db_file );
 
     const DiskBlock block ( std::string( "abc" ) );
@@ -109,8 +101,7 @@ TEST(Space, ReadWrite)
 TEST(Space, Dealloc)
 {
     const uint32_t max_size = ( 1U << 20 );
-    UnixFile uf( "/tmp" );
-    DbFile db_file( uf, max_size );
+    DbFile db_file( ::get_temp_path(), max_size );
     Space space( db_file );
 
     EXPECT_ANY_THROW( space.Dealloc( PageId( 1, 0 ) ) );
