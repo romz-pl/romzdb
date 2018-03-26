@@ -1,5 +1,5 @@
-#ifndef ROMZDB_SLOTID_H
-#define ROMZDB_SLOTID_H
+#ifndef ROMZDB_HF_SLOTID_H
+#define ROMZDB_HF_SLOTID_H
 
 
 //
@@ -7,19 +7,28 @@
 //
 
 #include <cstdint>
+#include "util/totally_ordered.h"
 
-
-class SlotId
+class SlotId : public totally_ordered< SlotId >
 {
+private:
+    typedef std::uint16_t value_type;
+
 public:
-    explicit SlotId( std::uint16_t value );
+    explicit SlotId( value_type value );
+    ~SlotId() = default;
 
-    std::uint16_t GetValue() const;
+    SlotId( const SlotId& v ) = default;
+    SlotId& operator=( const SlotId& v ) = default;
 
-    bool operator ==( const SlotId& slotId ) const;
+    SlotId( SlotId&& v ) = default;
+    SlotId& operator=( SlotId&& v ) = default;
+
+    bool operator==( const SlotId& slotId ) const;
+    bool operator< ( const SlotId& slotId ) const;
 
 private:
-    std::uint16_t m_value;
+    value_type m_value;
 };
 
 

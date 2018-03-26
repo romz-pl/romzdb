@@ -2,30 +2,30 @@
 #include "buffer/page.h"
 #include <limits>
 
-static_assert( std::numeric_limits< std::uint16_t >::max() > Page::Size,
-               "The size of SlotId type is not sufficiently large" );
+
 
 //
 //
 //
-SlotId::SlotId( std::uint16_t value )
+SlotId::SlotId( value_type value )
     : m_value( value )
 {
-
+    static_assert( std::numeric_limits< value_type >::max() > Page::Size,
+                   "The size of SlotId type is not sufficiently large" );
 }
 
 //
 //
 //
-std::uint16_t SlotId::GetValue() const
-{
-    return m_value;
-}
-
-//
-//
-//
-bool SlotId::operator ==( const SlotId& slotId ) const
+bool SlotId::operator==( const SlotId& slotId ) const
 {
     return m_value == slotId.m_value;
+}
+
+//
+//
+//
+bool SlotId::operator<( const SlotId& slotId ) const
+{
+    return m_value < slotId.m_value;
 }

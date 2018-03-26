@@ -3,9 +3,9 @@
 //
 //
 //
-RecordId::RecordId( PageId pageId, SlotId slotId )
-    : m_pageId( pageId )
-    , m_slotId( slotId )
+RecordId::RecordId( PageId page_id, SlotId slot_id )
+    : m_page_id( page_id )
+    , m_slot_id( slot_id )
 {
 
 }
@@ -13,23 +13,36 @@ RecordId::RecordId( PageId pageId, SlotId slotId )
 //
 //
 //
-PageId RecordId::GetPageId() const
+PageId RecordId::get_page_id() const
 {
-    return m_pageId;
+    return m_page_id;
 }
 
 //
 //
 //
-SlotId RecordId::GetSlotId() const
+SlotId RecordId::get_slot_id() const
 {
-    return m_slotId;
+    return m_slot_id;
 }
 
 //
 //
 //
-bool RecordId::operator == ( const RecordId& rid ) const
+bool RecordId::operator== ( const RecordId& rid ) const
 {
-    return ( m_pageId == rid.m_pageId) && ( m_slotId == rid.m_slotId );
+    return ( m_page_id == rid.m_page_id) && ( m_slot_id == rid.m_slot_id );
+}
+
+//
+//
+//
+bool RecordId::operator< ( const RecordId& rid ) const
+{
+    if( m_page_id == rid.m_page_id )
+    {
+        return m_slot_id < rid.m_slot_id;
+    }
+
+    return ( m_page_id < rid.m_page_id );
 }

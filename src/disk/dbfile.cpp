@@ -5,16 +5,18 @@
 #include "util/div_ceil.h"
 
 //
-// Open Db file
+//
 //
 DbFile::DbFile( const std::string& path )
     : m_uf( path, UnixFile::Mode::Open )
     , m_spaceMap( m_uf )
 {
+
 }
 
+
 //
-// Create Db file
+//
 //
 DbFile::DbFile( const std::string& path, std::uint32_t max_size )
     : m_uf( path, UnixFile::Mode::Create )

@@ -16,7 +16,6 @@
 
 class DiskBlock
 {
-    friend class Page;
 public:
     // The size of the disk block in the file.
     enum { Size = 4096 };
@@ -37,10 +36,10 @@ public:
     void Read( const UnixFile& uf, BlockId blockId );
     void Write( const UnixFile& uf, BlockId blockId ) const;
 
-private:
+
     const char* GetData() const;
     char* GetData();
-
+private:
     off_t PageIdToOffset( BlockId blockId ) const;
 
 private:

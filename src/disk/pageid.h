@@ -25,13 +25,8 @@ public:
     BlockId get_block_id() const;
     DbFileId get_db_file_id() const;
 
-    bool IsValid() const;
-
     bool operator==( const PageId& v ) const;
     bool operator< ( const PageId& v ) const;
-
-public:
-    static const std::uint32_t m_invalid;
 
 private:
     BlockId m_block_id;

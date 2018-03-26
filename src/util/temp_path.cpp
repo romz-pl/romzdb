@@ -1,22 +1,18 @@
-#include <stdexcept>
+#include <cstdlib>
+#include <cassert>
 #include "temp_path.h"
 
 //
 // Return temporary path.
 // The returned path can be safely used for creation of temporary file.
 //
-std::string GetTempPath()
+std::string get_temp_path()
 {
-    char dir[] = "/tmp/aaXXXXXXX";
+    char dir[] = "/tmp/romzdb_XXXXXXX";
     char *p = mkdtemp( dir );
-    if( !p )
-    {
-        throw std::runtime_error( "Function 'mkdtemp failed" );
-    }
-
+    assert( p );
     std::string path( dir );
-    path += "/";
-    path += "a.dat";
-
+    path += "/a.dat";
     return path;
 }
+

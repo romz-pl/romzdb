@@ -1,42 +1,44 @@
 #ifndef ROMZDB_DIRPAGE_H
 #define ROMZDB_DIRPAGE_H
 
-#include "buffer/page.h"
-#include <vector>
+#include <optional>
 #include "buffer/buffermgr.h"
-#include "record.h"
-#include "recordid.h"
-#include "dirslot.h"
 
 
-class DirPage : public Page
+
+class DirPage
 {
 public:
-    DirPage( BufferMgr &bufferMgr, PageId self );
+    DirPage( DiskBlock* block );
     ~DirPage();
 
-    std::pair< bool, Record > Get( RecordId rid ) const;
-    std::pair< bool, RecordId > Insert( const Record& rec );
-    bool InsertHeapPage( PageId pageId );
+    std::optional< PageId > find( std::uint32_t free_space );
 
-    bool Delete( RecordId rid);
+    std::uint32_t get_slot_no() const;
+    void set_slot_no( std::uint32_t v ) const;
 
-    PageId GetNextPage() const;
-    void SetNextPage( PageId id );
+    std::uint32_t max_slot_no() const;
 
-    void ToPage();
-    void FromPage();
+    PageId get_next_page() const;
+    void set_next_page( PageId id );
 
-    std::size_t GetRecordNo() const;
-    void GetRid( std::vector< RecordId >& rid ) const;
+    bool add( PageId page_id, std::uint32_t free_space );
+    bool remove( PageId page_id, std::uint32_t space );
+
+    bool free( PageId page_id );
+
+    void init( );
 
 private:
-    bool IsFull() const;
+    enum Offset
+    {
+        Slot_no = 0,
+        Next_page = Slot_no + sizeof( PageId ),
+        Array = Next_page + sizeof( std::uint32_t )
+    };
 
 private:
-    PageId m_nextPage;
-
-    std::vector< DirSlot > m_dirSlot;
+    DiskBlock* m_block;
 };
 
 #endif

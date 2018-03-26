@@ -41,10 +41,7 @@ void Frame::set( PageId page_id )
 //
 void Frame::flush( Space& space )
 {
-    if( !m_valid )
-    {
-        return;
-    }
+    assert( m_valid );
 
     if( m_pin_count > 0)
     {
@@ -64,10 +61,7 @@ void Frame::flush( Space& space )
 //
 void Frame::dispose( Space& space, PageId page_id )
 {
-    if( !m_valid )
-    {
-        return;
-    }
+    assert( m_valid );
 
     if( m_dirty )
     {
@@ -127,4 +121,9 @@ DiskBlock *Frame::read( Space& space, PageId page_id )
     m_block = space.Read( page_id );
     set( page_id );
     return &m_block;
+}
+
+bool Frame::is_valid() const
+{
+    return m_valid;
 }

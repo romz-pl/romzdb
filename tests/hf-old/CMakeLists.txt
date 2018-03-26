@@ -2,19 +2,21 @@
 set( TEST_NAME test-hf )
 
 add_executable( ${TEST_NAME}
-    #    db.cpp
-    # dirpage.cpp
-    #dir.cpp
-    #heapfile.cpp
-    #heappage.cpp
+    db.cpp
+    dirpage.cpp
+    dir.cpp
+    heapfile.cpp
+    heappage.cpp
     main.cpp
-    # record.cpp
-    recordid.cpp
-    #scaner.cpp
-    slotid.cpp
+    scaner.cpp
 )
 
-target_compile_options( ${TEST_NAME} PRIVATE ${ROMZDB_CXX_FLAGS} )
+target_compile_options( ${TEST_NAME} PRIVATE 
+    -Wall -pedantic 
+    -pthread 
+    -g -O0 
+    -fprofile-arcs -ftest-coverage 
+    -std=c++11 -DNDEBUG )
 
 target_include_directories( ${TEST_NAME} PRIVATE 
     ${gtest_SOURCE_DIR}/include 

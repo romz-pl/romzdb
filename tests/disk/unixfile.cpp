@@ -5,7 +5,7 @@
 
 TEST(UnixFile, OpenCreate)
 {
-    const std::string path = GetTempPath();
+    const std::string path = get_temp_path();
 
     // The file does not exist. It can not be opened
     EXPECT_ANY_THROW( UnixFile( path, UnixFile::Mode::Open ) );
@@ -21,7 +21,6 @@ TEST(UnixFile, OpenCreate)
 
     // The file can be opened more than one time.
     EXPECT_NO_THROW( UnixFile( path, UnixFile::Mode::Open ) );
-
 }
 
 std::vector< char > GetData()
@@ -54,9 +53,7 @@ TEST(UnixFile, ReadFull)
 
 TEST(UnixFile, WriteRead)
 {
-    const std::string path = GetTempPath();
-
-    UnixFile uf( path, UnixFile::Mode::Create );
+    UnixFile uf( ::get_temp_path(), UnixFile::Mode::Create );
 
     const std::vector< char > data = GetData();
     
@@ -73,8 +70,7 @@ TEST(UnixFile, WriteRead)
 
 TEST(UnixFile, Read)
 {
-    const std::string path = GetTempPath();
-    UnixFile uf( path, UnixFile::Mode::Create );
+    UnixFile uf( ::get_temp_path(), UnixFile::Mode::Create );
 
     const std::size_t ss = 10;
     std::vector< char > tmp( ss );
@@ -83,8 +79,7 @@ TEST(UnixFile, Read)
 
 TEST(UnixFile, Fsync)
 {
-    const std::string path = GetTempPath();
-    UnixFile uf( path, UnixFile::Mode::Create );
+    UnixFile uf( ::get_temp_path(), UnixFile::Mode::Create );
 
     EXPECT_NO_THROW( uf.Fsync( ) );
 }

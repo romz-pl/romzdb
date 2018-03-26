@@ -4,11 +4,10 @@ set( TEST_NAME test-util )
 add_executable( ${TEST_NAME}
     bitarray.cpp
     div_ceil.cpp
-    temp_path.cpp
     main.cpp
 )
 
-target_compile_options( ${TEST_NAME} PRIVATE -Wall -pedantic -pthread -g -O0 -fprofile-arcs -ftest-coverage -std=c++11 )
+target_compile_options( ${TEST_NAME} PRIVATE ${ROMZDB_CXX_FLAGS} )
 
 target_include_directories( ${TEST_NAME} PRIVATE 
     ${gtest_SOURCE_DIR}/include 

@@ -12,23 +12,32 @@
 
 #include "disk/pageid.h"
 #include "slotid.h"
+#include "util/totally_ordered.h"
 
-class RecordId
+class RecordId : public totally_ordered< RecordId >
 {
 public:
-    RecordId( PageId pageId, SlotId slotId );
+    RecordId( PageId page_id, SlotId slot_id );
+    ~RecordId() = default;
 
-    PageId GetPageId() const;
-    SlotId GetSlotId() const;
+    RecordId( const RecordId& v ) = default;
+    RecordId& operator=( const RecordId& v ) = default;
 
-    bool operator == ( const RecordId& rid ) const;
+    RecordId( RecordId&& v ) = default;
+    RecordId& operator=( RecordId&& v ) = default;
+
+    PageId get_page_id() const;
+    SlotId get_slot_id() const;
+
+    bool operator==( const RecordId& rid ) const;
+    bool operator< ( const RecordId& rid ) const;
 
 private:
     // ID of page on the disk, where the record is stored
-    PageId m_pageId;
+    PageId m_page_id;
 
     // ID of the slot on the page, where the record is stored
-    SlotId m_slotId;
+    SlotId m_slot_id;
 };
 
 #endif

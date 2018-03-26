@@ -1,12 +1,4 @@
 #include "pageid.h"
-#include <limits>
-
-//
-//
-//
-const std::uint32_t PageId::m_invalid = std::numeric_limits< std::uint32_t >::max();
-
-
 
 //
 //
@@ -43,17 +35,6 @@ DbFileId PageId::get_db_file_id() const
 {
     return m_db_file_id;
 }
-
-
-//
-//
-//
-bool PageId::IsValid() const
-{
-    return ( m_block_id.GetValue() != m_invalid );
-}
-
-
 
 //
 //

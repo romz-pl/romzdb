@@ -7,6 +7,7 @@
 #include <cstring>
 #include <vector>
 
+
 //
 //
 //
@@ -19,11 +20,8 @@ UnixFile::UnixFile( const std::string& path, Mode mode )
         return;
     }
 
-    if( mode == Mode::Create )
-    {
-        Create( path );
-        return;
-    }
+    assert( mode == Mode::Create );
+    Create( path );
 }
 
 //
@@ -39,12 +37,11 @@ UnixFile::~UnixFile()
 //
 void UnixFile::Open( const std::string& path )
 {
-    if( m_fd != m_badFd )
-        return;
+    assert( m_fd == m_badFd );
 
     const int oflag = O_RDWR;
     m_fd = open( path.c_str(), oflag );
-    if( m_fd < 0 )
+    if( m_fd == -1 )
     {
         const std::string msg = std::string( "UnixFile::Open. Cannot open file: ") + path;
         throw std::runtime_error( msg );
@@ -56,13 +53,12 @@ void UnixFile::Open( const std::string& path )
 //
 void UnixFile::Create( const std::string& path )
 {
-    if( m_fd != m_badFd )
-        return;
+    assert( m_fd == m_badFd );
 
     const int oflag = O_CREAT | O_EXCL | O_RDWR;
     const int mask = 0600;    // r/w privileges to owner only
     m_fd = open( path.c_str(), oflag, mask );
-    if( m_fd < 0 )
+    if( m_fd == -1 )
     {
         const std::string msg = std::string( "UnixFile::Create. Cannot create file ") + path;
         throw std::runtime_error( msg );
@@ -116,6 +112,8 @@ void UnixFile::Read( void *data, size_t nbyte, off_t offset ) const
 //
 void UnixFile::Fsync() const
 {
+    assert( m_fd != m_badFd );
+
     const int rc = fsync( m_fd );
     if( rc != 0 )
     {

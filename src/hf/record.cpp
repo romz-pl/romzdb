@@ -1,8 +1,8 @@
 #include "record.h"
 #include <cstring>
-#include <random>
-#include <algorithm>
 
+/*
+ *
 //
 //
 //
@@ -33,7 +33,7 @@ Record::Record( const char* data, std::size_t length )
 //
 //
 //
-void Record::ToPage( char* page ) const
+void Record::copy_to_page( void* page ) const
 {
     std::memcpy( page, m_data.data(), m_data.size() );
 }
@@ -41,9 +41,21 @@ void Record::ToPage( char* page ) const
 //
 //
 //
-PageOffset Record::GetLength() const
+std::uint32_t Record::get_length() const
 {
-    return PageOffset( m_data.size() );
+    return static_cast< std::uint32_t >( m_data.size() );
+}
+
+//
+//
+//
+std::string Record::to_string() const
+{
+    std::string str;
+    for( char v : m_data )
+        str += v;
+    // std::copy( m_data.begin(), m_data.end(), str.begin() );
+    return str;
 }
 
 //
@@ -57,48 +69,9 @@ bool Record::operator==( const Record& a ) const
 //
 //
 //
-std::string Record::ToString() const
+bool Record::operator< (const Record& a ) const
 {
-    std::string str;
-    for( char v : m_data )
-        str += v;
-    // std::copy( m_data.begin(), m_data.end(), str.begin() );
-    return str;
+    return m_data < a.m_data;
 }
 
-//
-//
-//
-std::string Record::RandomString( )
-{
-    const std::string alphabet( "0123456789"
-                                "abcdefghijklmnopqrstuvwxyz"
-                                "ABCDEFGHIJKLMNOPQRSTUVWXYZ" );
-
-    std::random_device rd;
-    std::mt19937 g( rd() );
-    std::uniform_int_distribution< std::string::size_type > pick( 0, alphabet.size() );
-
-    std::string::size_type length = 1 + pick( g );
-    std::string s;
-    s.reserve( length );
-
-    while( length-- )
-    {
-        const char c = alphabet[ pick( g ) ];
-        s += c;
-    }
-    return s;
-}
-
-//
-//
-//
-bool Record::operator< (const Record& rec ) const
-{
-    const std::string sa = ToString();
-    const std::string sb = rec.ToString();
-
-    return sa < sb;
-
-}
+*/

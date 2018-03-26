@@ -151,6 +151,7 @@ void BufferMgr::flush()
 {
     for( auto& f : m_frame )
     {
-        f.flush( m_space );
+        if( f.is_valid() )
+            f.flush( m_space );
     }
 }

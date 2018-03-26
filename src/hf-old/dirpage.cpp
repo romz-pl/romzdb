@@ -3,17 +3,17 @@
 #include <algorithm>
 #include <stdexcept>
 #include <algorithm>
+#include "heappage.h"
 #include <string>
 #include <cstring>
 #include <utility>
-#include "dirslot.h"
-
 
 //
 //
 //
-DirPage::DirPage( DiskBlock* block )
-    : m_block( block )
+DirPage::DirPage( BufferMgr& bufferMgr, PageId self )
+    : Page( bufferMgr, self )
+    , m_nextPage( PageId::m_invalid, 0 )
 {
 
 }
@@ -26,152 +26,6 @@ DirPage::~DirPage()
 
 }
 
-//
-//
-//
-void DirPage::init( )
-{
-    set_slot_no( 0 );
-    set_next_page( PageId( 0, 0 ) );
-
-    DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
-
-    for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
-    {
-        slot->empty( );
-    }
-}
-
-//
-//
-//
-std::optional< PageId > DirPage::find( std::uint32_t free_space )
-{
-    DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
-
-    for( std::uint32_t i = 0; i < get_slot_no(); i++, slot++ )
-    {
-        if( slot->is_free( free_space ) )
-            return slot->m_page_id;
-    }
-    return std::nullopt;
-}
-
-//
-//
-//
-bool DirPage::add( PageId page_id, std::uint32_t free_space )
-{
-    if( get_slot_no() == max_slot_no() )
-        return false;
-
-    DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
-
-    for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
-    {
-        if( slot->is_empty( ) )
-        {
-            slot->m_page_id = page_id;
-            slot->m_free_space = free_space;
-
-            set_slot_no( get_slot_no() + 1 );
-            return true;
-        }
-    }
-    return false;
-}
-
-//
-//
-//
-bool DirPage::remove( PageId page_id, std::uint32_t space )
-{
-    DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
-
-    for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
-    {
-        if( !slot->is_empty( ) && slot->m_page_id == page_id )
-        {
-            slot->m_free_space -= space;
-            return true;
-        }
-    }
-    return false;
-}
-
-//
-//
-//
-bool DirPage::free( PageId page_id )
-{
-    DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
-
-    for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
-    {
-        if( !slot->is_empty( ) && slot->m_page_id == page_id )
-        {
-            slot->empty();
-            set_slot_no( get_slot_no() - 1 );
-            return true;
-        }
-    }
-    return false;
-}
-
-
-//
-//
-//
-std::uint32_t DirPage::max_slot_no() const
-{
-    constexpr std::uint32_t v =
-        ( DiskBlock::Size - sizeof( PageId ) - sizeof( std::uint32_t ) )
-         / ( sizeof( DirSlot ) );
-
-    return v;
-}
-
-//
-//
-//
-std::uint32_t DirPage::get_slot_no() const
-{
-    std::uint32_t *p = (std::uint32_t*)( m_block->GetData() + Offset::Slot_no );
-    return *p;
-}
-
-//
-//
-//
-void DirPage::set_slot_no( std::uint32_t v ) const
-{
-    std::uint32_t *p = (std::uint32_t*)( m_block->GetData() + Offset::Slot_no );
-    *p = v;
-}
-
-
-//
-//
-//
-PageId DirPage::get_next_page() const
-{
-    PageId *p = (PageId*)( m_block->GetData() + Offset::Next_page );
-    return *p;
-}
-
-//
-//
-//
-void DirPage::set_next_page( PageId id )
-{
-    PageId *p = (PageId*)( m_block->GetData() + Offset::Next_page );
-    *p = id;
-}
-
-
-
-
-/*
 //
 // Returns true, if there is no free space on the Dir Page
 //
@@ -372,4 +226,3 @@ void DirPage::GetRid( std::vector< RecordId >& rid ) const
         hp.GetRid( rid );
     }
 }
-*/
