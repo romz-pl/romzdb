@@ -10,7 +10,7 @@ add_library( ${LIB_NAME} STATIC
     #heappage.cpp
     #pageoffset.cpp
     #record.cpp
-    #recordid.cpp
+    recordid.cpp
     #scaner.cpp
     #slot.cpp
     slotid.cpp
