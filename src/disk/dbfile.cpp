@@ -4,6 +4,13 @@
 #include "dbfile.h"
 #include "util/div_ceil.h"
 
+DbFile::DbFile( UnixFile& uf )
+    : m_uf( uf )
+    , m_spaceMap( m_uf )
+{
+
+}
+
 
 //
 //

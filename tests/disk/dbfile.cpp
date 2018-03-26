@@ -27,10 +27,18 @@ TEST(DbFile, ReadWrite)
 
 TEST(DbFile, OpenCreate)
 {
-    const uint32_t max_size = ( 1U << 14 );
-
     UnixFile uf( "/tmp" );
-    EXPECT_NO_THROW( DbFile( uf, max_size ) );
+
+    {
+        // Create
+        const uint32_t max_size = ( 1U << 14 );
+        EXPECT_NO_THROW( DbFile ( uf, max_size ) );
+    }
+
+    {
+        // Open
+        EXPECT_NO_THROW( DbFile { uf } );
+    }
 }
 
 TEST(DbFile, ToSmall)

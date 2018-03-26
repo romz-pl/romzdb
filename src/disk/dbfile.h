@@ -10,6 +10,7 @@
 class DbFile
 {
 public:
+    DbFile( UnixFile& uf );
     DbFile( UnixFile& uf, std::uint32_t max_size );
     ~DbFile() = default;
 
