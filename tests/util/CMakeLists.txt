@@ -4,7 +4,6 @@ set( TEST_NAME test-util )
 add_executable( ${TEST_NAME}
     bitarray.cpp
     div_ceil.cpp
-    temp_path.cpp
     main.cpp
 )
 
