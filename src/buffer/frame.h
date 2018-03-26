@@ -27,6 +27,8 @@ public:
     void write( Space& space );
     DiskBlock* read( Space& space, PageId page_id );
 
+    bool is_valid() const;
+
 private:
     DiskBlock m_block;
 
