@@ -1,26 +1,34 @@
 #include "gtest/gtest.h"
 #include "disk/unixfile.h"
-#include "util/temp_path.h"
 
+TEST(UnixFile, Temporary)
+{
+    const std::string dir_a = "/tmp";
+    EXPECT_NO_THROW( UnixFile{ dir_a } );
+
+    const std::string dir_b = "./dev/full";
+    EXPECT_ANY_THROW( UnixFile{ dir_b } );
+}
 
 TEST(UnixFile, OpenCreate)
-{
-    const std::string path = GetTempPath();
+{/*
+    const std::string dir = "/tmp";
 
     // The file does not exist. It can not be opened
-    EXPECT_ANY_THROW( UnixFile( path, UnixFile::Mode::Open ) );
+    EXPECT_ANY_THROW( UnixFile( dir, UnixFile::Mode::Open ) );
 
     // The file does not exist. Hence, it can be created
-    EXPECT_NO_THROW( UnixFile( path, UnixFile::Mode::Create ) );
+    EXPECT_NO_THROW( UnixFile( dir, UnixFile::Mode::Create ) );
 
     // The file exists. It can be opened.
-    EXPECT_NO_THROW( UnixFile( path, UnixFile::Mode::Open ) );
+    EXPECT_NO_THROW( UnixFile( dir, UnixFile::Mode::Open ) );
 
     // The file exists. Hence, it can not be created
-    EXPECT_ANY_THROW( UnixFile( path, UnixFile::Mode::Create ) );
+    EXPECT_ANY_THROW( UnixFile( dir, UnixFile::Mode::Create ) );
 
     // The file can be opened more than one time.
-    EXPECT_NO_THROW( UnixFile( path, UnixFile::Mode::Open ) );
+    EXPECT_NO_THROW( UnixFile( dir, UnixFile::Mode::Open ) );
+    */
 
 }
 
@@ -54,9 +62,7 @@ TEST(UnixFile, ReadFull)
 
 TEST(UnixFile, WriteRead)
 {
-    const std::string path = GetTempPath();
-
-    UnixFile uf( path, UnixFile::Mode::Create );
+    UnixFile uf( "/tmp" );
 
     const std::vector< char > data = GetData();
     
@@ -73,8 +79,7 @@ TEST(UnixFile, WriteRead)
 
 TEST(UnixFile, Read)
 {
-    const std::string path = GetTempPath();
-    UnixFile uf( path, UnixFile::Mode::Create );
+    UnixFile uf( "/tmp" );
 
     const std::size_t ss = 10;
     std::vector< char > tmp( ss );
@@ -83,8 +88,7 @@ TEST(UnixFile, Read)
 
 TEST(UnixFile, Fsync)
 {
-    const std::string path = GetTempPath();
-    UnixFile uf( path, UnixFile::Mode::Create );
+    UnixFile uf( "/tmp" );
 
     EXPECT_NO_THROW( uf.Fsync( ) );
 }

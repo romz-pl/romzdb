@@ -10,6 +10,19 @@
 //
 //
 //
+UnixFile::UnixFile( const std::string& dir )
+{
+    std::string templ = dir + "/romzdb_XXXXXX";
+    m_fd = mkstemp( templ.data() );
+    if( m_fd == -1 )
+    {
+        throw std::runtime_error( "UnixFile::UnixFile. Cannot create temporary file" );
+    }
+}
+
+//
+//
+//
 UnixFile::UnixFile( const std::string& path, Mode mode )
     : m_fd( m_badFd )
 {
@@ -40,7 +53,7 @@ void UnixFile::Open( const std::string& path )
 
     const int oflag = O_RDWR;
     m_fd = open( path.c_str(), oflag );
-    if( m_fd < 0 )
+    if( m_fd == -1 )
     {
         const std::string msg = std::string( "UnixFile::Open. Cannot open file: ") + path;
         throw std::runtime_error( msg );
@@ -57,7 +70,7 @@ void UnixFile::Create( const std::string& path )
     const int oflag = O_CREAT | O_EXCL | O_RDWR;
     const int mask = 0600;    // r/w privileges to owner only
     m_fd = open( path.c_str(), oflag, mask );
-    if( m_fd < 0 )
+    if( m_fd == -1 )
     {
         const std::string msg = std::string( "UnixFile::Create. Cannot create file ") + path;
         throw std::runtime_error( msg );
