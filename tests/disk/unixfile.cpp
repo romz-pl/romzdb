@@ -1,6 +1,24 @@
 #include "gtest/gtest.h"
 #include "disk/unixfile.h"
 
+//
+// Return temporary path.
+// The returned path can be safely used for creation of temporary file.
+//
+std::string GetTempPath()
+{
+    char dir[] = "/tmp/aaXXXXXXX";
+    char *p = mkdtemp( dir );
+    if( !p )
+    {
+        throw std::runtime_error( "Function 'mkdtemp failed" );
+    }
+
+    std::string path( dir );
+    path += "/a.dat";
+    return path;
+}
+
 TEST(UnixFile, Temporary)
 {
     const std::string dir_a = "/tmp";
@@ -11,25 +29,23 @@ TEST(UnixFile, Temporary)
 }
 
 TEST(UnixFile, OpenCreate)
-{/*
-    const std::string dir = "/tmp";
+{
+    const std::string path = GetTempPath();
 
     // The file does not exist. It can not be opened
-    EXPECT_ANY_THROW( UnixFile( dir, UnixFile::Mode::Open ) );
+    EXPECT_ANY_THROW( UnixFile( path, UnixFile::Mode::Open ) );
 
     // The file does not exist. Hence, it can be created
-    EXPECT_NO_THROW( UnixFile( dir, UnixFile::Mode::Create ) );
+    EXPECT_NO_THROW( UnixFile( path, UnixFile::Mode::Create ) );
 
     // The file exists. It can be opened.
-    EXPECT_NO_THROW( UnixFile( dir, UnixFile::Mode::Open ) );
+    EXPECT_NO_THROW( UnixFile( path, UnixFile::Mode::Open ) );
 
     // The file exists. Hence, it can not be created
-    EXPECT_ANY_THROW( UnixFile( dir, UnixFile::Mode::Create ) );
+    EXPECT_ANY_THROW( UnixFile( path, UnixFile::Mode::Create ) );
 
     // The file can be opened more than one time.
-    EXPECT_NO_THROW( UnixFile( dir, UnixFile::Mode::Open ) );
-    */
-
+    EXPECT_NO_THROW( UnixFile( path, UnixFile::Mode::Open ) );
 }
 
 std::vector< char > GetData()
