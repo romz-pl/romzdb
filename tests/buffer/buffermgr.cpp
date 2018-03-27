@@ -10,6 +10,8 @@ TEST(BufferMgr, Create)
     Space space( db_file );
     const std::size_t numPages = 10;
     EXPECT_NO_THROW( BufferMgr ( space, numPages ) );
+
+    EXPECT_ANY_THROW( BufferMgr ( space, 0 ) );
 }
 
 TEST(BufferMgr, pin_unpin)
@@ -32,12 +34,15 @@ TEST(BufferMgr, pin_unpin)
 
     EXPECT_NO_THROW( buff.unpin( ida, true ) );
     EXPECT_NO_THROW( buff.unpin( ida, false ) );
+    EXPECT_ANY_THROW( buff.unpin( ida, false ) );
 
     EXPECT_NO_THROW( buff.unpin( idb, true ) );
     EXPECT_NO_THROW( buff.unpin( idb, false ) );
+    EXPECT_ANY_THROW( buff.unpin( idb, false ) );
 
     EXPECT_NO_THROW( buff.unpin( idc, true ) );
     EXPECT_NO_THROW( buff.unpin( idc, false ) );
+    EXPECT_ANY_THROW( buff.unpin( idc, false ) );
 }
 
 TEST(BufferMgr, ReadFaild)
@@ -100,7 +105,8 @@ TEST(BufferMgr, Dispose)
     for( auto id : id_vec )
     {
         EXPECT_NO_THROW( buff.unpin( id, false ) );
-        EXPECT_NO_THROW( buff.dispose( id) );
+        EXPECT_NO_THROW( buff.dispose( id ) );
+        EXPECT_ANY_THROW( buff.dispose( id ) );
     }
 }
 
