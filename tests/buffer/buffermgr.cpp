@@ -1,7 +1,9 @@
+#include <cstring>
 #include "gtest/gtest.h"
 #include "buffer/buffermgr.h"
 #include "disk/unixfile.h"
 #include "util/temp_path.h"
+#include "util/random_string.h"
 
 TEST(BufferMgr, Create)
 {
@@ -46,7 +48,7 @@ TEST(BufferMgr, pin_unpin)
     EXPECT_ANY_THROW( buff.unpin( idc, false ) );
 }
 
-TEST(BufferMgr, ReadFaild)
+TEST(BufferMgr, pin_failed)
 {
     const uint32_t max_size = ( 1U << 20 );
     DbFile db_file( ::get_temp_path(), max_size );
@@ -146,5 +148,47 @@ TEST(BufferMgr, Flush)
 
     EXPECT_NO_THROW( buff.unpin( id, false ) );
     EXPECT_NO_THROW( buff.flush( ) );
+}
+
+TEST(BufferMgr, data_transfer)
+{
+    const uint32_t max_size = ( 1U << 24 );
+    DbFile db_file( ::get_temp_path(), max_size );
+    Space space( db_file );
+    const std::size_t numPages = 10;
+    BufferMgr buff( space, numPages );
+
+    std::map< std::string, PageId > m_reference;
+
+    for( std::size_t i = 0; i < 50 * numPages; i++ )
+    {
+        std::pair< PageId, DiskBlock * > v = buff.alloc( );
+
+        const PageId id = v.first;
+        DiskBlock *block = v.second;
+
+        const std::string str = ::random_string( 30 );
+        m_reference.insert( std::make_pair( str, id ) );
+
+        std::memcpy ( block->GetData(), str.c_str(), str.size() );
+
+        buff.unpin( id, true );
+    }
+
+    //
+    // Chech if in ROMZDB is the same data as in reference map.
+    // Since strings are random, pages are pinned in random order.
+    //
+    for( auto v : m_reference )
+    {
+        const PageId id = v.second;
+        const std::string str = v.first;
+
+        DiskBlock *block = buff.pin( id );
+
+        EXPECT_TRUE( std::memcmp( block->GetData(), str.c_str(), str.size() ) == 0 );
+
+        buff.unpin( id, false );
+    }
 
 }

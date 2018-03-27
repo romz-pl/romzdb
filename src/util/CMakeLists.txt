@@ -4,6 +4,7 @@ set( LIB_NAME romzdb-util )
 add_library( ${LIB_NAME} STATIC
     bitarray.cpp
     div_ceil.cpp
+    random_string.cpp
     temp_path.cpp
 )
 
