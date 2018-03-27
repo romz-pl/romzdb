@@ -54,19 +54,14 @@ void Frame::flush( Space& space )
 //
 //
 //
-void Frame::dispose( Space& space, PageId page_id )
+void Frame::dispose( Space& space )
 {
     if( !m_valid )
     {
         throw std::runtime_error( "Frame::dispose: Invalid frame" );
     }
 
-    if( m_dirty )
-    {
-        space.Write( m_block, page_id );
-    }
-
-    space.Dealloc( page_id );
+    space.Dealloc( m_page_id );
     m_valid = false;
 }
 
@@ -161,12 +156,4 @@ bool Frame::is_for_replacement( Space& space, std::map< PageId, Frame* >& map, s
     map.erase( m_page_id );
     m_valid = false;
     return true;
-}
-
-//
-//
-//
-bool Frame::is_valid() const
-{
-    return m_valid;
 }

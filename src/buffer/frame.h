@@ -19,7 +19,7 @@ public:
     ~Frame() = default;
 
     void flush( Space& space );
-    void dispose( Space& space, PageId page_id );
+    void dispose( Space& space );
     void unpin( bool dirty );
     DiskBlock* pin();
 
@@ -27,8 +27,6 @@ public:
     DiskBlock* read( Space& space, PageId page_id );
 
     bool is_for_replacement( Space& space, std::map< PageId, Frame* >& map, std::uint32_t &countPinned );
-
-    bool is_valid() const;
 
 private:
     void set( PageId page_id );

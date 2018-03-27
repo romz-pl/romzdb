@@ -63,9 +63,11 @@ void BufferMgr::find_frame_for_replacement()
 DiskBlock* BufferMgr::replace_frame( PageId page_id )
 {
     find_frame_for_replacement();
+
+    DiskBlock *block = m_clock_hand->read( m_space, page_id );
     m_map.insert( std::make_pair( page_id, m_clock_hand ) );
 
-    return m_clock_hand->read( m_space, page_id );
+    return block;
 }
 
 //
@@ -123,7 +125,8 @@ void BufferMgr::dispose( PageId page_id )
         throw std::runtime_error( "BufferMgr::dispose: Page is not in buffer" );
     }
 
-    m_clock_hand->dispose( m_space, page_id );
+    assert( it->second );
+    it->second->dispose( m_space );
     m_map.erase( page_id );
 }
 
@@ -134,9 +137,9 @@ void BufferMgr::dispose( PageId page_id )
 //
 void BufferMgr::flush()
 {
-    for( auto& f : m_frame )
+    for( auto it : m_map )
     {
-        if( f.is_valid() )
-            f.flush( m_space );
+        assert( it.second );
+        it.second->flush( m_space );
     }
 }

@@ -147,7 +147,7 @@ bool SpaceMap::is_allocated( BlockId blockId ) const
 bool SpaceMap::is_valid( BlockId blockId ) const
 {
     const std::uint32_t v = blockId.GetValue();
-    return ( v >= m_map_block_no && m_bitMap->bit_no() );
+    return ( v >= m_map_block_no && v < m_bitMap->bit_no() );
 }
 
 //

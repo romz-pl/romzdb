@@ -88,30 +88,20 @@ TEST(BufferMgr, Dispose)
     const std::size_t numPages = 10;
     BufferMgr buff( space, numPages );
 
-    for( std::size_t i = 0; i < 5 * numPages; i++ )
+    std::vector< PageId > id_vec;
+
+
+    for( std::size_t i = 0; i < numPages; i++ )
     {
-        EXPECT_ANY_THROW( buff.dispose( PageId( i, 0 ) ) );
+        const PageId id = buff.alloc( ).first;
+        id_vec.push_back( id );
     }
 
-
-    EXPECT_ANY_THROW( buff.dispose( PageId( 0, 0 ) ) );
-    const PageId ida = buff.alloc( ).first;
-    EXPECT_NO_THROW( buff.pin ( ida ) );
-    EXPECT_NO_THROW( buff.unpin( ida, true ) );
-    EXPECT_NO_THROW( buff.unpin( ida, false ) );
-    EXPECT_ANY_THROW( buff.unpin( ida, false ) );
-    EXPECT_NO_THROW( buff.dispose( ida ) );
-
-    EXPECT_ANY_THROW( buff.dispose( PageId( 1, 0 ) ) );
-    const PageId idb = buff.alloc( ).first;
-    EXPECT_NO_THROW( buff.pin ( idb ) );
-    EXPECT_NO_THROW( buff.unpin( idb, true ) );
-    EXPECT_NO_THROW( buff.unpin( idb, false ) );
-    EXPECT_ANY_THROW( buff.unpin( idb, false ) );
-    EXPECT_NO_THROW( buff.dispose( idb ) );
-
-    EXPECT_ANY_THROW( buff.unpin( PageId( 10, 0 ), false ) );
-    EXPECT_ANY_THROW( buff.unpin( PageId( 11, 0 ), false ) );
+    for( auto id : id_vec )
+    {
+        EXPECT_NO_THROW( buff.unpin( id, false ) );
+        EXPECT_NO_THROW( buff.dispose( id) );
+    }
 }
 
 TEST(BufferMgr, Full)
