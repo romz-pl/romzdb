@@ -93,11 +93,10 @@ DiskBlock* BufferMgr::pin( PageId page_id )
     auto it = m_map.find( page_id );
     if( it != m_map.end() )
     {
-        //look up was successful
-        return m_clock_hand->pin();
+        assert( it->second );
+        return it->second->pin();
     }
 
-    //look up was unsucessful
     return replace_frame( page_id );
 }
 
@@ -112,6 +111,7 @@ void BufferMgr::unpin( PageId page_id, bool dirty )
         throw std::runtime_error( "BufferMgr::unpin: Page is not in buffer" );
     }
 
+    assert( it->second );
     it->second->unpin( dirty );
 }
 

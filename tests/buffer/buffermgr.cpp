@@ -179,16 +179,21 @@ TEST(BufferMgr, data_transfer)
     // Chech if in ROMZDB is the same data as in reference map.
     // Since strings are random, pages are pinned in random order.
     //
+    const PageId id_beg = m_reference.begin()->second;
+    const std::string str_beg = m_reference.begin()->first;
     for( auto v : m_reference )
     {
         const PageId id = v.second;
         const std::string str = v.first;
 
         DiskBlock *block = buff.pin( id );
-
         EXPECT_TRUE( std::memcmp( block->GetData(), str.c_str(), str.size() ) == 0 );
-
         buff.unpin( id, false );
+
+
+        block = buff.pin( id_beg );
+        EXPECT_TRUE( std::memcmp( block->GetData(), str_beg.c_str(), str_beg.size() ) == 0 );
+        buff.unpin( id_beg, false );
     }
 
 }
