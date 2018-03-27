@@ -14,7 +14,7 @@ public:
     BufferMgr( Space& space, std::uint32_t frame_no );
     ~BufferMgr();
 
-    DiskBlock* get( PageId page_id );
+    DiskBlock* pin( PageId page_id );
     void unpin( PageId page_id, bool dirty );
     std::pair< PageId, DiskBlock * > alloc( );
     void dispose( PageId page_id );

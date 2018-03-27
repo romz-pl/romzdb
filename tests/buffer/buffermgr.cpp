@@ -22,13 +22,13 @@ TEST(BufferMgr, Read)
 
 
     const PageId ida = buff.alloc( ).first;
-    EXPECT_NO_THROW( buff.get ( ida ) );
+    EXPECT_NO_THROW( buff.pin ( ida ) );
 
     const PageId idb = buff.alloc( ).first;
-    EXPECT_NO_THROW( buff.get ( idb ) );
+    EXPECT_NO_THROW( buff.pin ( idb ) );
 
     const PageId idc = buff.alloc( ).first;
-    EXPECT_NO_THROW( buff.get ( idc ) );
+    EXPECT_NO_THROW( buff.pin ( idc ) );
 
     EXPECT_NO_THROW( buff.unpin( ida, true ) );
     EXPECT_NO_THROW( buff.unpin( ida, false ) );
@@ -48,13 +48,13 @@ TEST(BufferMgr, ReadFaild)
     const std::size_t numPages = 10;
     BufferMgr buff( space, numPages );
 
-    EXPECT_ANY_THROW( buff.get( PageId( 0, 0 ) ) );
-    EXPECT_ANY_THROW( buff.get( PageId( 1, 0 ) ) );
-    EXPECT_ANY_THROW( buff.get( PageId( 2, 0 ) ) );
+    EXPECT_ANY_THROW( buff.pin( PageId( 0, 0 ) ) );
+    EXPECT_ANY_THROW( buff.pin( PageId( 1, 0 ) ) );
+    EXPECT_ANY_THROW( buff.pin( PageId( 2, 0 ) ) );
 
-    EXPECT_ANY_THROW( buff.get( PageId( 0, 1 ) ) );
-    EXPECT_ANY_THROW( buff.get( PageId( 1, 1 ) ) );
-    EXPECT_ANY_THROW( buff.get( PageId( 2, 1 ) ) );
+    EXPECT_ANY_THROW( buff.pin( PageId( 0, 1 ) ) );
+    EXPECT_ANY_THROW( buff.pin( PageId( 1, 1 ) ) );
+    EXPECT_ANY_THROW( buff.pin( PageId( 2, 1 ) ) );
 }
 
 TEST(BufferMgr, Alloc)
@@ -75,7 +75,7 @@ TEST(BufferMgr, Alloc)
 
     for( std::size_t i = 0; i < pages.size(); i++ )
     {
-        EXPECT_NO_THROW( buff.get( pages[ i ] ) );
+        EXPECT_NO_THROW( buff.pin( pages[ i ] ) );
         EXPECT_NO_THROW( buff.unpin( pages[ i ], true ) );
     }
 }
@@ -96,7 +96,7 @@ TEST(BufferMgr, Dispose)
 
     EXPECT_ANY_THROW( buff.dispose( PageId( 0, 0 ) ) );
     const PageId ida = buff.alloc( ).first;
-    EXPECT_NO_THROW( buff.get ( ida ) );
+    EXPECT_NO_THROW( buff.pin ( ida ) );
     EXPECT_NO_THROW( buff.unpin( ida, true ) );
     EXPECT_NO_THROW( buff.unpin( ida, false ) );
     EXPECT_ANY_THROW( buff.unpin( ida, false ) );
@@ -104,7 +104,7 @@ TEST(BufferMgr, Dispose)
 
     EXPECT_ANY_THROW( buff.dispose( PageId( 1, 0 ) ) );
     const PageId idb = buff.alloc( ).first;
-    EXPECT_NO_THROW( buff.get ( idb ) );
+    EXPECT_NO_THROW( buff.pin ( idb ) );
     EXPECT_NO_THROW( buff.unpin( idb, true ) );
     EXPECT_NO_THROW( buff.unpin( idb, false ) );
     EXPECT_ANY_THROW( buff.unpin( idb, false ) );

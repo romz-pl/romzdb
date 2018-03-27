@@ -26,7 +26,9 @@ void BufferMgr::advance()
 {
     m_clock_hand++;
     if( m_clock_hand == m_frame.data() + m_frame.size() )
+    {
         m_clock_hand = m_frame.data();
+    }
 }
 
 //
@@ -51,7 +53,7 @@ void BufferMgr::allocBuff()
             continue;
         }
 
-        if( m_clock_hand->m_pin_count != 0 )
+        if( m_clock_hand->m_pin_count > 0 )
         {
             countPinned++;
             continue;
@@ -74,7 +76,7 @@ void BufferMgr::allocBuff()
 // If the requested page is already present in the buffer pool pointer to that frame is returned
 // otherwise a new frame is allocated from the buffer pool for reading the page.
 //
-DiskBlock* BufferMgr::get( PageId page_id )
+DiskBlock* BufferMgr::pin( PageId page_id )
 {
     // std::cout << "G " << std::flush;
 
