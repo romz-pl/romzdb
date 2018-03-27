@@ -8,7 +8,6 @@ Frame::Frame( )
     : m_page_id( 0, 0 )
     , m_pin_count( 0 )
     , m_dirty( false )
-    , m_valid( false )
     , m_refbit( false )
 {
 
@@ -24,7 +23,6 @@ void Frame::set( PageId page_id )
     m_page_id = page_id;
     m_pin_count = 1;
     m_dirty = false;
-    m_valid = true;
     m_refbit = true;
 }
 
@@ -33,11 +31,6 @@ void Frame::set( PageId page_id )
 //
 void Frame::flush( Space& space )
 {
-    if( !m_valid )
-    {
-        throw std::runtime_error( "Frame::flush: Invalid frame" );
-    }
-
     if( m_pin_count > 0)
     {
         throw std::runtime_error( "Frame::flush: Page is pinned" );
@@ -56,13 +49,7 @@ void Frame::flush( Space& space )
 //
 void Frame::dispose( Space& space )
 {
-    if( !m_valid )
-    {
-        throw std::runtime_error( "Frame::dispose: Invalid frame" );
-    }
-
     space.Dealloc( m_page_id );
-    m_valid = false;
 }
 
 //
@@ -70,11 +57,6 @@ void Frame::dispose( Space& space )
 //
 void Frame::unpin( bool dirty )
 {
-    if( !m_valid )
-    {
-        throw std::runtime_error( "Frame::unpin: Invalid frame" );
-    }
-
     if( m_pin_count == 0 )
     {
         throw std::runtime_error( "Frame::unpin: Page not pinned" );
@@ -93,11 +75,6 @@ void Frame::unpin( bool dirty )
 //
 DiskBlock* Frame::pin()
 {
-    if( !m_valid )
-    {
-        throw std::runtime_error( "Frame::pin: Invalid frame" );
-    }
-
     m_refbit = true;
     m_pin_count++;
     return &m_block;
@@ -108,11 +85,6 @@ DiskBlock* Frame::pin()
 //
 void Frame::write( Space& space )
 {
-    if( !m_valid )
-    {
-        throw std::runtime_error( "Frame::write: Invalid frame" );
-    }
-
     if( m_dirty )
     {
         space.Write( m_block, m_page_id );
@@ -135,11 +107,6 @@ DiskBlock *Frame::read( Space& space, PageId page_id )
 //
 bool Frame::is_for_replacement( Space& space, std::map< PageId, Frame* >& map, std::uint32_t& countPinned )
 {
-    if( !m_valid )
-    {
-        return true;
-    }
-
     if( m_refbit )
     {
         m_refbit = false;
@@ -154,6 +121,5 @@ bool Frame::is_for_replacement( Space& space, std::map< PageId, Frame* >& map, s
 
     write( space );
     map.erase( m_page_id );
-    m_valid = false;
     return true;
 }

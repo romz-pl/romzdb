@@ -5,7 +5,7 @@
 //
 //
 BufferMgr::BufferMgr( Space& space, std::uint32_t frame_no )
-    : m_frame( frame_no )
+    : m_pool( frame_no )
     , m_space( space )
 {
     if( frame_no == 0 )
@@ -13,7 +13,12 @@ BufferMgr::BufferMgr( Space& space, std::uint32_t frame_no )
         throw std::runtime_error( "BufferMgr::BufferMgr: Number of framses must be greater than zero" );
     }
 
-    m_clock_hand = m_frame.data();
+    m_clock_hand = m_pool.data();
+
+    for( std::size_t i = 0; i < m_pool.size(); i++ )
+    {
+        m_free.push( m_pool.data() + i );
+    }
 }
 
 //
@@ -30,9 +35,9 @@ BufferMgr::~BufferMgr()
 void BufferMgr::advance_clock_hand()
 {
     m_clock_hand++;
-    if( m_clock_hand == m_frame.data() + m_frame.size() )
+    if( m_clock_hand == m_pool.data() + m_pool.size() )
     {
-        m_clock_hand = m_frame.data();
+        m_clock_hand = m_pool.data();
     }
 }
 
@@ -41,9 +46,17 @@ void BufferMgr::advance_clock_hand()
 //
 void BufferMgr::find_frame_for_replacement()
 {
+
+    if( m_free.empty() )
+    {
+        m_clock_hand = m_free.top();
+        m_free.pop();
+        return;
+    }
+
     std::uint32_t countPinned = 0;
 
-    while( countPinned < m_frame.size() )
+    while( countPinned < m_pool.size() )
     {
         advance_clock_hand();
 
@@ -127,7 +140,9 @@ void BufferMgr::dispose( PageId page_id )
 
     assert( it->second );
     it->second->dispose( m_space );
-    m_map.erase( page_id );
+
+    m_free.push( it->second );
+    m_map.erase( it );
 }
 
 //

@@ -3,7 +3,6 @@ set( TEST_NAME test-buffer )
 
 add_executable( ${TEST_NAME}
     buffermgr.cpp
-    frame.cpp
     main.cpp
 )
 

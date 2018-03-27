@@ -43,9 +43,6 @@ private:
     // True if page is dirty;  false otherwise
     bool m_dirty;
 
-    // True if page is valid
-    bool m_valid;
-
     // Has this buffer frame been reference recently
     bool m_refbit;
 

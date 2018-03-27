@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <map>
+#include <stack>
 #include "disk/diskblock.h"
 #include "disk/pageid.h"
 #include "frame.h"
@@ -35,7 +36,9 @@ private:
     std::map< PageId, Frame* > m_map;
 
     // buffer pool
-    std::vector< Frame > m_frame;
+    std::vector< Frame > m_pool;
+
+    std::stack< Frame* > m_free;
 
     // Statistics about buffer pool usage
     // BufStats bufStats;
