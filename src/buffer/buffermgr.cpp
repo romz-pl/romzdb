@@ -47,7 +47,7 @@ void BufferMgr::advance_clock_hand()
 void BufferMgr::find_frame_for_replacement()
 {
 
-    if( m_free.empty() )
+    if( !m_free.empty() )
     {
         m_clock_hand = m_free.top();
         m_free.pop();
