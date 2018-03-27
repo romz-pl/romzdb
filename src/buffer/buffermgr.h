@@ -16,13 +16,16 @@ public:
 
     DiskBlock* pin( PageId page_id );
     void unpin( PageId page_id, bool dirty );
+
     std::pair< PageId, DiskBlock * > alloc( );
     void dispose( PageId page_id );
+
     void flush();
 
 private:
-    void advance();
-    void allocBuff();
+    void advance_clock_hand();
+    void find_frame_for_replacement();
+    DiskBlock* replace_frame( PageId page_id );
 
 private:
     // clock hand for clock algorithm

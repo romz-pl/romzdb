@@ -12,7 +12,7 @@ TEST(BufferMgr, Create)
     EXPECT_NO_THROW( BufferMgr ( space, numPages ) );
 }
 
-TEST(BufferMgr, Read)
+TEST(BufferMgr, pin_unpin)
 {
     const uint32_t max_size = ( 1U << 20 );
     DbFile db_file( ::get_temp_path(), max_size );

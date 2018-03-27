@@ -6,28 +6,32 @@
 //
 
 #include <cstdint>
+#include <map>
 #include "disk/pageid.h"
 #include "disk/diskblock.h"
 #include "disk/space.h"
 
 class Frame
 {
-    friend class BufferMgr;
+    // friend class BufferMgr;
 public:
     Frame( );
     ~Frame() = default;
-
-    void clear();
-    void set( PageId page_id );
 
     void flush( Space& space );
     void dispose( Space& space, PageId page_id );
     void unpin( bool dirty );
     DiskBlock* pin();
+
     void write( Space& space );
     DiskBlock* read( Space& space, PageId page_id );
 
+    bool is_for_replacement( Space& space, std::map< PageId, Frame* >& map, std::uint32_t &countPinned );
+
     bool is_valid() const;
+
+private:
+    void set( PageId page_id );
 
 private:
     DiskBlock m_block;

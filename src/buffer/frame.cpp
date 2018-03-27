@@ -6,20 +6,12 @@
 //
 Frame::Frame( )
     : m_page_id( 0, 0 )
+    , m_pin_count( 0 )
+    , m_dirty( false )
+    , m_valid( false )
+    , m_refbit( false )
 {
-    clear();
-}
 
-//
-// Initialize buffer frame for a new user
-//
-void Frame::clear()
-{
-    m_pin_count = 0;
-    m_page_id = PageId( 0, 0 );
-    m_dirty = false;
-    m_refbit = false;
-    m_valid = false;
 }
 
 //
@@ -30,7 +22,7 @@ void Frame::clear()
 void Frame::set( PageId page_id )
 {
     m_page_id = page_id;
-    m_pin_count++;
+    m_pin_count = 1;
     m_dirty = false;
     m_valid = true;
     m_refbit = true;
@@ -41,7 +33,10 @@ void Frame::set( PageId page_id )
 //
 void Frame::flush( Space& space )
 {
-    assert( m_valid );
+    if( !m_valid )
+    {
+        throw std::runtime_error( "Frame::flush: Invalid frame" );
+    }
 
     if( m_pin_count > 0)
     {
@@ -61,15 +56,18 @@ void Frame::flush( Space& space )
 //
 void Frame::dispose( Space& space, PageId page_id )
 {
-    assert( m_valid );
+    if( !m_valid )
+    {
+        throw std::runtime_error( "Frame::dispose: Invalid frame" );
+    }
 
     if( m_dirty )
     {
         space.Write( m_block, page_id );
     }
 
-    clear();
     space.Dealloc( page_id );
+    m_valid = false;
 }
 
 //
@@ -77,17 +75,21 @@ void Frame::dispose( Space& space, PageId page_id )
 //
 void Frame::unpin( bool dirty )
 {
-    if( m_pin_count > 0 )
+    if( !m_valid )
     {
-        m_pin_count--;
-        if( dirty )
-        {
-            m_dirty = true;
-        }
+        throw std::runtime_error( "Frame::unpin: Invalid frame" );
     }
-    else
+
+    if( m_pin_count == 0 )
     {
         throw std::runtime_error( "Frame::unpin: Page not pinned" );
+    }
+
+
+    m_pin_count--;
+    if( dirty )
+    {
+        m_dirty = true;
     }
 }
 
@@ -96,6 +98,11 @@ void Frame::unpin( bool dirty )
 //
 DiskBlock* Frame::pin()
 {
+    if( !m_valid )
+    {
+        throw std::runtime_error( "Frame::pin: Invalid frame" );
+    }
+
     m_refbit = true;
     m_pin_count++;
     return &m_block;
@@ -106,6 +113,11 @@ DiskBlock* Frame::pin()
 //
 void Frame::write( Space& space )
 {
+    if( !m_valid )
+    {
+        throw std::runtime_error( "Frame::write: Invalid frame" );
+    }
+
     if( m_dirty )
     {
         space.Write( m_block, m_page_id );
@@ -123,6 +135,37 @@ DiskBlock *Frame::read( Space& space, PageId page_id )
     return &m_block;
 }
 
+//
+//
+//
+bool Frame::is_for_replacement( Space& space, std::map< PageId, Frame* >& map, std::uint32_t& countPinned )
+{
+    if( !m_valid )
+    {
+        return true;
+    }
+
+    if( m_refbit )
+    {
+        m_refbit = false;
+        return false;
+    }
+
+    if( m_pin_count > 0 )
+    {
+        countPinned++;
+        return false;
+    }
+
+    write( space );
+    map.erase( m_page_id );
+    m_valid = false;
+    return true;
+}
+
+//
+//
+//
 bool Frame::is_valid() const
 {
     return m_valid;

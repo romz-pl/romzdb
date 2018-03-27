@@ -8,6 +8,11 @@ BufferMgr::BufferMgr( Space& space, std::uint32_t frame_no )
     : m_frame( frame_no )
     , m_space( space )
 {
+    if( frame_no == 0 )
+    {
+        throw std::runtime_error( "BufferMgr::BufferMgr: Number of framses must be greater than zero" );
+    }
+
     m_clock_hand = m_frame.data();
 }
 
@@ -22,7 +27,7 @@ BufferMgr::~BufferMgr()
 //
 // Advance clock to next frame in the buffer pool
 //
-void BufferMgr::advance()
+void BufferMgr::advance_clock_hand()
 {
     m_clock_hand++;
     if( m_clock_hand == m_frame.data() + m_frame.size() )
@@ -34,41 +39,33 @@ void BufferMgr::advance()
 //
 // Allocate a free frame.
 //
-void BufferMgr::allocBuff()
+void BufferMgr::find_frame_for_replacement()
 {
     std::uint32_t countPinned = 0;
-    // the frame hasn't been set and not all frames are pinned
+
     while( countPinned < m_frame.size() )
     {
-        advance();
+        advance_clock_hand();
 
-        if( !m_clock_hand->m_valid )
+        if( m_clock_hand->is_for_replacement( m_space, m_map, countPinned ) )
         {
             return;
         }
-
-        if( m_clock_hand->m_refbit )
-        {
-            m_clock_hand->m_refbit = false;
-            continue;
-        }
-
-        if( m_clock_hand->m_pin_count > 0 )
-        {
-            countPinned++;
-            continue;
-        }
-
-        m_clock_hand->write( m_space );
-        m_map.erase( m_clock_hand->m_page_id );
-        m_clock_hand->clear();
-        return;
     }
-
 
     //if all pages are pinned throw excepton
     throw std::runtime_error( "BufferMgr::allocBuff: Buffer is full" );
+}
 
+//
+//
+//
+DiskBlock* BufferMgr::replace_frame( PageId page_id )
+{
+    find_frame_for_replacement();
+    m_map.insert( std::make_pair( page_id, m_clock_hand ) );
+
+    return m_clock_hand->read( m_space, page_id );
 }
 
 //
@@ -78,10 +75,7 @@ void BufferMgr::allocBuff()
 //
 DiskBlock* BufferMgr::pin( PageId page_id )
 {
-    // std::cout << "G " << std::flush;
-
     auto it = m_map.find( page_id );
-
     if( it != m_map.end() )
     {
         //look up was successful
@@ -89,10 +83,7 @@ DiskBlock* BufferMgr::pin( PageId page_id )
     }
 
     //look up was unsucessful
-    allocBuff();
-    m_map.insert( std::make_pair( page_id, m_clock_hand ) );
-
-    return m_clock_hand->read( m_space, page_id );
+    return replace_frame( page_id );
 }
 
 //
@@ -100,14 +91,11 @@ DiskBlock* BufferMgr::pin( PageId page_id )
 //
 void BufferMgr::unpin( PageId page_id, bool dirty )
 {
-    // std::cout << "U " << std::flush;
     auto it = m_map.find( page_id );
     if( it == m_map.end() )
     {
         throw std::runtime_error( "BufferMgr::unpin: Page is not in buffer" );
     }
-
-
 
     it->second->unpin( dirty );
 }
@@ -118,14 +106,9 @@ void BufferMgr::unpin( PageId page_id, bool dirty )
 //
 std::pair< PageId, DiskBlock* > BufferMgr::alloc()
 {
-    // std::cout << "A " << std::flush;
-
     const PageId page_id = m_space.Alloc();
-    allocBuff();
-    m_clock_hand->m_block = m_space.Read( page_id );
-    m_map.insert( std::make_pair( page_id, m_clock_hand ) );
-    m_clock_hand->set( page_id );
-    return std::make_pair( page_id, &( m_clock_hand->m_block ) );
+    DiskBlock* block = replace_frame( page_id );
+    return std::make_pair( page_id, block );
 }
 
 //
