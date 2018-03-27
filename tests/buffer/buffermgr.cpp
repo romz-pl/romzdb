@@ -22,6 +22,7 @@ TEST(BufferMgr, pin_unpin)
     const std::size_t numPages = 10;
     BufferMgr buff( space, numPages );
 
+    EXPECT_ANY_THROW( buff.unpin( PageId( 0, 0 ), false ) );
 
     const PageId ida = buff.alloc( ).first;
     EXPECT_NO_THROW( buff.pin ( ida ) );
