@@ -5,8 +5,7 @@
 //
 //
 Frame::Frame( )
-    : m_page_id( 0, 0 )
-    , m_pin_count( 0 )
+    : m_pin_count( 0 )
     , m_dirty( false )
     , m_refbit( false )
 {
@@ -18,9 +17,8 @@ Frame::Frame( )
 // Called when a frame in buffer pool is allocated to any page in the file
 // through read() or alloc()
 //
-void Frame::set( PageId page_id )
+void Frame::set( )
 {
-    m_page_id = page_id;
     m_pin_count = 1;
     m_dirty = false;
     m_refbit = true;
@@ -29,7 +27,7 @@ void Frame::set( PageId page_id )
 //
 //
 //
-void Frame::flush( Space& space )
+void Frame::flush( Space& space, PageId page_id )
 {
     if( m_pin_count > 0)
     {
@@ -39,7 +37,7 @@ void Frame::flush( Space& space )
     if( m_dirty )
     {
         //flush page to disk
-        space.Write( m_block, m_page_id );
+        space.Write( m_block, page_id );
         m_dirty = false;
     }
 }
@@ -47,9 +45,9 @@ void Frame::flush( Space& space )
 //
 //
 //
-void Frame::dispose( Space& space )
+void Frame::dispose( Space& space, PageId page_id )
 {
-    space.Dealloc( m_page_id );
+    space.Dealloc( page_id );
 }
 
 //
@@ -83,11 +81,11 @@ DiskBlock* Frame::pin()
 //
 //
 //
-void Frame::write( Space& space )
+void Frame::write( Space& space, PageId page_id )
 {
     if( m_dirty )
     {
-        space.Write( m_block, m_page_id );
+        space.Write( m_block, page_id );
         m_dirty = false;
     }
 }
@@ -98,7 +96,7 @@ void Frame::write( Space& space )
 DiskBlock *Frame::read( Space& space, PageId page_id )
 {
     m_block = space.Read( page_id );
-    set( page_id );
+    set( );
     return &m_block;
 }
 

@@ -60,7 +60,8 @@ void BufferMgr::find_frame_for_replacement()
 
         if( m_clock_hand->is_for_replacement( countPinned ) )
         {
-            m_clock_hand->write( m_space );
+            const PageId page_id = m_bimap.find_key( m_clock_hand ).value();
+            m_clock_hand->write( m_space, page_id );
             m_bimap.erase_by_value( m_clock_hand );
             return;
         }
@@ -139,7 +140,7 @@ void BufferMgr::dispose( PageId page_id )
     }
 
     assert( it.value() );
-    it.value()->dispose( m_space );
+    it.value()->dispose( m_space, page_id );
 
     m_free.push( it.value() );
     m_bimap.erase_by_key( page_id );
@@ -155,6 +156,6 @@ void BufferMgr::flush()
     for( auto it : m_bimap )
     {
         assert( it.second );
-        it.second->flush( m_space );
+        it.second->flush( m_space, it.first );
     }
 }

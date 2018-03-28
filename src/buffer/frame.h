@@ -18,24 +18,21 @@ public:
     Frame( );
     ~Frame() = default;
 
-    void flush( Space& space );
-    void dispose( Space& space );
+    void flush( Space& space , PageId page_id);
+    void dispose( Space& space , PageId page_id );
     void unpin( bool dirty );
     DiskBlock* pin();
 
-    void write( Space& space );
+    void write( Space& space , PageId page_id );
     DiskBlock* read( Space& space, PageId page_id );
 
     bool is_for_replacement( std::uint32_t &countPinned );
 
 private:
-    void set( PageId page_id );
+    void set();
 
 private:
     DiskBlock m_block;
-
-    // Page to which corresponding frame is assigned
-    PageId m_page_id;
 
     // Number of times this page has been pinned
     std::uint16_t m_pin_count;
