@@ -2,6 +2,7 @@
 set( TEST_NAME test-util )
 
 add_executable( ${TEST_NAME}
+    bimap.cpp
     bitarray.cpp
     div_ceil.cpp
     main.cpp

@@ -5,21 +5,11 @@
 //
 //
 Frame::Frame( )
-    : m_page_id( 0, 0 )
+    : m_pin_count( 0 )
+    , m_dirty( false )
+    , m_refbit( false )
 {
-    clear();
-}
 
-//
-// Initialize buffer frame for a new user
-//
-void Frame::clear()
-{
-    m_pin_count = 0;
-    m_page_id = PageId( 0, 0 );
-    m_dirty = false;
-    m_refbit = false;
-    m_valid = false;
 }
 
 //
@@ -27,22 +17,18 @@ void Frame::clear()
 // Called when a frame in buffer pool is allocated to any page in the file
 // through read() or alloc()
 //
-void Frame::set( PageId page_id )
+void Frame::set( )
 {
-    m_page_id = page_id;
-    m_pin_count++;
+    m_pin_count = 1;
     m_dirty = false;
-    m_valid = true;
     m_refbit = true;
 }
 
 //
 //
 //
-void Frame::flush( Space& space )
+void Frame::flush( Space& space, PageId page_id )
 {
-    assert( m_valid );
-
     if( m_pin_count > 0)
     {
         throw std::runtime_error( "Frame::flush: Page is pinned" );
@@ -51,7 +37,7 @@ void Frame::flush( Space& space )
     if( m_dirty )
     {
         //flush page to disk
-        space.Write( m_block, m_page_id );
+        space.Write( m_block, page_id );
         m_dirty = false;
     }
 }
@@ -61,14 +47,6 @@ void Frame::flush( Space& space )
 //
 void Frame::dispose( Space& space, PageId page_id )
 {
-    assert( m_valid );
-
-    if( m_dirty )
-    {
-        space.Write( m_block, page_id );
-    }
-
-    clear();
     space.Dealloc( page_id );
 }
 
@@ -77,17 +55,16 @@ void Frame::dispose( Space& space, PageId page_id )
 //
 void Frame::unpin( bool dirty )
 {
-    if( m_pin_count > 0 )
-    {
-        m_pin_count--;
-        if( dirty )
-        {
-            m_dirty = true;
-        }
-    }
-    else
+    if( m_pin_count == 0 )
     {
         throw std::runtime_error( "Frame::unpin: Page not pinned" );
+    }
+
+
+    m_pin_count--;
+    if( dirty )
+    {
+        m_dirty = true;
     }
 }
 
@@ -104,11 +81,11 @@ DiskBlock* Frame::pin()
 //
 //
 //
-void Frame::write( Space& space )
+void Frame::write( Space& space, PageId page_id )
 {
     if( m_dirty )
     {
-        space.Write( m_block, m_page_id );
+        space.Write( m_block, page_id );
         m_dirty = false;
     }
 }
@@ -119,11 +96,26 @@ void Frame::write( Space& space )
 DiskBlock *Frame::read( Space& space, PageId page_id )
 {
     m_block = space.Read( page_id );
-    set( page_id );
+    set( );
     return &m_block;
 }
 
-bool Frame::is_valid() const
+//
+//
+//
+bool Frame::is_for_replacement( std::uint32_t& countPinned )
 {
-    return m_valid;
+    if( m_refbit )
+    {
+        m_refbit = false;
+        return false;
+    }
+
+    if( m_pin_count > 0 )
+    {
+        countPinned++;
+        return false;
+    }
+
+    return true;
 }
