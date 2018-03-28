@@ -1,11 +1,11 @@
-# romzdb: a framework for heap file database
+# Key value database with variable length records and transactions: romzdb
 
 [![Build Status](https://travis-ci.org/romz-pl/romzdb.svg?branch=master)](https://travis-ci.org/romz-pl/romzdb)
 [![Coverage Status](https://codecov.io/gh/romz-pl/romzdb/badge.svg?branch=master)](https://codecov.io/gh/romz-pl/romzdb?branch=master)
 
 ## Overview
 
-1. This is an implementation of heap file storing the variable length records.
+1. This is an implementation of key-value database storing the variable length records.
 
 2. The record length must fit on one disk page. 
 
