@@ -1,5 +1,6 @@
 #include <map>
 #include <cassert>
+#include <optional>
 
 template< typename K, typename V >
 class bimap
@@ -69,22 +70,22 @@ public:
         return true;
     }
 
-    K get_key( const V& value ) const
+    std::optional< K > find_key( const V& value ) const
     {
         auto it = m_value.find( value );
         if( it == m_value.end() )
         {
-            throw std::runtime_error("bimap::get_key_by_value: Cannot find value" );
+            return std::nullopt;
         }
         return it->second;
     }
 
-    V get_value( const K& key ) const
+    std::optional< V > find_value( const K& key ) const
     {
         auto it = m_key.find( key );
         if( it == m_key.end() )
         {
-            throw std::runtime_error("bimap::get_value_by_key: Cannot find value" );
+            return std::nullopt;
         }
         return it->second;
     }
