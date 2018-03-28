@@ -1,16 +1,15 @@
-// #include <unordered_map>
 #include <map>
-// #include <list>
 #include <cassert>
 
 template< typename K, typename V >
 class bimap
 {
-    //typedef typename std::map< K, V >::iterator iter;
-    // typedef typename std::map< K, V >::const_iterator const_iter;
+private:
+    // KEY to VALUE mapping
+    std::map< K, V > m_key;
 
-    std::map< K, V > m_key_to_value;
-    std::map< V, K > m_value_to_key;
+    // VALUE to KEY mapping
+    std::map< V, K > m_value;
 
 public:
     bimap() = default;
@@ -24,66 +23,66 @@ public:
 
     bool erase_by_key( const K& key)
     {
-        auto iter = m_key_to_value.find( key );
-        if( iter == m_key_to_value.end() )
+        auto iter = m_key.find( key );
+        if( iter == m_key.end() )
         {
             return false;
         }
 
-        m_key_to_value.erase( iter );
-        m_value_to_key.erase( iter->second );
+        m_key.erase( iter );
+        m_value.erase( iter->second );
         return true;
     }
 
 
     bool erase_by_value( const V& value )
     {
-        auto iter = m_value_to_key.find( value );
-        if( iter == m_value_to_key.end() )
+        auto iter = m_value.find( value );
+        if( iter == m_value.end() )
         {
             return false;
         }
 
-        m_value_to_key.erase( iter );
-        m_key_to_value.erase( iter->second );
+        m_value.erase( iter );
+        m_key.erase( iter->second );
         return true;
     }
 
     bool insert( const K& key, const V& value )
     {
-        assert( m_key_to_value.size() == m_value_to_key.size() );
+        assert( m_key.size() == m_value.size() );
 
-        auto insert_to_key_map = m_key_to_value.insert( std::make_pair( key, value ) );
-        if ( !insert_to_key_map.second )
+        auto it_key = m_key.insert( std::make_pair( key, value ) );
+        if ( !it_key.second )
         {
             return false;
         }
 
-        auto insert_to_value_map = m_value_to_key.insert( std::make_pair( value, key ) );
-        if( !insert_to_value_map.second )
+        auto it_map = m_value.insert( std::make_pair( value, key ) );
+        if( !it_map.second )
         {
-            m_key_to_value.erase( insert_to_key_map.first );
+            m_key.erase( it_key.first );
             return false;
         }
 
-        assert( m_key_to_value.size() == m_value_to_key.size() );
+        assert( m_key.size() == m_value.size() );
         return true;
     }
 
-    K get_key_by_value( const V& value ) const
+    K get_key( const V& value ) const
     {
-        auto it = m_value_to_key.find( value );
-        if( it == m_value_to_key.end() )
+        auto it = m_value.find( value );
+        if( it == m_value.end() )
         {
             throw std::runtime_error("bimap::get_key_by_value: Cannot find value" );
         }
         return it->second;
     }
 
-    V get_value_by_key( const K& key ) const
+    V get_value( const K& key ) const
     {
-        auto it = m_key_to_value.find( key );
-        if( it == m_key_to_value.end() )
+        auto it = m_key.find( key );
+        if( it == m_key.end() )
         {
             throw std::runtime_error("bimap::get_value_by_key: Cannot find value" );
         }
@@ -92,78 +91,79 @@ public:
 
     void clear()
     {
-        m_key_to_value.clear();
-        m_value_to_key.clear();
+        m_key.clear();
+        m_value.clear();
     }
 
     bool empty() const noexcept
     {
-        assert( m_key_to_value.empty() == m_value_to_key.empty() );
-        return m_key_to_value.empty();
+        assert( m_key.empty() == m_value.empty() );
+        return m_key.empty();
     }
 
     size_t size() const noexcept
     {
-        assert( m_key_to_value.size() == m_value_to_key.size() );
-        return m_key_to_value.size();
+        assert( m_key.size() == m_value.size() );
+        return m_key.size();
     }
 
 
-    class iterator
+    class const_iterator
     {
-        typedef typename std::map< K, V >::const_iterator const_iter;
-        const_iter m_it;
+    private:
+        typedef std::map< K, V > container;
+        typename container::const_iterator m_it;
 
     public:
         typedef std::input_iterator_tag iterator_category;
 
-        iterator( const_iter it ) : m_it{ it }
+        const_iterator( typename container::const_iterator it ) : m_it{ it }
         {
 
         }
         
-        iterator& operator++()
+        const_iterator& operator++()
         {
             ++m_it;
             return *this; 
         }
 
-        iterator operator++( int )
+        const_iterator operator++( int )
         {
-            iterator old = *this;
+            const_iterator old = *this;
             ++( *this );
             return old;
         }
 
-        typename const_iter::value_type operator*() const
+        typename container::value_type operator*() const
         {
             return *m_it;
         }
         
-        typename const_iter::pointer operator->() const
+        typename container::const_pointer operator->() const
         {
             return m_it.operator->();
         }
 
-        bool operator==( const iterator& rhs ) const
+        bool operator==( const const_iterator& rhs ) const
         {
             return m_it == rhs.m_it;
         }
 
-        bool operator!=( const iterator& rhs ) const
+        bool operator!=( const const_iterator& rhs ) const
         {
             return m_it != rhs.m_it;
         }
     };
 
-    iterator begin() const noexcept
+    const_iterator begin() const noexcept
     {
-        return iterator( m_key_to_value.cbegin() );
+        return const_iterator( m_key.cbegin() );
     }
     
-    iterator end() const noexcept
+    const_iterator end() const noexcept
     {
-        return iterator( m_key_to_value.cend() );
+        return const_iterator( m_key.cend() );
     }
 
 };
