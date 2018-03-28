@@ -8,6 +8,7 @@
 #include "disk/pageid.h"
 #include "frame.h"
 #include "disk/space.h"
+#include "util/bimap.h"
 
 class BufferMgr
 {
@@ -33,7 +34,7 @@ private:
     Frame* m_clock_hand;
 
     // mapping form PageId to FrameId
-    std::map< PageId, Frame* > m_map;
+    bimap< PageId, Frame* > m_bimap;
 
     // buffer pool
     std::vector< Frame > m_pool;

@@ -26,7 +26,7 @@ public:
     void write( Space& space );
     DiskBlock* read( Space& space, PageId page_id );
 
-    bool is_for_replacement( Space& space, std::map< PageId, Frame* >& map, std::uint32_t &countPinned );
+    bool is_for_replacement( Space& space, std::uint32_t &countPinned );
 
 private:
     void set( PageId page_id );

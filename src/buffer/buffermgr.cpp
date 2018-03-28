@@ -60,8 +60,9 @@ void BufferMgr::find_frame_for_replacement()
     {
         advance_clock_hand();
 
-        if( m_clock_hand->is_for_replacement( m_space, m_map, countPinned ) )
+        if( m_clock_hand->is_for_replacement( m_space, countPinned ) )
         {
+            m_bimap.erase_by_value( m_clock_hand );
             return;
         }
     }
@@ -78,7 +79,7 @@ DiskBlock* BufferMgr::replace_frame( PageId page_id )
     find_frame_for_replacement();
 
     DiskBlock *block = m_clock_hand->read( m_space, page_id );
-    m_map.insert( std::make_pair( page_id, m_clock_hand ) );
+    m_bimap.insert( page_id, m_clock_hand );
 
     return block;
 }
@@ -90,11 +91,11 @@ DiskBlock* BufferMgr::replace_frame( PageId page_id )
 //
 DiskBlock* BufferMgr::pin( PageId page_id )
 {
-    auto it = m_map.find( page_id );
-    if( it != m_map.end() )
+    auto it = m_bimap.find_value( page_id );
+    if( it.has_value() )
     {
-        assert( it->second );
-        return it->second->pin();
+        assert( it.value() );
+        return it.value()->pin();
     }
 
     return replace_frame( page_id );
@@ -105,14 +106,14 @@ DiskBlock* BufferMgr::pin( PageId page_id )
 //
 void BufferMgr::unpin( PageId page_id, bool dirty )
 {
-    auto it = m_map.find( page_id );
-    if( it == m_map.end() )
+    auto it = m_bimap.find_value( page_id );
+    if( !it.has_value() )
     {
         throw std::runtime_error( "BufferMgr::unpin: Page is not in buffer" );
     }
 
-    assert( it->second );
-    it->second->unpin( dirty );
+    assert( it.value() );
+    it.value()->unpin( dirty );
 }
 
 //
@@ -132,17 +133,17 @@ std::pair< PageId, DiskBlock* > BufferMgr::alloc()
 //
 void BufferMgr::dispose( PageId page_id )
 {
-    auto it = m_map.find( page_id );
-    if( it == m_map.end() )
+    auto it = m_bimap.find_value( page_id );
+    if( !it.has_value() )
     {
         throw std::runtime_error( "BufferMgr::dispose: Page is not in buffer" );
     }
 
-    assert( it->second );
-    it->second->dispose( m_space );
+    assert( it.value() );
+    it.value()->dispose( m_space );
 
-    m_free.push( it->second );
-    m_map.erase( it );
+    m_free.push( it.value() );
+    m_bimap.erase_by_key( page_id );
 }
 
 //
@@ -152,7 +153,7 @@ void BufferMgr::dispose( PageId page_id )
 //
 void BufferMgr::flush()
 {
-    for( auto it : m_map )
+    for( auto it : m_bimap )
     {
         assert( it.second );
         it.second->flush( m_space );
