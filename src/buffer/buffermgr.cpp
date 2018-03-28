@@ -1,5 +1,4 @@
 #include "buffermgr.h"
-// #include <iostream>
 
 //
 //
@@ -42,11 +41,10 @@ void BufferMgr::advance_clock_hand()
 }
 
 //
-// Allocate a free frame.
+// Move clock hand to the free frame.
 //
 void BufferMgr::find_frame_for_replacement()
 {
-
     if( !m_free.empty() )
     {
         m_clock_hand = m_free.top();
