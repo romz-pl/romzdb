@@ -60,8 +60,9 @@ void BufferMgr::find_frame_for_replacement()
     {
         advance_clock_hand();
 
-        if( m_clock_hand->is_for_replacement( m_space, countPinned ) )
+        if( m_clock_hand->is_for_replacement( countPinned ) )
         {
+            m_clock_hand->write( m_space );
             m_bimap.erase_by_value( m_clock_hand );
             return;
         }

@@ -105,7 +105,7 @@ DiskBlock *Frame::read( Space& space, PageId page_id )
 //
 //
 //
-bool Frame::is_for_replacement( Space& space, std::uint32_t& countPinned )
+bool Frame::is_for_replacement( std::uint32_t& countPinned )
 {
     if( m_refbit )
     {
@@ -119,6 +119,5 @@ bool Frame::is_for_replacement( Space& space, std::uint32_t& countPinned )
         return false;
     }
 
-    write( space );
     return true;
 }
