@@ -2,7 +2,6 @@
 #define ROMZDB_BUFFCLOCK_H
 
 #include <vector>
-#include <map>
 #include <stack>
 #include "disk/diskblock.h"
 #include "disk/pageid.h"
@@ -45,8 +44,6 @@ private:
     // BufStats bufStats;
 
     Space& m_space;
-
-
 };
 
 

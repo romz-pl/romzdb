@@ -94,8 +94,9 @@ DiskBlock* BufferMgr::pin( PageId page_id )
     auto it = m_bimap.find_value( page_id );
     if( it.has_value() )
     {
-        assert( it.value() );
-        return it.value()->pin();
+        Frame* f = it.value();
+        assert( f );
+        return f->pin();
     }
 
     return replace_frame( page_id );
@@ -112,8 +113,9 @@ void BufferMgr::unpin( PageId page_id, bool dirty )
         throw std::runtime_error( "BufferMgr::unpin: Page is not in buffer" );
     }
 
-    assert( it.value() );
-    it.value()->unpin( dirty );
+    Frame* f = it.value();
+    assert( f );
+    f->unpin( dirty );
 }
 
 //
@@ -139,10 +141,11 @@ void BufferMgr::dispose( PageId page_id )
         throw std::runtime_error( "BufferMgr::dispose: Page is not in buffer" );
     }
 
-    assert( it.value() );
-    it.value()->dispose( m_space, page_id );
+    Frame* f = it.value();
+    assert( f );
+    f->dispose( m_space, page_id );
 
-    m_free.push( it.value() );
+    m_free.push( f );
     m_bimap.erase_by_key( page_id );
 }
 
