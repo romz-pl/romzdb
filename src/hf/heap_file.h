@@ -17,7 +17,7 @@ public:
     PageId insert( std::uint32_t count );
     void remove( PageId page_id, std::uint32_t count );
 
-private:
+// private:
     PageId add_page( );
     void free_page( PageId page_id );
 

@@ -45,17 +45,24 @@ TEST(HeapFile, remove)
     HeapFile hf( bufferMgr );
 
     std::multiset< PageId > mset;
+    std::set< PageId > sset;
 
-    const std::uint32_t count = 100;
+    const std::uint32_t count = 3000;
     const int record_no = 3000;
     for( int i = 0; i < record_no; i++ )
     {
         const PageId page_id  = hf.insert( count );
         mset.insert( page_id );
+        sset.insert( page_id );
     }
 
     for( auto v : mset )
     {
-        EXPECT_NO_THROW( hf.remove( v, count ) );
+        ( hf.remove( v, count ) );
+    }
+
+    for( auto v : sset )
+    {
+        EXPECT_NO_THROW( hf.free_page( v ) );
     }
 }
