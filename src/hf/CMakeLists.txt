@@ -4,9 +4,9 @@ set( LIB_NAME romzdb-hf )
 add_library( ${LIB_NAME} STATIC
     #    db.cpp
     #dir.cpp
-    # dirpage.cpp
-    # dirslot.cpp
-    #heapfile.cpp
+    dirpage.cpp
+    dirslot.cpp
+    heap_file.cpp
     #heappage.cpp
     #pageoffset.cpp
     record.cpp

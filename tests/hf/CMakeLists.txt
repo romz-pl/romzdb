@@ -5,7 +5,7 @@ add_executable( ${TEST_NAME}
     #    db.cpp
     # dirpage.cpp
     #dir.cpp
-    #heapfile.cpp
+    heap_file.cpp
     #heappage.cpp
     main.cpp
     # record.cpp
