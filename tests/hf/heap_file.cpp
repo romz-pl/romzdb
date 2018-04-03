@@ -58,11 +58,17 @@ TEST(HeapFile, remove)
 
     for( auto v : mset )
     {
-        ( hf.remove( v, count ) );
+        EXPECT_NO_THROW( hf.remove( v, count ) );
     }
 
     for( auto v : sset )
     {
         EXPECT_NO_THROW( hf.free_page( v ) );
+        // EXPECT_ANY_THROW( hf.free_page( v ) );
     }
+
+//    for( auto v : mset )
+//    {
+//        EXPECT_ANY_THROW( hf.remove( v, count ) );
+//    }
 }

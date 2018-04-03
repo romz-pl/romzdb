@@ -6,9 +6,9 @@
 //
 //
 //
-DirSlot::DirSlot( PageId page_id, std::uint32_t free_space )
-    : m_page_id( page_id )
-    , m_free_space( free_space )
+DirSlot::DirSlot(  )
+    : m_page_id( 0, 0 )
+    , m_free_space( 0 )
 {
 
 }
@@ -27,7 +27,7 @@ bool DirSlot::is_free( std::uint32_t free_space ) const
 //
 bool DirSlot::is_empty( ) const
 {
-    return( m_free_space == std::numeric_limits< std::uint32_t >::max() );
+    return m_page_id == PageId( 0, 0 );
 }
 
 //
@@ -35,7 +35,7 @@ bool DirSlot::is_empty( ) const
 //
 void DirSlot::empty()
 {
-    m_free_space = std::numeric_limits< std::uint32_t >::max();
+    m_page_id == PageId( 0, 0 );
 }
 
 //

@@ -8,7 +8,7 @@
 class DirSlot
 {
 public:
-    DirSlot( PageId page_id, std::uint32_t free_space );
+    DirSlot();
     ~DirSlot() = default;
 
     bool insert_record( std::uint32_t count );
