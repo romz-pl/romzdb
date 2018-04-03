@@ -9,13 +9,23 @@ class DirSlot
 {
 public:
     DirSlot( PageId page_id, std::uint32_t free_space );
+    ~DirSlot() = default;
 
-    bool is_free( std::uint32_t free_space ) const;
-    bool is_empty( ) const;
+    bool insert_record( std::uint32_t count );
+    bool remove_record( PageId page_id, std::uint32_t count );
+
+    bool add_page( PageId page_id );
+    bool free_page( PageId page_id );
 
     void empty();
 
-public:
+    PageId get_page_id() const;
+
+private:
+    bool is_free( std::uint32_t free_space ) const;
+    bool is_empty( ) const;
+
+private:
     // Page into the "DirSlot" points
     PageId m_page_id;
 

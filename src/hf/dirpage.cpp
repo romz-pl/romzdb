@@ -45,14 +45,16 @@ void DirPage::init( )
 //
 //
 //
-std::optional< PageId > DirPage::find( std::uint32_t free_space )
+std::optional< PageId > DirPage::insert_record( std::uint32_t count )
 {
     DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
 
-    for( std::uint32_t i = 0; i < get_slot_no(); i++, slot++ )
+    for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
     {
-        if( slot->is_free( free_space ) )
-            return slot->m_page_id;
+        if( slot->insert_record( count ) )
+        {
+            return slot->get_page_id();
+        }
     }
     return std::nullopt;
 }
@@ -60,7 +62,24 @@ std::optional< PageId > DirPage::find( std::uint32_t free_space )
 //
 //
 //
-bool DirPage::add( PageId page_id, std::uint32_t free_space )
+bool DirPage::remove_record( PageId page_id, std::uint32_t count )
+{
+    DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
+
+    for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
+    {
+        if( slot->remove_record( page_id, count ) )
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+//
+//
+//
+bool DirPage::add_page( PageId page_id )
 {
     if( get_slot_no() == max_slot_no() )
         return false;
@@ -69,11 +88,8 @@ bool DirPage::add( PageId page_id, std::uint32_t free_space )
 
     for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
     {
-        if( slot->is_empty( ) )
+        if( slot->add_page( page_id ) )
         {
-            slot->m_page_id = page_id;
-            slot->m_free_space = free_space;
-
             set_slot_no( get_slot_no() + 1 );
             return true;
         }
@@ -84,33 +100,14 @@ bool DirPage::add( PageId page_id, std::uint32_t free_space )
 //
 //
 //
-bool DirPage::remove( PageId page_id, std::uint32_t space )
+bool DirPage::free_page( PageId page_id )
 {
     DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
 
     for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
     {
-        if( !slot->is_empty( ) && slot->m_page_id == page_id )
+        if( slot->free_page( page_id ) )
         {
-            slot->m_free_space -= space;
-            return true;
-        }
-    }
-    return false;
-}
-
-//
-//
-//
-bool DirPage::free( PageId page_id )
-{
-    DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
-
-    for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
-    {
-        if( !slot->is_empty( ) && slot->m_page_id == page_id )
-        {
-            slot->empty();
             set_slot_no( get_slot_no() - 1 );
             return true;
         }
@@ -149,6 +146,16 @@ void DirPage::set_slot_no( std::uint32_t v ) const
     *p = v;
 }
 
+//
+//
+//
+bool DirPage::is_next_page() const
+{
+    PageId *p = (PageId*)( m_block->GetData() + Offset::Next_page );
+    const PageId id = *p;
+    return ( id != PageId( 0, 0 ) );
+}
+
 
 //
 //
@@ -156,7 +163,8 @@ void DirPage::set_slot_no( std::uint32_t v ) const
 PageId DirPage::get_next_page() const
 {
     PageId *p = (PageId*)( m_block->GetData() + Offset::Next_page );
-    return *p;
+    const PageId id = *p;
+    return id;
 }
 
 //
