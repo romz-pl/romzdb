@@ -153,10 +153,7 @@ void HeapFile::dispose_page( PageId page_id )
         DirPage dp( block );
         if( dp.dispose_page( page_id ) )
         {
-            // m_buffer.pin( page_id );
             m_buffer.dispose( page_id );
-            // m_buffer.unpin( page_id, false );
-
             m_buffer.unpin( dir_page_id, true );
             return;
         }
