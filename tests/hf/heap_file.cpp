@@ -85,4 +85,9 @@ TEST(HeapFile, remove)
         EXPECT_NO_THROW( hf.dispose_page( v ) );
         EXPECT_ANY_THROW( hf.dispose_page( v ) );
     }
+
+    for( auto v : mset )
+    {
+        EXPECT_ANY_THROW( hf.remove( v, count ) );
+    }
 }
