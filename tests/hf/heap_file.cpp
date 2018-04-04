@@ -15,6 +15,20 @@ TEST(HeapFile, create)
     EXPECT_NO_THROW( HeapFile{ bufferMgr } );
 }
 
+TEST(HeapFile, open)
+{
+    const uint32_t max_size = ( 1U << 20 );
+    DbFile db_file( ::get_temp_path(), max_size );
+    Space space( db_file );
+    const std::size_t frameNo = 3;
+    BufferMgr bufferMgr( space, frameNo );
+
+    HeapFile hf_a{ bufferMgr };
+    const PageId header_page = hf_a.get_header_page();
+
+    EXPECT_NO_THROW( HeapFile( bufferMgr, header_page ) );
+}
+
 
 TEST(HeapFile, insert)
 {

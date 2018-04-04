@@ -30,6 +30,14 @@ HeapFile::HeapFile( BufferMgr& buffer, PageId header )
 //
 //
 //
+PageId HeapFile::get_header_page() const
+{
+    return m_header;
+}
+
+//
+//
+//
 PageId HeapFile::insert( std::uint32_t count )
 {
     PageId dir_page_id = m_header;
