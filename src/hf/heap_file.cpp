@@ -8,13 +8,8 @@
 //
 HeapFile::HeapFile( BufferMgr& buffer )
     : m_buffer( buffer )
-    , m_header( 0, 0 )
+    , m_header( buffer )
 {
-    auto ret = m_buffer.alloc();
-    m_header = ret.first;
-
-    DirPage( ret.second ).init();
-    m_buffer.unpin( m_header, true );
 }
 
 //
@@ -22,9 +17,17 @@ HeapFile::HeapFile( BufferMgr& buffer )
 //
 HeapFile::HeapFile( BufferMgr& buffer, PageId header )
     : m_buffer( buffer )
-    , m_header( header )
+    , m_header( buffer, header )
 {
 
+}
+
+//
+//
+//
+PageId HeapFile::get_header_page() const
+{
+    return m_header.get_page_id();
 }
 
 //
@@ -32,63 +35,51 @@ HeapFile::HeapFile( BufferMgr& buffer, PageId header )
 //
 PageId HeapFile::insert( std::uint32_t count )
 {
-    PageId dir_page_id = m_header;
+    PageId dir_page_id = m_header.get_page_id();
     while( true )
     {
-        DiskBlock* block = m_buffer.pin( dir_page_id );
-        DirPage dp( block );
+        DirPage dp( m_buffer, dir_page_id );
         auto ret = dp.insert_record( count );
         if( ret.has_value() )
         {
-            m_buffer.unpin( dir_page_id, true );
             return ret.value();
         }
-
-        PageId prev_dir_page = dir_page_id;
 
         if( dp.is_next_page() )
         {
             dir_page_id = dp.get_next_page();
-
-            m_buffer.unpin( prev_dir_page, true );
         }
         else
         {
-            m_buffer.unpin( prev_dir_page, true );
             break;
-
         }
     }
 
-    add_page();
+    alloc_page();
     return insert( count );
 }
+
 
 //
 //
 //
 void HeapFile::remove( PageId page_id, std::uint32_t count )
 {
-    PageId dir_page_id = m_header;
+    PageId dir_page_id = m_header.get_page_id();
     while( true )
     {
-        DiskBlock* block = m_buffer.pin( dir_page_id );
-        DirPage dp( block );
+        DirPage dp( m_buffer, dir_page_id );
         if( dp.remove_record( page_id, count ) )
         {
-            m_buffer.unpin( dir_page_id, true );
             return;
         }
-        PageId prev_dir_page = dir_page_id;
 
         if( dp.is_next_page() )
         {
             dir_page_id = dp.get_next_page();
-            m_buffer.unpin( prev_dir_page, true );
         }
         else
         {
-            m_buffer.unpin( prev_dir_page, true );
             throw std::runtime_error( "HeapFile::remove: not removed" );
         }
     }
@@ -97,66 +88,54 @@ void HeapFile::remove( PageId page_id, std::uint32_t count )
 //
 //
 //
-PageId HeapFile::add_page( )
+PageId HeapFile::alloc_page( )
 {
     const PageId page_id = m_buffer.alloc().first;
-    PageId dir_page_id = m_header;
+    m_buffer.unpin( page_id, true );
+
+    PageId dir_page_id = m_header.get_page_id();
     while( true )
     {
-        DiskBlock* block = m_buffer.pin( dir_page_id );
-        DirPage dp( block );
-        if( dp.add_page( page_id ) )
+        DirPage dp( m_buffer, dir_page_id );
+        if( dp.alloc_page( page_id ) )
         {
-            m_buffer.unpin( dir_page_id, true );
             break;
         }
-
-        PageId prev_dir_page = dir_page_id;
 
         if( dp.is_next_page() )
         {
             dir_page_id = dp.get_next_page();
-            m_buffer.unpin( prev_dir_page, true );
         }
         else
         {
-            auto ret = m_buffer.alloc();
-            dp.set_next_page( ret.first );
-            DirPage new_dir_page( ret.second );
-            new_dir_page.init();
-            new_dir_page.add_page( page_id );
-
-            m_buffer.unpin( ret.first, true );
-            m_buffer.unpin( prev_dir_page, true );
-            break;;
+            DirPage new_dir_page( m_buffer );
+            new_dir_page.alloc_page( page_id );
+            dp.set_next_page( new_dir_page.get_page_id() );
+            break;
         }
     }
 
-    m_buffer.unpin( page_id, true );
     return page_id;
 }
 
 //
 //
 //
-void HeapFile::free_page( PageId page_id )
+void HeapFile::dispose_page( PageId page_id )
 {
-    PageId dir_page_id = m_header;
+    PageId dir_page_id = m_header.get_page_id();
     while( true )
     {
-        DiskBlock* block = m_buffer.pin( dir_page_id );
-        DirPage dp( block );
-        if( dp.free_page( page_id ) )
+        DirPage dp( m_buffer, dir_page_id );
+        if( dp.dispose_page( page_id ) )
         {
-            m_buffer.unpin( dir_page_id, false );
+            m_buffer.dispose( page_id );
             return;
         }
-        PageId prev_dir_page = dir_page_id;
 
         if( dp.is_next_page() )
         {
             dir_page_id = dp.get_next_page();
-            m_buffer.unpin( prev_dir_page, false );
         }
         else
         {

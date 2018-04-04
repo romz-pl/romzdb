@@ -136,17 +136,19 @@ std::pair< PageId, DiskBlock* > BufferMgr::alloc()
 void BufferMgr::dispose( PageId page_id )
 {
     auto it = m_bimap.find_value( page_id );
-    if( !it.has_value() )
+    if( it.has_value() )
     {
-        throw std::runtime_error( "BufferMgr::dispose: Page is not in buffer" );
+        Frame* f = it.value();
+        assert( f );
+        f->dispose( m_space, page_id );
+
+        m_free.push( f );
+        m_bimap.erase_by_key( page_id );
     }
-
-    Frame* f = it.value();
-    assert( f );
-    f->dispose( m_space, page_id );
-
-    m_free.push( f );
-    m_bimap.erase_by_key( page_id );
+    else
+    {
+        m_space.Dealloc( page_id );
+    }
 }
 
 //
