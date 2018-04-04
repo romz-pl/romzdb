@@ -70,6 +70,11 @@ TEST(HeapFile, remove)
         sset.insert( page_id );
     }
 
+    for( auto v : sset )
+    {
+        EXPECT_ANY_THROW( hf.dispose_page( v ) );
+    }
+
     for( auto v : mset )
     {
         EXPECT_NO_THROW( hf.remove( v, count ) );
