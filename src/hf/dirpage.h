@@ -9,7 +9,8 @@
 class DirPage
 {
 public:
-    explicit DirPage( DiskBlock* block );
+    explicit DirPage( BufferMgr& buffer );
+    DirPage( BufferMgr& buffer, PageId page_id );
     ~DirPage();
 
 
@@ -23,12 +24,15 @@ public:
     bool alloc_page( PageId page_id );
     bool dispose_page( PageId page_id );
 
-    void init( );
 
     bool is_next_page() const;
 
+    PageId get_page_id( ) const;
+
 private:
     std::uint32_t max_slot_no() const;
+
+    void init( );
 
 private:
     enum Offset
@@ -38,7 +42,13 @@ private:
     };
 
 private:
+    BufferMgr& m_buffer;
+
+    /*const*/ PageId m_page_id;
+
     DiskBlock* m_block;
+
+    bool m_dirty;
 };
 
 #endif

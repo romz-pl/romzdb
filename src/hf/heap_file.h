@@ -31,7 +31,7 @@ private:
 private:
     BufferMgr& m_buffer;
 
-    PageId m_header;
+    DirPage m_header;
 
 };
 

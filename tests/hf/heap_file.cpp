@@ -40,7 +40,7 @@ TEST(HeapFile, insert)
 
     HeapFile hf( bufferMgr );
 
-    const std::uint32_t count = 3000;
+    const std::uint32_t count = 4000;
     const int record_no = 300;
     for( int i = 0; i < record_no; i++ )
     {
@@ -61,40 +61,28 @@ TEST(HeapFile, remove)
     std::multiset< PageId > mset;
     std::set< PageId > sset;
 
-    const std::uint32_t count = 30;
+    const std::uint32_t count = 4000;
     const int record_no = 3000;
     for( int i = 0; i < record_no; i++ )
     {
         const PageId page_id  = hf.insert( count );
-        // std::cout << page_id.get_block_id().GetValue() << " " << std::flush;
         mset.insert( page_id );
         sset.insert( page_id );
     }
 
     for( auto v : mset )
     {
-        // std::cout << "QQ:" << v.get_block_id().GetValue() << " " << std::flush;
-
         EXPECT_NO_THROW( hf.remove( v, count ) );
     }
 
     for( auto v : mset )
     {
-        std::cout << "QQ:" << v.get_block_id().GetValue() << " " << std::flush;
-
         EXPECT_ANY_THROW( hf.remove( v, count ) );
     }
 
-
     for( auto v : sset )
     {
-        // std::cout << v.get_block_id().GetValue() << " " << std::flush;
         EXPECT_NO_THROW( hf.dispose_page( v ) );
         EXPECT_ANY_THROW( hf.dispose_page( v ) );
     }
-
-//    for( auto v : mset )
-//    {
-//        EXPECT_ANY_THROW( hf.remove( v, count ) );
-//    }
 }
