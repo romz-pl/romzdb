@@ -17,15 +17,16 @@ public:
     bool add_page( PageId page_id );
     bool free_page( PageId page_id );
 
-    void empty();
+    void make_empty();
 
     PageId get_page_id() const;
 
 private:
-    bool is_free( std::uint32_t free_space ) const;
-    bool is_empty( ) const;
+    bool is_free( std::uint32_t count ) const;
 
 private:
+    bool m_empty;
+
     // Page into the "DirSlot" points
     PageId m_page_id;
 

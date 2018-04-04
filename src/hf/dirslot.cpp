@@ -7,7 +7,8 @@
 //
 //
 DirSlot::DirSlot(  )
-    : m_page_id( 0, 0 )
+    : m_empty( true )
+    , m_page_id( 0, 0 )
     , m_free_space( 0 )
 {
 
@@ -17,25 +18,17 @@ DirSlot::DirSlot(  )
 //
 // Returns "true" if there is enought free space on "m_pageId"
 //
-bool DirSlot::is_free( std::uint32_t free_space ) const
+bool DirSlot::is_free( std::uint32_t count ) const
 {
-    return ( m_free_space >= free_space );
+    return ( m_free_space >= count );
 }
 
 //
 //
 //
-bool DirSlot::is_empty( ) const
+void DirSlot::make_empty()
 {
-    return m_page_id == PageId( 0, 0 );
-}
-
-//
-//
-//
-void DirSlot::empty()
-{
-    m_page_id == PageId( 0, 0 );
+    m_empty = true;
 }
 
 //
@@ -43,7 +36,7 @@ void DirSlot::empty()
 //
 bool DirSlot::insert_record( std::uint32_t count )
 {
-    if( is_empty( ) )
+    if( m_empty )
     {
         return false;
     }
@@ -62,7 +55,7 @@ bool DirSlot::insert_record( std::uint32_t count )
 //
 bool DirSlot::remove_record( PageId page_id, std::uint32_t count )
 {
-    if( is_empty( ) )
+    if( m_empty )
     {
         return false;
     }
@@ -81,10 +74,11 @@ bool DirSlot::remove_record( PageId page_id, std::uint32_t count )
 //
 bool DirSlot::add_page( PageId page_id )
 {
-    if( is_empty( ) )
+    if( m_empty )
     {
         m_page_id = page_id;
         m_free_space = DiskBlock::Size;
+        m_empty = false;
         return true;
     }
 
@@ -96,7 +90,7 @@ bool DirSlot::add_page( PageId page_id )
 //
 bool DirSlot::free_page( PageId page_id )
 {
-    if( is_empty( ) )
+    if( m_empty )
     {
         return false;
     }
@@ -106,7 +100,7 @@ bool DirSlot::free_page( PageId page_id )
         return false;
     }
 
-    empty();
+    m_empty = true;
     return true;
 
 }
