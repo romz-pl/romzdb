@@ -52,6 +52,7 @@ TEST(HeapFile, remove)
     for( int i = 0; i < record_no; i++ )
     {
         const PageId page_id  = hf.insert( count );
+        // std::cout << page_id.get_block_id().GetValue() << " " << std::flush;
         mset.insert( page_id );
         sset.insert( page_id );
     }
@@ -63,8 +64,9 @@ TEST(HeapFile, remove)
 
     for( auto v : sset )
     {
+        // std::cout << v.get_block_id().GetValue() << " " << std::flush;
         EXPECT_NO_THROW( hf.free_page( v ) );
-        // EXPECT_ANY_THROW( hf.free_page( v ) );
+        EXPECT_ANY_THROW( hf.free_page( v ) );
     }
 
 //    for( auto v : mset )

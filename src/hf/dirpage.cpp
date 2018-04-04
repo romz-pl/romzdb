@@ -38,7 +38,7 @@ void DirPage::init( )
 
     for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
     {
-        slot->empty( );
+        slot->make_empty( );
     }
 }
 
