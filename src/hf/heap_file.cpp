@@ -149,7 +149,7 @@ void HeapFile::free_page( PageId page_id )
         DirPage dp( block );
         if( dp.free_page( page_id ) )
         {
-            m_buffer.unpin( dir_page_id, false );
+            m_buffer.unpin( dir_page_id, true );
             return;
         }
         PageId prev_dir_page = dir_page_id;
@@ -161,6 +161,7 @@ void HeapFile::free_page( PageId page_id )
         }
         else
         {
+            m_buffer.unpin( prev_dir_page, false );
             throw std::runtime_error( "HeapFile::free_page: page not found" );
         }
     }
