@@ -12,10 +12,7 @@ public:
     explicit DirPage( DiskBlock* block );
     ~DirPage();
 
-    std::uint32_t get_slot_no() const;
-    void set_slot_no( std::uint32_t v ) const;
 
-    std::uint32_t max_slot_no() const;
 
     PageId get_next_page() const;
     void set_next_page( PageId id );
@@ -31,10 +28,12 @@ public:
     bool is_next_page() const;
 
 private:
+    std::uint32_t max_slot_no() const;
+
+private:
     enum Offset
     {
-        Slot_no = 0,
-        Next_page = Slot_no + sizeof( std::uint32_t ),
+        Next_page = 0,
         Array = Next_page + sizeof( PageId )
     };
 
