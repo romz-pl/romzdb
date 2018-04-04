@@ -52,19 +52,16 @@ PageId HeapFile::insert( std::uint32_t count )
             return ret.value();
         }
 
-        PageId prev_dir_page = dir_page_id;
-
         if( dp.is_next_page() )
         {
+            const PageId prev_dir_page = dir_page_id;
             dir_page_id = dp.get_next_page();
-
             m_buffer.unpin( prev_dir_page, true );
         }
         else
         {
-            m_buffer.unpin( prev_dir_page, true );
+            m_buffer.unpin( dir_page_id, true );
             break;
-
         }
     }
 
@@ -88,16 +85,16 @@ void HeapFile::remove( PageId page_id, std::uint32_t count )
             m_buffer.unpin( dir_page_id, true );
             return;
         }
-        PageId prev_dir_page = dir_page_id;
 
         if( dp.is_next_page() )
         {
+            const PageId prev_dir_page = dir_page_id;
             dir_page_id = dp.get_next_page();
             m_buffer.unpin( prev_dir_page, true );
         }
         else
         {
-            m_buffer.unpin( prev_dir_page, true );
+            m_buffer.unpin( dir_page_id, true );
             throw std::runtime_error( "HeapFile::remove: not removed" );
         }
     }
@@ -120,12 +117,11 @@ PageId HeapFile::add_page( )
             break;
         }
 
-        PageId prev_dir_page = dir_page_id;
-
         if( dp.is_next_page() )
         {
+            const PageId prev_dir_page = dir_page_id;
             dir_page_id = dp.get_next_page();
-            m_buffer.unpin( prev_dir_page, true );
+            m_buffer.unpin( prev_dir_page, false );
         }
         else
         {
@@ -136,8 +132,8 @@ PageId HeapFile::add_page( )
             new_dir_page.add_page( page_id );
 
             m_buffer.unpin( ret.first, true );
-            m_buffer.unpin( prev_dir_page, true );
-            break;;
+            m_buffer.unpin( dir_page_id, true );
+            break;
         }
     }
 
@@ -160,16 +156,16 @@ void HeapFile::free_page( PageId page_id )
             m_buffer.unpin( dir_page_id, true );
             return;
         }
-        PageId prev_dir_page = dir_page_id;
 
         if( dp.is_next_page() )
         {
+            const PageId prev_dir_page = dir_page_id;
             dir_page_id = dp.get_next_page();
             m_buffer.unpin( prev_dir_page, false );
         }
         else
         {
-            m_buffer.unpin( prev_dir_page, false );
+            m_buffer.unpin( dir_page_id, false );
             throw std::runtime_error( "HeapFile::free_page: page not found" );
         }
     }
