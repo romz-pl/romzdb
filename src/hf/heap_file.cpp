@@ -90,11 +90,11 @@ void HeapFile::remove( PageId page_id, std::uint32_t count )
         {
             const PageId prev_dir_page = dir_page_id;
             dir_page_id = dp.get_next_page();
-            m_buffer.unpin( prev_dir_page, true );
+            m_buffer.unpin( prev_dir_page, false );
         }
         else
         {
-            m_buffer.unpin( dir_page_id, true );
+            m_buffer.unpin( dir_page_id, false );
             throw std::runtime_error( "HeapFile::remove: not removed" );
         }
     }
