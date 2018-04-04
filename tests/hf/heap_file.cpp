@@ -74,13 +74,14 @@ TEST(HeapFile, remove)
     for( auto v : mset )
     {
         EXPECT_NO_THROW( hf.remove( v, count ) );
+        // EXPECT_ANY_THROW( hf.remove( v, count ) );
     }
 
     for( auto v : sset )
     {
         // std::cout << v.get_block_id().GetValue() << " " << std::flush;
-        EXPECT_NO_THROW( hf.free_page( v ) );
-        EXPECT_ANY_THROW( hf.free_page( v ) );
+        EXPECT_NO_THROW( hf.dispose_page( v ) );
+        // EXPECT_ANY_THROW( hf.dispose_page( v ) );
     }
 
 //    for( auto v : mset )

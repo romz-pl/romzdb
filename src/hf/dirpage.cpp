@@ -37,7 +37,7 @@ void DirPage::init( )
 
     for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
     {
-        slot->make_empty( );
+        slot->make_invalid( );
     }
 }
 
@@ -78,13 +78,13 @@ bool DirPage::remove_record( PageId page_id, std::uint32_t count )
 //
 //
 //
-bool DirPage::add_page( PageId page_id )
+bool DirPage::alloc_page( PageId page_id )
 {
     DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
 
     for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
     {
-        if( slot->add_page( page_id ) )
+        if( slot->alloc_page( page_id ) )
         {
             return true;
         }
@@ -95,13 +95,13 @@ bool DirPage::add_page( PageId page_id )
 //
 //
 //
-bool DirPage::free_page( PageId page_id )
+bool DirPage::dispose_page( PageId page_id )
 {
     DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
 
     for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
     {
-        if( slot->free_page( page_id ) )
+        if( slot->dispose_page( page_id ) )
         {
             return true;
         }

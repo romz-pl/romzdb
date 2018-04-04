@@ -20,8 +20,8 @@ public:
     std::optional< PageId > insert_record(std::uint32_t count );
     bool remove_record( PageId page_id, std::uint32_t space );
 
-    bool add_page( PageId page_id );
-    bool free_page( PageId page_id );
+    bool alloc_page( PageId page_id );
+    bool dispose_page( PageId page_id );
 
     void init( );
 
