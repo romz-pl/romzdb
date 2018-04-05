@@ -70,10 +70,12 @@ void DirPage::init( )
     set_next_page( PageId( 0, 0 ) );
 
     DirSlot *slot = get_slot();
+    DirSlot * const slot_end = slot + max_slot_no();
 
-    for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
+    while( slot != slot_end )
     {
         slot->make_invalid( );
+        slot++;
     }
     m_dirty = true;
 }
@@ -84,14 +86,16 @@ void DirPage::init( )
 std::optional< PageId > DirPage::insert_record( std::uint32_t count )
 {
     DirSlot *slot = get_slot();
+    DirSlot * const slot_end = slot + max_slot_no();
 
-    for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
+    while( slot != slot_end )
     {
         if( slot->insert_record( count ) )
         {
             m_dirty = true;
             return slot->get_page_id();
         }
+        slot++;
     }
     return std::nullopt;
 }
@@ -102,14 +106,16 @@ std::optional< PageId > DirPage::insert_record( std::uint32_t count )
 bool DirPage::remove_record( PageId page_id, std::uint32_t count )
 {
     DirSlot *slot = get_slot();
+    DirSlot * const slot_end = slot + max_slot_no();
 
-    for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
+    while( slot != slot_end )
     {
         if( slot->remove_record( page_id, count ) )
         {
             m_dirty = true;
             return true;
         }
+        slot++;
     }
     return false;
 }
@@ -120,14 +126,16 @@ bool DirPage::remove_record( PageId page_id, std::uint32_t count )
 bool DirPage::alloc_page( PageId page_id )
 {
     DirSlot *slot = get_slot();
+    DirSlot * const slot_end = slot + max_slot_no();
 
-    for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
+    while( slot != slot_end )
     {
         if( slot->alloc_page( page_id ) )
         {
             m_dirty = true;
             return true;
         }
+        slot++;
     }
     return false;
 }
@@ -138,14 +146,16 @@ bool DirPage::alloc_page( PageId page_id )
 bool DirPage::dispose_page( PageId page_id )
 {
     DirSlot *slot = get_slot();
+    DirSlot * const slot_end = slot + max_slot_no();
 
-    for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
+    while( slot != slot_end )
     {
         if( slot->dispose_page( page_id ) )
         {
             m_dirty = true;
             return true;
         }
+        slot++;
     }
     return false;
 }
