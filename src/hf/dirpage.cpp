@@ -1,11 +1,4 @@
 #include "dirpage.h"
-#include <cassert>
-#include <algorithm>
-#include <stdexcept>
-#include <algorithm>
-#include <string>
-#include <cstring>
-#include <utility>
 
 
 //
