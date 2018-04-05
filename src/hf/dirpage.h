@@ -39,7 +39,7 @@ private:
     enum Offset
     {
         Next_page = 0,
-        Array = Next_page + sizeof( PageId )
+        Slot = Next_page + sizeof( PageId )
     };
 
 private:

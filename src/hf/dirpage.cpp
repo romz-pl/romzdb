@@ -58,7 +58,7 @@ PageId DirPage::get_page_id( ) const
 //
 DirSlot* DirPage::get_slot()
 {
-    DirSlot *slot = reinterpret_cast< DirSlot* >( m_block->GetData() + Offset::Array );
+    DirSlot *slot = reinterpret_cast< DirSlot* >( m_block->GetData() + Offset::Slot );
     return slot;
 }
 
@@ -167,7 +167,7 @@ std::uint32_t DirPage::max_slot_no() const
 //
 bool DirPage::is_next_page() const
 {
-    PageId *p = (PageId*)( m_block->GetData() + Offset::Next_page );
+    PageId *p = reinterpret_cast< PageId* >( m_block->GetData() + Offset::Next_page );
     const PageId id = *p;
     return ( id != PageId( 0, 0 ) );
 }
@@ -178,7 +178,7 @@ bool DirPage::is_next_page() const
 //
 PageId DirPage::get_next_page() const
 {
-    PageId *p = (PageId*)( m_block->GetData() + Offset::Next_page );
+    PageId *p = reinterpret_cast< PageId* >( m_block->GetData() + Offset::Next_page );
     const PageId id = *p;
     return id;
 }
@@ -188,7 +188,7 @@ PageId DirPage::get_next_page() const
 //
 void DirPage::set_next_page( PageId id )
 {
-    PageId *p = (PageId*)( m_block->GetData() + Offset::Next_page );
+    PageId *p = reinterpret_cast< PageId* >( m_block->GetData() + Offset::Next_page );
     *p = id;
     m_dirty = true;
 }
