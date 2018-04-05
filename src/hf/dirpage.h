@@ -3,7 +3,7 @@
 
 #include <optional>
 #include "buffer/buffermgr.h"
-
+#include "dirslot.h"
 
 
 class DirPage
@@ -33,6 +33,7 @@ private:
     std::uint32_t max_slot_no() const;
 
     void init( );
+    DirSlot* get_slot();
 
 private:
     enum Offset

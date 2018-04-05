@@ -6,7 +6,7 @@
 #include <string>
 #include <cstring>
 #include <utility>
-#include "dirslot.h"
+
 
 //
 //
@@ -56,11 +56,20 @@ PageId DirPage::get_page_id( ) const
 //
 //
 //
+DirSlot* DirPage::get_slot()
+{
+    DirSlot *slot = reinterpret_cast< DirSlot* >( m_block->GetData() + Offset::Array );
+    return slot;
+}
+
+//
+//
+//
 void DirPage::init( )
 {
     set_next_page( PageId( 0, 0 ) );
 
-    DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
+    DirSlot *slot = get_slot();
 
     for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
     {
@@ -74,7 +83,7 @@ void DirPage::init( )
 //
 std::optional< PageId > DirPage::insert_record( std::uint32_t count )
 {
-    DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
+    DirSlot *slot = get_slot();
 
     for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
     {
@@ -92,7 +101,7 @@ std::optional< PageId > DirPage::insert_record( std::uint32_t count )
 //
 bool DirPage::remove_record( PageId page_id, std::uint32_t count )
 {
-    DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
+    DirSlot *slot = get_slot();
 
     for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
     {
@@ -110,7 +119,7 @@ bool DirPage::remove_record( PageId page_id, std::uint32_t count )
 //
 bool DirPage::alloc_page( PageId page_id )
 {
-    DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
+    DirSlot *slot = get_slot();
 
     for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
     {
@@ -128,7 +137,7 @@ bool DirPage::alloc_page( PageId page_id )
 //
 bool DirPage::dispose_page( PageId page_id )
 {
-    DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
+    DirSlot *slot = get_slot();
 
     for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
     {
