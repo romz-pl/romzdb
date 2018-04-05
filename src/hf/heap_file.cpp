@@ -8,16 +8,18 @@
 //
 HeapFile::HeapFile( BufferMgr& buffer )
     : m_buffer( buffer )
-    , m_header( buffer )
+    , m_header( 0, 0 )
 {
+    DirPage dp( buffer ); // Initialize the first page in directory
+    m_header = dp.get_page_id();
 }
 
 //
 //
 //
-HeapFile::HeapFile( BufferMgr& buffer, PageId header )
+HeapFile::HeapFile( BufferMgr& buffer, PageId header_page_id )
     : m_buffer( buffer )
-    , m_header( buffer, header )
+    , m_header( header_page_id )
 {
 
 }
@@ -27,7 +29,7 @@ HeapFile::HeapFile( BufferMgr& buffer, PageId header )
 //
 PageId HeapFile::get_header_page() const
 {
-    return m_header.get_page_id();
+    return m_header;
 }
 
 //
@@ -35,7 +37,7 @@ PageId HeapFile::get_header_page() const
 //
 PageId HeapFile::insert( std::uint32_t count )
 {
-    PageId dir_page_id = m_header.get_page_id();
+    PageId dir_page_id = m_header;
     while( true )
     {
         DirPage dp( m_buffer, dir_page_id );
@@ -65,7 +67,7 @@ PageId HeapFile::insert( std::uint32_t count )
 //
 void HeapFile::remove( PageId page_id, std::uint32_t count )
 {
-    PageId dir_page_id = m_header.get_page_id();
+    PageId dir_page_id = m_header;
     while( true )
     {
         DirPage dp( m_buffer, dir_page_id );
@@ -93,7 +95,7 @@ PageId HeapFile::alloc_page( )
     const PageId page_id = m_buffer.alloc().first;
     m_buffer.unpin( page_id, true );
 
-    PageId dir_page_id = m_header.get_page_id();
+    PageId dir_page_id = m_header;
     while( true )
     {
         DirPage dp( m_buffer, dir_page_id );
@@ -123,7 +125,7 @@ PageId HeapFile::alloc_page( )
 //
 void HeapFile::dispose_page( PageId page_id )
 {
-    PageId dir_page_id = m_header.get_page_id();
+    PageId dir_page_id = m_header;
     while( true )
     {
         DirPage dp( m_buffer, dir_page_id );

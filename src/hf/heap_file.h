@@ -11,7 +11,7 @@ class HeapFile
 {
 public:
     explicit HeapFile( BufferMgr& buffer );
-    HeapFile( BufferMgr& buffer, PageId header );
+    HeapFile( BufferMgr& buffe, PageId header_page_id );
     ~HeapFile() = default;
 
     PageId insert( std::uint32_t count );
@@ -31,7 +31,7 @@ private:
 private:
     BufferMgr& m_buffer;
 
-    DirPage m_header;
+    PageId m_header;
 
 };
 
