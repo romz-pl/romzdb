@@ -50,6 +50,8 @@ private:
     DiskBlock* m_block;
 
     bool m_dirty;
+
+    static const PageId m_invalid_page_id;
 };
 
 #endif

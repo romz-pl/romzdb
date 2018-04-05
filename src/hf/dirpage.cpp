@@ -1,6 +1,8 @@
 #include "dirpage.h"
 
 
+const PageId DirPage::m_invalid_page_id = PageId( 0 , 0 );
+
 //
 //
 //
@@ -60,7 +62,7 @@ DirSlot* DirPage::get_slot()
 //
 void DirPage::init( )
 {
-    set_next_page( PageId( 0, 0 ) );
+    set_next_page( m_invalid_page_id );
 
     DirSlot *slot = get_slot();
     DirSlot * const slot_end = slot + max_slot_no();
@@ -168,7 +170,7 @@ bool DirPage::is_next_page() const
 {
     PageId *p = reinterpret_cast< PageId* >( m_block->GetData() + Offset::Next_page );
     const PageId id = *p;
-    return ( id != PageId( 0, 0 ) );
+    return ( id != m_invalid_page_id );
 }
 
 
