@@ -88,14 +88,13 @@ std::optional< PageId > DirPage::insert_record( std::uint32_t count )
     DirSlot *slot = get_slot();
     DirSlot * const slot_end = slot + max_slot_no();
 
-    while( slot != slot_end )
+    for( ; slot != slot_end; slot++ )
     {
         if( slot->insert_record( count ) )
         {
             m_dirty = true;
             return slot->get_page_id();
         }
-        slot++;
     }
     return std::nullopt;
 }
@@ -108,14 +107,13 @@ bool DirPage::remove_record( PageId page_id, std::uint32_t count )
     DirSlot *slot = get_slot();
     DirSlot * const slot_end = slot + max_slot_no();
 
-    while( slot != slot_end )
+    for( ; slot != slot_end; slot++ )
     {
         if( slot->remove_record( page_id, count ) )
         {
             m_dirty = true;
             return true;
         }
-        slot++;
     }
     return false;
 }
@@ -128,14 +126,13 @@ bool DirPage::alloc_page( PageId page_id )
     DirSlot *slot = get_slot();
     DirSlot * const slot_end = slot + max_slot_no();
 
-    while( slot != slot_end )
+    for( ; slot != slot_end; slot++ )
     {
         if( slot->alloc_page( page_id ) )
         {
             m_dirty = true;
             return true;
         }
-        slot++;
     }
     return false;
 }
@@ -148,14 +145,13 @@ bool DirPage::dispose_page( PageId page_id )
     DirSlot *slot = get_slot();
     DirSlot * const slot_end = slot + max_slot_no();
 
-    while( slot != slot_end )
+   for( ; slot != slot_end; slot++ )
     {
         if( slot->dispose_page( page_id ) )
         {
             m_dirty = true;
             return true;
         }
-        slot++;
     }
     return false;
 }
