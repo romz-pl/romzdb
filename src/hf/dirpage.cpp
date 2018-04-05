@@ -156,9 +156,7 @@ bool DirPage::dispose_page( PageId page_id )
 //
 std::uint32_t DirPage::max_slot_no() const
 {
-    constexpr std::uint32_t v =
-        ( DiskBlock::Size - sizeof( PageId ) - sizeof( std::uint32_t ) )
-         / ( sizeof( DirSlot ) );
+    constexpr std::uint32_t v = ( DiskBlock::Size - sizeof( PageId ) ) / ( sizeof( DirSlot ) );
 
     return v;
 }
