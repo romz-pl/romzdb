@@ -4,16 +4,15 @@
 #include <optional>
 #include "buffer/buffermgr.h"
 #include "dirslot.h"
+#include "page.h"
 
 
-class DirPage
+class DirPage : public Page
 {
 public:
     explicit DirPage( BufferMgr& buffer );
     DirPage( BufferMgr& buffer, PageId page_id );
-    ~DirPage();
-
-
+    ~DirPage() = default;
 
     PageId get_next_page() const;
     void set_next_page( PageId id );
@@ -26,8 +25,6 @@ public:
 
 
     bool is_next_page() const;
-
-    PageId get_page_id( ) const;
 
 private:
     std::uint32_t max_slot_no() const;
@@ -43,13 +40,6 @@ private:
     };
 
 private:
-    BufferMgr& m_buffer;
-
-    /*const*/ PageId m_page_id;
-
-    DiskBlock* m_block;
-
-    bool m_dirty;
 
     static const PageId m_invalid_page_id;
 };
