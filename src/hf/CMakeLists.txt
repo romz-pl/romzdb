@@ -8,7 +8,7 @@ add_library( ${LIB_NAME} STATIC
     dirslot.cpp
     heap_file.cpp
     #heappage.cpp
-    #pageoffset.cpp
+    page.cpp
     record.cpp
     recordid.cpp
     #scaner.cpp
