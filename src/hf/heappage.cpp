@@ -23,7 +23,7 @@ HeapPage::HeapPage( BufferMgr& buffer, PageId page_id )
 }
 
 
-/*
+
 //
 //
 //
@@ -31,10 +31,10 @@ Record HeapPage::Get( SlotId slotIdEx )
 {
     CheckSlotId( slotIdEx );
 
-    const std::uint16_t slotId = slotIdEx.GetValue();
+    const std::uint16_t slotId = slotIdEx.to_uint16();
     const Slot& slot = m_slot[ slotId ];
 
-    const char* p = GetData() + slot.m_offset.GetValue();
+    const char* p = get_data() + slot.m_offset.GetValue();
     Record rec( p, slot.m_length.GetValue() );
     return rec;
 
@@ -45,7 +45,7 @@ Record HeapPage::Get( SlotId slotIdEx )
 //
 SlotId HeapPage::Insert( const Record& rec )
 {
-    const PageOffset recLength = rec.GetLength();
+    const PageOffset recLength = PageOffset( rec.get_length() );
     if( GetFreeSpace() < recLength )
     {
         throw std::runtime_error( "HeapPage::Insert: Not enought space" );
@@ -70,8 +70,8 @@ SlotId HeapPage::Insert( const Record& rec )
         ret = SlotId( it - m_slot.begin() );
     }
 
-    char* p = GetData() + offset.GetValue();
-    rec.ToPage( p );
+    char* p = get_data() + offset.GetValue();
+    rec.copy_to_page( p );
 
     ToPage();
     return ret;
@@ -84,7 +84,7 @@ void HeapPage::Delete( SlotId slotIdEx )
 {
     CheckSlotId( slotIdEx );
 
-    std::uint16_t slotId = slotIdEx.GetValue();
+    std::uint16_t slotId = slotIdEx.to_uint16();
 
     const auto length = m_slot[ slotId ].m_length;
     m_slot[ slotId ].SetInvalid();
@@ -106,7 +106,7 @@ void HeapPage::Delete( SlotId slotIdEx )
 //
 void HeapPage::CheckSlotId( SlotId slotIdEx ) const
 {
-    const std::uint16_t slotId = slotIdEx.GetValue();
+    const std::uint16_t slotId = slotIdEx.to_uint16();
 
     if( slotId >= m_slot.size() )
     {
@@ -133,7 +133,7 @@ std::size_t HeapPage::GetRecordNo() const
 //
 PageOffset HeapPage::GetFreeSpace() const
 {
-    std::int32_t ret = Page::Size;
+    std::int32_t ret = DiskBlock::Size;
     for( const Slot& s : m_slot )
     {
         ret -= s.m_length.GetValue();
@@ -153,7 +153,7 @@ PageOffset HeapPage::GetFreeSpace() const
 //
 void HeapPage::ToPage( )
 {
-    char* p = GetData() + Page::Size;
+    char* p = get_data() + DiskBlock::Size;
 
     std::size_t size = m_slot.size();
     p -= sizeof( size );
@@ -170,7 +170,7 @@ void HeapPage::ToPage( )
 //
 void HeapPage::FromPage()
 {
-    const char* p = GetData() + Page::Size;
+    const char* p = get_data() + DiskBlock::Size;
 
     std::size_t size = 0;
     p -= sizeof( size );
@@ -192,7 +192,7 @@ void HeapPage::GetRid( std::vector< RecordId >& rid ) const
     {
         if( m_slot[ i ].IsValid() )
         {
-            rid.push_back( RecordId( GetPageId(), SlotId( i ) ) );
+            rid.push_back( RecordId( get_page_id(), SlotId( i ) ) );
         }
     }
 }
@@ -204,7 +204,7 @@ std::size_t HeapPage::GetMaxRecordLength()
 {
     // For details of page format, see the function HeapPage::ToPage
 
-    std::size_t maxRecordLength = Page::Size; // This is the size of the page
+    std::size_t maxRecordLength = DiskBlock::Size; // This is the size of the page
 
     // For storing recor, one slot is required. This is the size of the Slot
     maxRecordLength -= - 2 * sizeof( PageOffset );
@@ -216,4 +216,4 @@ std::size_t HeapPage::GetMaxRecordLength()
 }
 
 
-*/
+

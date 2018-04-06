@@ -27,6 +27,8 @@ public:
     bool operator==( const SlotId& slotId ) const;
     bool operator< ( const SlotId& slotId ) const;
 
+    std::uint16_t to_uint16() const;
+
 private:
     value_type m_value;
 };

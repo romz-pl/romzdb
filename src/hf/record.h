@@ -12,7 +12,7 @@
 
 class Record
 {
-    /*
+
 public:
     explicit Record( const std::vector< char >& data );
     explicit Record( const std::string& str );
@@ -28,7 +28,7 @@ public:
 
 private:
     std::vector< char > m_data;
-    */
+
 };
 
 #endif

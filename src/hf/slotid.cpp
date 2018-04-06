@@ -29,3 +29,11 @@ bool SlotId::operator<( const SlotId& slotId ) const
 {
     return m_value < slotId.m_value;
 }
+
+//
+//
+//
+std::uint16_t SlotId::to_uint16() const
+{
+    return m_value;
+}
