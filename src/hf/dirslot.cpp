@@ -5,7 +5,7 @@
 
 
 
-const std::uint32_t DirSlot::m_max_free_space = DiskBlock::Size;
+const std::uint32_t DirSlot::m_max_free_space = DiskBlock::Size / 2;
 
 /*
 //

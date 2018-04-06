@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include "heap_file.h"
+#include "heappage.h"
 
 //
 //
@@ -33,7 +34,17 @@ PageId HeapFile::get_header_page() const
 //
 //
 //
-PageId HeapFile::insert( std::uint32_t count )
+void HeapFile::insert( const Record& rec )
+{
+    const PageId page_id = insert_into_dir( rec.get_length() );
+    HeapPage hp( m_buffer, page_id );
+    hp.Insert( rec );
+}
+
+//
+//
+//
+PageId HeapFile::insert_into_dir( std::uint32_t count )
 {
     PageId dir_page_id = m_header;
     while( true )
@@ -56,14 +67,14 @@ PageId HeapFile::insert( std::uint32_t count )
     }
 
     alloc_page();
-    return insert( count );
+    return insert_into_dir( count );
 }
 
 
 //
 //
 //
-void HeapFile::remove( PageId page_id, std::uint32_t count )
+void HeapFile::remove_from_dir( PageId page_id, std::uint32_t count )
 {
     PageId dir_page_id = m_header;
     while( true )

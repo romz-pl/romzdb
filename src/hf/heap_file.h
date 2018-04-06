@@ -14,8 +14,11 @@ public:
     HeapFile( BufferMgr& buffe, PageId header_page_id );
     ~HeapFile() = default;
 
-    PageId insert( std::uint32_t count );
-    void remove( PageId page_id, std::uint32_t count );
+    void insert( const Record& rec );
+
+
+    void remove_from_dir( PageId page_id, std::uint32_t count );
+    PageId insert_into_dir( std::uint32_t count );
 
     PageId get_header_page() const;
 
@@ -27,6 +30,7 @@ public:
 
 private:
     void InsertHeapPage();
+
 
 private:
     BufferMgr& m_buffer;
