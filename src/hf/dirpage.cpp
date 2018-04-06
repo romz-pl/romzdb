@@ -26,10 +26,10 @@ DirPage::DirPage( BufferMgr& buffer )
 DirPage::DirPage( BufferMgr& buffer, PageId page_id )
     : m_buffer( buffer )
     , m_page_id( page_id )
-    , m_block( nullptr )
+    , m_block( buffer.pin( page_id ) )
     , m_dirty( false )
 {
-    m_block = m_buffer.pin( page_id );
+
 }
 
 //
