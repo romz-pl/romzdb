@@ -67,10 +67,9 @@ void DirPage::init( )
     DirSlot *slot = get_slot();
     DirSlot * const slot_end = slot + max_slot_no();
 
-    while( slot != slot_end )
+    for( ; slot != slot_end; slot++ )
     {
         slot->make_invalid( );
-        slot++;
     }
     m_dirty = true;
 }
