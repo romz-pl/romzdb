@@ -49,7 +49,7 @@ TEST(HeapFile, insert_into_dir)
     }
 }
 
-TEST(HeapFile, insert)
+TEST(HeapFile, insert_remove)
 {
     const uint32_t max_size = ( 1U << 24 );
     DbFile db_file( ::get_temp_path(), max_size );
@@ -65,6 +65,20 @@ TEST(HeapFile, insert)
     {
         const std::string str = random_string( count );
         EXPECT_NO_THROW( hf.insert( Record( str ) ) );
+    }
+
+    std::set< RecordId > sset;
+
+    for( int i = 0; i < record_no; i++ )
+    {
+        const std::string str = random_string( 200 );
+        RecordId record_id = hf.insert( Record( str ) );
+        sset.insert( record_id );
+    }
+
+    for( auto v : sset )
+    {
+        EXPECT_NO_THROW( hf.remove( v ) );
     }
 }
 

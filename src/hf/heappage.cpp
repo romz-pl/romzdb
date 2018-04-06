@@ -3,14 +3,6 @@
 #include <algorithm>
 #include "heappage.h"
 
-//
-//
-//
-HeapPage::HeapPage( BufferMgr& buffer )
-    : Page( buffer )
-{
-
-}
 
 
 //
@@ -80,7 +72,7 @@ SlotId HeapPage::Insert( const Record& rec )
 //
 //
 //
-void HeapPage::Delete( SlotId slotIdEx )
+std::uint16_t HeapPage::Remove( SlotId slotIdEx )
 {
     CheckSlotId( slotIdEx );
 
@@ -88,7 +80,7 @@ void HeapPage::Delete( SlotId slotIdEx )
 
     const auto length = m_slot[ slotId ].m_length;
     m_slot[ slotId ].SetInvalid();
-
+/*
     // Move records to keep them compactly stored (without holes)
     auto it = m_slot.begin() + slotId + 1;
     for( ; it < m_slot.end(); ++it )
@@ -98,7 +90,9 @@ void HeapPage::Delete( SlotId slotIdEx )
             it->m_offset -= length;
         }
     }
+    */
     ToPage();
+    return length.GetValue();
 }
 
 //
@@ -137,8 +131,7 @@ PageOffset HeapPage::GetFreeSpace() const
     for( const Slot& s : m_slot )
     {
         ret -= s.m_length.GetValue();
-        ret -= sizeof( s.m_length );
-        ret -= sizeof( s.m_offset );
+        ret -= sizeof( s );
     }
 
     ret -= sizeof( m_slot.size() );
@@ -163,6 +156,7 @@ void HeapPage::ToPage( )
     {
         s.ToPage( p );
     }
+    m_dirty = true;
 }
 
 //

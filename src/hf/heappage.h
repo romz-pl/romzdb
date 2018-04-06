@@ -67,13 +67,12 @@
 class HeapPage : public Page
 {
 public:
-    explicit HeapPage( BufferMgr& buffer );
     HeapPage( BufferMgr& buffer, PageId page_id );
     ~HeapPage() = default;
 
     Record Get( SlotId slotId );
     SlotId Insert( const Record& rec );
-    void Delete( SlotId slotId );
+    uint16_t Remove( SlotId slotId );
 
     std::size_t GetRecordNo() const;
 

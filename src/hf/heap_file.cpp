@@ -34,11 +34,13 @@ PageId HeapFile::get_header_page() const
 //
 //
 //
-void HeapFile::insert( const Record& rec )
+RecordId HeapFile::insert( const Record& rec )
 {
     const PageId page_id = insert_into_dir( rec.get_length() );
     HeapPage hp( m_buffer, page_id );
-    hp.Insert( rec );
+    const SlotId slot_id = hp.Insert( rec );
+
+    return RecordId( page_id, slot_id );
 }
 
 //
@@ -68,6 +70,17 @@ PageId HeapFile::insert_into_dir( std::uint32_t count )
 
     alloc_page();
     return insert_into_dir( count );
+}
+
+//
+//
+//
+void HeapFile::remove( RecordId record_id )
+{
+    HeapPage hp( m_buffer, record_id.get_page_id() );
+    const std::uint16_t count = hp.Remove( record_id.get_slot_id() );
+
+    remove_from_dir( record_id.get_page_id(), count );
 }
 
 

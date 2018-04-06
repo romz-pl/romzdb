@@ -14,7 +14,8 @@ public:
     HeapFile( BufferMgr& buffe, PageId header_page_id );
     ~HeapFile() = default;
 
-    void insert( const Record& rec );
+    RecordId insert( const Record& rec );
+    void remove( RecordId record_id );
 
 
     void remove_from_dir( PageId page_id, std::uint32_t count );
