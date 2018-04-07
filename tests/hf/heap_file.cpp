@@ -80,6 +80,11 @@ TEST(HeapFile, insert_remove)
     {
         EXPECT_NO_THROW( hf.remove( v ) );
     }
+
+    for( auto v : sset )
+    {
+        EXPECT_ANY_THROW( hf.remove( v ) );
+    }
 }
 
 TEST(HeapFile, remove_from_dir)
