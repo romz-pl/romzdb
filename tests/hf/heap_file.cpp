@@ -63,15 +63,6 @@ TEST(HeapFile, open)
 }
 
 
-TEST_F(HeapFileFixture, insert_into_dir)
-{
-    const std::uint32_t count = 2000;
-    const int record_no = 300;
-    for( int i = 0; i < record_no; i++ )
-    {
-        EXPECT_NO_THROW( m_hf->insert_into_dir( count ) );
-    }
-}
 
 TEST_F(HeapFileFixture, insert_remove)
 {
@@ -123,46 +114,6 @@ TEST_F(HeapFileFixture, insert_too_long)
     EXPECT_ANY_THROW( m_hf->insert( Record( str ) ) );
 }
 
-TEST_F(HeapFileFixture, remove_from_dir)
-{
-    std::multiset< PageId > mset;
-    std::set< PageId > sset;
-
-    const std::uint32_t count = 2000;
-    const int record_no = 3000;
-    for( int i = 0; i < record_no; i++ )
-    {
-        const PageId page_id  = m_hf->insert_into_dir( count );
-        mset.insert( page_id );
-        sset.insert( page_id );
-    }
-
-    for( auto v : sset )
-    {
-        EXPECT_ANY_THROW( m_hf->dispose_page( v ) );
-    }
-
-    for( auto v : mset )
-    {
-        EXPECT_NO_THROW( m_hf->remove_from_dir( v, count ) );
-    }
-
-    for( auto v : mset )
-    {
-        EXPECT_ANY_THROW( m_hf->remove_from_dir( v, count ) );
-    }
-
-    for( auto v : sset )
-    {
-        EXPECT_NO_THROW( m_hf->dispose_page( v ) );
-        EXPECT_ANY_THROW( m_hf->dispose_page( v ) );
-    }
-
-    for( auto v : mset )
-    {
-        EXPECT_ANY_THROW( m_hf->remove_from_dir( v, count ) );
-    }
-}
 
 TEST_F(HeapFileFixture, get)
 {

@@ -6,6 +6,7 @@
 #include "buffer/buffermgr.h"
 #include "dirslot.h"
 #include "page.h"
+#include "recordid.h"
 
 
 class DirPage : public Page
@@ -18,8 +19,8 @@ public:
     PageId get_next_page() const;
     void set_next_page( PageId id );
 
-    std::optional< PageId > insert_record(std::uint32_t count );
-    bool remove_record( PageId page_id, std::uint32_t space );
+    std::optional< RecordId > insert_record( const Record &rec );
+    bool remove_record( RecordId record_id );
 
     bool alloc_page( PageId page_id );
     bool dispose_page( PageId page_id );

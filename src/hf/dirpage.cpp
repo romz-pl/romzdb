@@ -62,9 +62,9 @@ void DirPage::init( )
 //
 //
 //
-std::optional< PageId > DirPage::insert_record( std::uint32_t count )
+std::optional< RecordId > DirPage::insert_record( const Record& rec )
 {
-    if( count > HeapPage::GetMaxRecordLength() )
+    if( rec.get_length() > HeapPage::GetMaxRecordLength() )
     {
         throw std::runtime_error( "DirPage::insert_record: record too long" );
     }
@@ -74,10 +74,11 @@ std::optional< PageId > DirPage::insert_record( std::uint32_t count )
 
     for( ; slot != slot_end; slot++ )
     {
-        if( slot->insert_record( count ) )
+        auto ret = slot->insert_record( m_buffer, rec );
+        if( ret.has_value() )
         {
             m_dirty = true;
-            return slot->get_page_id();
+            return ret.value();
         }
     }
     return std::nullopt;
@@ -86,14 +87,14 @@ std::optional< PageId > DirPage::insert_record( std::uint32_t count )
 //
 //
 //
-bool DirPage::remove_record( PageId page_id, std::uint32_t count )
+bool DirPage::remove_record( RecordId record_id )
 {
     DirSlot *slot = get_slot();
     DirSlot * const slot_end = slot + max_slot_no();
 
     for( ; slot != slot_end; slot++ )
     {
-        if( slot->remove_record( page_id, count ) )
+        if( slot->remove_record( m_buffer, record_id ) )
         {
             m_dirty = true;
             return true;

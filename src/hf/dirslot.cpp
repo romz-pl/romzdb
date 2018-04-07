@@ -9,7 +9,7 @@
 // Free space is not corectly ccalculated!!!
 //
 // const std::uint32_t DirSlot::m_max_free_space = HeapPage::GetMaxRecordLength();
-const std::uint32_t DirSlot::m_max_free_space = DiskBlock::Size / 2;
+const std::uint32_t DirSlot::m_max_free_space = DiskBlock::Size;
 
 
 /*
@@ -45,36 +45,41 @@ bool DirSlot::is_valid() const
 //
 //
 //
-bool DirSlot::insert_record( std::uint32_t count )
+std::optional< RecordId > DirSlot::insert_record( BufferMgr& buffer, const Record& rec )
 {
     if( !m_valid )
     {
-        return false;
+        return std::nullopt;
     }
 
-    if( m_free_space >= count )
+    if( m_free_space >= rec.get_length() + sizeof( Slot ) )
     {
-        m_free_space -= count;
-        return true;
+        HeapPage hp( buffer, m_page_id );
+        const SlotId slot_id = hp.Insert( rec );
+        m_free_space = hp.GetFreeSpace().GetValue();
+        return RecordId( m_page_id, slot_id );
     }
 
-    return false;
+    return std::nullopt;
 }
 
 //
 //
 //
-bool DirSlot::remove_record( PageId page_id, std::uint32_t count )
+bool DirSlot::remove_record( BufferMgr& buffer, RecordId record_id )
 {
     if( !m_valid )
     {
         return false;
     }
 
-    if( m_page_id != page_id )
+    if( m_page_id != record_id.get_page_id() )
     {
         return false;
     }
+
+    HeapPage hp( buffer, record_id.get_page_id() );
+    const std::uint16_t count = hp.Remove( record_id.get_slot_id() );
 
     const std::uint32_t space_after_remove = m_free_space + count;
 

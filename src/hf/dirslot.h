@@ -1,9 +1,11 @@
 #ifndef ROMZDB_DIRSLOT_H
 #define ROMZDB_DIRSLOT_H
 
+#include <optional>
 #include "disk/pageid.h"
-//#include "pageoffset.h"
-//#include "record.h"
+#include "record.h"
+#include "buffer/buffermgr.h"
+#include "recordid.h"
 
 class DirSlot
 {
@@ -11,8 +13,8 @@ public:
     // DirSlot();
     // ~DirSlot() = default;
 
-    bool insert_record( std::uint32_t count );
-    bool remove_record( PageId page_id, std::uint32_t count );
+    std::optional< RecordId > insert_record( BufferMgr &buffer, const Record &rec );
+    bool remove_record( BufferMgr& buffer, RecordId record_id );
 
     bool alloc_page( PageId page_id );
     bool dispose_page( PageId page_id );

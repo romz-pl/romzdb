@@ -70,9 +70,9 @@ TEST_F(DirPageFixture, alloc_dispose_page)
 
 TEST_F(DirPageFixture, insert_remove_record)
 {
-    const std::uint32_t count = 2;
+    const Record rec( "aa" );
 
-    EXPECT_FALSE( m_dp->insert_record( count ).has_value() );
+    EXPECT_FALSE( m_dp->insert_record( rec ).has_value() );
 
     auto ret = m_buffer->alloc();
     m_buffer->unpin( ret.first, true );
@@ -81,20 +81,20 @@ TEST_F(DirPageFixture, insert_remove_record)
     const int record_no = DirPage::max_slot_no() / 3;
     for( int i = 0; i < record_no; i++ )
     {
-        EXPECT_TRUE( m_dp->insert_record( count ).has_value() );
+        EXPECT_TRUE( m_dp->insert_record( rec ).has_value() );
     }
 
-    std::set< PageId > sset;
+    std::set< RecordId > sset;
     for( int i = 0; i < record_no; i++ )
     {
-        std::optional< PageId > page_id = m_dp->insert_record( count );
+        std::optional< RecordId > page_id = m_dp->insert_record( rec );
         EXPECT_TRUE( page_id.has_value() );
         sset.insert( page_id.value() );
     }
 
     for( auto v : sset )
     {
-        EXPECT_TRUE( m_dp->remove_record( v, count ) );
+        EXPECT_TRUE( m_dp->remove_record( v ) );
     }
 }
 
@@ -122,8 +122,9 @@ TEST_F(DirPageFixture, insert_failure)
 
 TEST_F(DirPageFixture, insert_record_too_long)
 {
-    const std::uint32_t count = 2 * DiskBlock::Size;
-    EXPECT_ANY_THROW( m_dp->insert_record( count ) );
+    const std::string str( 2 * DiskBlock::Size, 'A' );
+    const Record rec( str );
+    EXPECT_ANY_THROW( m_dp->insert_record( rec ) );
 }
 
 
