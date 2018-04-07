@@ -143,19 +143,20 @@ bool DirPage::dispose_page( PageId page_id )
 //
 //
 //
-std::uint32_t DirPage::get_record_no() const
+std::vector< PageId > DirPage::get_all_page_id() const
 {
-    std::uint32_t ret = 0;
     const DirSlot *slot = get_slot();
     const DirSlot * const slot_end = slot + max_slot_no();
+
+    std::vector< PageId > ret;
 
     for( ; slot != slot_end; slot++ )
     {
         if( slot->is_valid() )
         {
             const PageId page_id = slot->get_page_id();
-            HeapPage hp( m_buffer, page_id );
-            ret += hp.GetRecordNo();
+
+            ret.push_back( page_id );
         }
     }
     return ret;

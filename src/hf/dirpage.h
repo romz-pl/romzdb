@@ -2,6 +2,7 @@
 #define ROMZDB_DIRPAGE_H
 
 #include <optional>
+#include <vector>
 #include "buffer/buffermgr.h"
 #include "dirslot.h"
 #include "page.h"
@@ -23,7 +24,7 @@ public:
     bool alloc_page( PageId page_id );
     bool dispose_page( PageId page_id );
 
-    std::uint32_t get_record_no() const;
+    std::vector< PageId > get_all_page_id() const;
 
 
     bool is_next_page() const;

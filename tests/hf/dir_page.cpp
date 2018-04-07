@@ -2,7 +2,6 @@
 #include "gtest/gtest.h"
 #include "hf/dirpage.h"
 #include "util/temp_path.h"
-#include "util/random_string.h"
 
 class DirPageFixture : public ::testing::Test
 {
@@ -64,6 +63,7 @@ TEST_F(DirPageFixture, alloc_dispose_page)
 
     EXPECT_TRUE( m_dp->alloc_page( page_id ) );
     EXPECT_TRUE( m_dp->dispose_page( page_id ) );
+    EXPECT_FALSE( m_dp->dispose_page( page_id ) );
 }
 
 
