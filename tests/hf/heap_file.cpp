@@ -150,3 +150,45 @@ TEST_F(HeapFileFixture, get)
         EXPECT_ANY_THROW( m_hf->get( v.first ) );
     }
 }
+
+TEST_F(HeapFileFixture, content)
+{
+    std::map< RecordId, Record > smap;
+
+    const std::uint32_t count = 200;
+    const int record_no = 5000;
+
+    for( int i = 0; i < record_no; i++ )
+    {
+        const std::string str = random_string( count );
+        const Record rec( str );
+        RecordId record_id = m_hf->insert( rec );
+        smap.insert( std::make_pair( record_id, rec ) );
+    }
+
+    EXPECT_TRUE( m_hf->get_record_no() == smap.size() );
+
+    for( auto v : smap )
+    {
+       const Record rec = m_hf->get( v.first );
+       EXPECT_TRUE( rec == v.second );
+    }
+
+    // Remove some random elements
+    for( int i = 0; i < record_no / 2; i++ )
+    {
+        auto it = smap.begin();
+        std::advance( it, rand() % smap.size() );
+
+        m_hf->remove( it->first );
+        smap.erase( it );
+    }
+
+    EXPECT_TRUE( m_hf->get_record_no() == smap.size() );
+
+    for( auto v : smap )
+    {
+       const Record rec = m_hf->get( v.first );
+       EXPECT_TRUE( rec == v.second );
+    }
+}
