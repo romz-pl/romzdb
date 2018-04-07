@@ -1,4 +1,5 @@
 #include "dirpage.h"
+#include "heappage.h"
 
 
 const PageId DirPage::m_invalid_page_id = PageId( 0 , 0 );
@@ -29,6 +30,15 @@ DirPage::DirPage( BufferMgr& buffer, PageId page_id )
 DirSlot* DirPage::get_slot()
 {
     DirSlot *slot = reinterpret_cast< DirSlot* >( get_data() + Offset::Slot );
+    return slot;
+}
+
+//
+//
+//
+const DirSlot* DirPage::get_slot() const
+{
+    const DirSlot *slot = reinterpret_cast< const DirSlot* >( get_data() + Offset::Slot );
     return slot;
 }
 
@@ -114,7 +124,7 @@ bool DirPage::dispose_page( PageId page_id )
     DirSlot *slot = get_slot();
     DirSlot * const slot_end = slot + max_slot_no();
 
-   for( ; slot != slot_end; slot++ )
+    for( ; slot != slot_end; slot++ )
     {
         if( slot->dispose_page( page_id ) )
         {
@@ -123,6 +133,27 @@ bool DirPage::dispose_page( PageId page_id )
         }
     }
     return false;
+}
+
+//
+//
+//
+std::uint32_t DirPage::get_record_no() const
+{
+    std::uint32_t ret = 0;
+    const DirSlot *slot = get_slot();
+    const DirSlot * const slot_end = slot + max_slot_no();
+
+    for( ; slot != slot_end; slot++ )
+    {
+        if( slot->is_valid() )
+        {
+            const PageId page_id = slot->get_page_id();
+            HeapPage hp( m_buffer, page_id );
+            ret += hp.GetRecordNo();
+        }
+    }
+    return ret;
 }
 
 

@@ -159,6 +159,8 @@ TEST(HeapFile, get)
         mmap.insert( std::make_pair( record_id, rec ) );
     }
 
+    EXPECT_TRUE( hf.get_record_no() == record_no );
+
     for( auto v : mmap )
     {
         EXPECT_TRUE( hf.get( v.first ) == v.second );
@@ -168,6 +170,8 @@ TEST(HeapFile, get)
     {
         EXPECT_NO_THROW( hf.remove( v.first ) );
     }
+
+    EXPECT_TRUE( hf.get_record_no() == 0 );
 
     for( auto v : mmap )
     {

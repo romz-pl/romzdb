@@ -32,6 +32,14 @@ void DirSlot::make_invalid()
 //
 //
 //
+bool DirSlot::is_valid() const
+{
+    return m_valid;
+}
+
+//
+//
+//
 bool DirSlot::insert_record( std::uint32_t count )
 {
     if( !m_valid )

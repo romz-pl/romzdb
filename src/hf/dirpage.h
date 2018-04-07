@@ -23,6 +23,8 @@ public:
     bool alloc_page( PageId page_id );
     bool dispose_page( PageId page_id );
 
+    std::uint32_t get_record_no() const;
+
 
     bool is_next_page() const;
 
@@ -31,6 +33,7 @@ private:
 
     void init( );
     DirSlot* get_slot();
+    const DirSlot* get_slot() const;
 
 private:
     enum Offset

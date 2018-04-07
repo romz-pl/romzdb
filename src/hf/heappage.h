@@ -74,7 +74,7 @@ public:
     SlotId Insert( const Record& rec );
     uint16_t Remove( SlotId slotId );
 
-    std::size_t GetRecordNo() const;
+    std::uint32_t GetRecordNo() const;
 
     PageOffset GetFreeSpace() const;
     void GetRid( std::vector< RecordId >& rid ) const;

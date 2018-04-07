@@ -176,3 +176,28 @@ void HeapFile::dispose_page( PageId page_id )
         }
     }
 }
+
+//
+//
+//
+std::uint32_t HeapFile::get_record_no() const
+{
+    std::uint32_t ret = 0;
+    PageId dir_page_id = m_header;
+    while( true )
+    {
+        DirPage dp( m_buffer, dir_page_id );
+        ret += dp.get_record_no();
+
+        if( dp.is_next_page() )
+        {
+            dir_page_id = dp.get_next_page();
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    return ret;
+}

@@ -18,6 +18,8 @@ public:
     void remove( RecordId record_id );
     Record get( RecordId record_id );
 
+    std::uint32_t get_record_no() const;
+
 
     void remove_from_dir( PageId page_id, std::uint32_t count );
     PageId insert_into_dir( std::uint32_t count );

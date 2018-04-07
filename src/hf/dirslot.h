@@ -22,6 +22,7 @@ public:
     PageId get_page_id() const;
 
     bool is_empty() const;
+    bool is_valid() const;
 
 private:
     bool m_valid;

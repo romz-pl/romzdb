@@ -116,10 +116,11 @@ void HeapPage::CheckSlotId( SlotId slotIdEx ) const
 //
 //
 //
-std::size_t HeapPage::GetRecordNo() const
+std::uint32_t HeapPage::GetRecordNo() const
 {
     auto pred = []( const Slot& s ){ return s.IsValid(); };
-    return std::count_if( m_slot.begin(), m_slot.end(), pred );
+    const std::size_t v = std::count_if( m_slot.begin(), m_slot.end(), pred );
+    return static_cast< std::uint32_t >( v );
 }
 
 //
