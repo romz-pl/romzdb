@@ -209,3 +209,9 @@ TEST_F(HeapFileFixture, content)
        EXPECT_TRUE( rec == v.second );
     }
 }
+
+TEST_F(HeapFileFixture, remove_non_existing)
+{
+    const RecordId rid ( PageId( 0, 0 ), SlotId( 0 ) );
+    EXPECT_ANY_THROW( m_hf->remove( rid ) );
+}

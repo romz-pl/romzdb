@@ -86,7 +86,7 @@ void HeapFile::remove( RecordId record_id )
         }
         else
         {
-            assert( 0 );
+            throw std::runtime_error( "HeapFile::remove: no such record id" );
         }
     }
 }
