@@ -76,15 +76,43 @@ TEST(HeapFile, insert_remove)
         sset.insert( record_id );
     }
 
+    EXPECT_TRUE( hf.get_record_no() == 2 * record_no );
+
+    std::uint32_t rem_no = 0, cnt = 0;
     for( auto v : sset )
     {
-        EXPECT_NO_THROW( hf.remove( v ) );
+        if( cnt % 2 )
+        {
+            EXPECT_NO_THROW( hf.remove( v ) );
+            rem_no++;
+        }
+        cnt++;
     }
 
-    for( auto v : sset )
+    EXPECT_TRUE( hf.get_record_no() == 2 * record_no - rem_no );
+
+    for( int i = 0; i < record_no; i++ )
     {
-        EXPECT_ANY_THROW( hf.remove( v ) );
+        const std::string str = random_string( 10 );
+        EXPECT_NO_THROW( hf.insert( Record( str ) ) );
     }
+
+    EXPECT_TRUE( hf.get_record_no() == 3 * record_no - rem_no );
+}
+
+TEST(HeapFile, insert_too_long)
+{
+    const uint32_t max_size = ( 1U << 24 );
+    DbFile db_file( ::get_temp_path(), max_size );
+    Space space( db_file );
+    const std::size_t frameNo = 3;
+    BufferMgr bufferMgr( space, frameNo );
+
+    HeapFile hf( bufferMgr );
+
+    const std::uint32_t count = 2 * DiskBlock::Size;
+    const std::string str( count, 'A' );
+    EXPECT_ANY_THROW( hf.insert( Record( str ) ) );
 }
 
 TEST(HeapFile, remove_from_dir)
@@ -165,6 +193,7 @@ TEST(HeapFile, get)
     {
         EXPECT_TRUE( hf.get( v.first ) == v.second );
     }
+
 
     for( auto v : mmap )
     {
