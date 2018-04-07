@@ -131,10 +131,14 @@ PageOffset HeapPage::GetFreeSpace() const
     std::int32_t ret = DiskBlock::Size;
     for( const Slot& s : m_slot )
     {
+        // Size of the record
         ret -= s.m_length.GetValue();
+
+        // Size of the Slot structure
         ret -= sizeof( s );
     }
 
+    // Size of varaiable storing number of slots
     ret -= sizeof( m_slot.size() );
 
     assert( ret >= 0 );
@@ -178,6 +182,7 @@ void HeapPage::FromPage()
     }
 }
 
+/*
 //
 //
 //
@@ -192,23 +197,24 @@ void HeapPage::GetRid( std::vector< RecordId >& rid ) const
     }
 }
 
+
 //
 // Returns maximal allowed record length
 //
-std::size_t HeapPage::GetMaxRecordLength()
+std::uint32_t HeapPage::GetMaxRecordLength()
 {
     // For details of page format, see the function HeapPage::ToPage
 
     std::size_t maxRecordLength = DiskBlock::Size; // This is the size of the page
 
-    // For storing recor, one slot is required. This is the size of the Slot
-    maxRecordLength -= - 2 * sizeof( PageOffset );
+    // For storing record, one slot is required. This is the size of the Slot
+    maxRecordLength -= - sizeof( Slot );
 
     // On the page, always number of records are stored
     maxRecordLength -= sizeof( std::size_t );
 
-    return maxRecordLength;
+    return static_cast< std::uint32_t >( maxRecordLength );
 }
 
-
+*/
 
