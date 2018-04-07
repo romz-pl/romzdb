@@ -64,6 +64,11 @@ void DirPage::init( )
 //
 std::optional< PageId > DirPage::insert_record( std::uint32_t count )
 {
+    if( count > HeapPage::GetMaxRecordLength() )
+    {
+        throw std::runtime_error( "DirPage::insert_record: record too long" );
+    }
+
     DirSlot *slot = get_slot();
     DirSlot * const slot_end = slot + max_slot_no();
 
