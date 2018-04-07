@@ -14,7 +14,6 @@ class Record
 {
 
 public:
-    explicit Record( const std::vector< char >& data );
     explicit Record( const std::string& str );
     Record( const char* data, std::size_t length );
 

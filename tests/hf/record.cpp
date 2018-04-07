@@ -21,3 +21,11 @@ TEST(Record, Comparision)
     EXPECT_TRUE( rec_a < rec_b );
 }
 
+TEST(Record, to_string)
+{
+    const std::string str( "aa" );
+    Record rec( str );
+
+    EXPECT_TRUE( rec.to_string() == str );
+}
+
