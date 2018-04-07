@@ -16,6 +16,7 @@ public:
 
     RecordId insert( const Record& rec );
     void remove( RecordId record_id );
+    Record get( RecordId record_id );
 
 
     void remove_from_dir( PageId page_id, std::uint32_t count );

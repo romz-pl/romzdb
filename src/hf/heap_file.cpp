@@ -112,6 +112,15 @@ void HeapFile::remove_from_dir( PageId page_id, std::uint32_t count )
 //
 //
 //
+Record HeapFile::get( RecordId record_id )
+{
+    HeapPage hp( m_buffer, record_id.get_page_id() );
+    return hp.Get( record_id.get_slot_id() );
+}
+
+//
+//
+//
 PageId HeapFile::alloc_page( )
 {
     const PageId page_id = m_buffer.alloc().first;

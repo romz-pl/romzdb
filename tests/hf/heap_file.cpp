@@ -135,3 +135,42 @@ TEST(HeapFile, remove_from_dir)
         EXPECT_ANY_THROW( hf.remove_from_dir( v, count ) );
     }
 }
+
+TEST(HeapFile, get)
+{
+    const uint32_t max_size = ( 1U << 24 );
+    DbFile db_file( ::get_temp_path(), max_size );
+    Space space( db_file );
+    const std::size_t frameNo = 3;
+    BufferMgr bufferMgr( space, frameNo );
+
+    HeapFile hf( bufferMgr );
+
+    std::map< RecordId, Record > mmap;
+
+    const std::uint32_t count = 20;
+    const int record_no = 3000;
+    for( int i = 0; i < record_no; i++ )
+    {
+        const std::string str = random_string( count );
+        const Record rec( str );
+        const RecordId record_id  = hf.insert( rec );
+
+        mmap.insert( std::make_pair( record_id, rec ) );
+    }
+
+    for( auto v : mmap )
+    {
+        EXPECT_TRUE( hf.get( v.first ) == v.second );
+    }
+
+    for( auto v : mmap )
+    {
+        EXPECT_NO_THROW( hf.remove( v.first ) );
+    }
+
+    for( auto v : mmap )
+    {
+        EXPECT_ANY_THROW( hf.get( v.first ) );
+    }
+}
