@@ -52,7 +52,7 @@ std::optional< RecordId > DirSlot::insert_record( BufferMgr& buffer, const Recor
     {
         HeapPage hp( buffer, m_page_id );
         const SlotId slot_id = hp.Insert( rec );
-        m_free_space = hp.GetFreeSpace().GetValue();
+        m_free_space = hp.GetFreeSpace();
         return RecordId( m_page_id, slot_id );
     }
 

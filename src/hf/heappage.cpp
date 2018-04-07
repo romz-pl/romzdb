@@ -11,10 +11,84 @@
 HeapPage::HeapPage( BufferMgr& buffer, PageId page_id )
     : Page( buffer, page_id )
 {
-    FromPage( );
+    // FromPage( );
 }
 
+//
+//
+//
+std::uint16_t HeapPage::get_free_space() const
+{
+    const char* p = get_data() + Offset::Free_space;
+    std::uint16_t v = *reinterpret_cast< const std::uint16_t* >( p );
+    return v;
+}
 
+//
+//
+//
+void HeapPage::set_free_space( std::uint16_t v )
+{
+    char* p = get_data() + Offset::Free_space;
+    std::memcpy( p, &v, sizeof( std::uint16_t ) );
+    m_dirty = true;
+}
+
+//
+//
+//
+std::uint16_t HeapPage::get_slot_no() const
+{
+    const char* p = get_data() + Offset::Slot_no;
+    std::uint16_t v = *reinterpret_cast< const std::uint16_t* >( p );
+    return v;
+}
+
+//
+//
+//
+void HeapPage::set_slot_no( std::uint16_t v )
+{
+    char* p = get_data() + Offset::Slot_no;
+    std::memcpy( p, &v, sizeof( std::uint16_t ) );
+    m_dirty = true;
+}
+
+//
+//
+//
+Slot* HeapPage::get_slot_array()
+{
+    char* p = get_data() + Offset::Slot_array;
+    return reinterpret_cast< Slot* >( p );
+}
+
+//
+//
+//
+const Slot* HeapPage::get_slot_array() const
+{
+    const char* p = get_data() + Offset::Slot_array;
+    return reinterpret_cast< const Slot* >( p );
+}
+
+//
+//
+//
+Slot* HeapPage::get_slot( std::uint16_t slot_id )
+{
+    // Here must be minus!
+    return get_slot_array() - slot_id;
+}
+
+//
+//
+//
+const Slot* HeapPage::get_slot( std::uint16_t slot_id ) const
+{
+    // Here must be minus!
+    return get_slot_array() - slot_id;
+}
 
 //
 //
@@ -23,13 +97,8 @@ Record HeapPage::Get( SlotId slotIdEx )
 {
     CheckSlotId( slotIdEx );
 
-    const std::uint16_t slotId = slotIdEx.to_uint16();
-    const Slot& slot = m_slot[ slotId ];
-
-    const char* p = get_data() + slot.m_offset.GetValue();
-    Record rec( p, slot.m_length.GetValue() );
-    return rec;
-
+    const std::uint16_t slot_id = slotIdEx.to_uint16();
+    return get_slot( slot_id )->get_record( get_data() );
 }
 
 //
@@ -37,36 +106,69 @@ Record HeapPage::Get( SlotId slotIdEx )
 //
 SlotId HeapPage::Insert( const Record& rec )
 {
-    const PageOffset recLength = PageOffset( rec.get_length() );
+    const std::uint16_t recLength = rec.get_length();
     if( GetFreeSpace() < recLength )
     {
         throw std::runtime_error( "HeapPage::Insert: Not enought space" );
     }
 
-    // New record is alway inserted at he end of current records
-    PageOffset offset( 0 );
-    for( Slot& s : m_slot )
-        offset += s.m_length;
+    Slot* begin = get_slot_array();
+    Slot* end = begin - get_slot_no();
+    Slot* slot = begin;
 
-    auto pred = []( const Slot& s ){ return s.IsValid(); };
-    auto it = std::find_if_not( m_slot.begin(), m_slot.end(), pred );
-    SlotId ret( 0 );
-    if( it == m_slot.end() )
+    bool found = false;
+    for( ; slot != end; slot-- )
     {
-        m_slot.push_back( Slot( offset, recLength ) );
-        ret = SlotId( m_slot.size() - 1 );
-    }
-    else
-    {
-        *it = Slot( offset, recLength );
-        ret = SlotId( it - m_slot.begin() );
+        if( !slot->IsValid() )
+        {
+            found = true;
+            break;
+        }
     }
 
-    char* p = get_data() + offset.GetValue();
-    rec.copy_to_page( p );
+    const std::uint16_t offset = get_free_space();
+    const std::uint16_t length = rec.get_length();
 
-    ToPage();
-    return ret;
+    if( !found )
+    {
+        set_slot_no( get_slot_no() + 1 );
+    }
+
+    *slot = Slot( offset, length );
+    const std::uint32_t slot_id = begin - slot;
+
+    char* dest = get_data() + offset;
+    rec.copy_to_page( dest );
+
+    set_free_space( offset + length );
+    m_dirty = true;
+
+    return SlotId( slot_id );
+
+//    // New record is alway inserted at he end of current records
+//    PageOffset offset( 0 );
+//    for( Slot& s : m_slot )
+//        offset += s.m_length;
+
+//    auto pred = []( const Slot& s ){ return s.IsValid(); };
+//    auto it = std::find_if_not( m_slot.begin(), m_slot.end(), pred );
+//    SlotId ret( 0 );
+//    if( it == m_slot.end() )
+//    {
+//        m_slot.push_back( Slot( offset, recLength ) );
+//        ret = SlotId( m_slot.size() - 1 );
+//    }
+//    else
+//    {
+//        *it = Slot( offset, recLength );
+//        ret = SlotId( it - m_slot.begin() );
+//    }
+
+//    char* p = get_data() + offset.GetValue();
+//    rec.copy_to_page( p );
+
+//    ToPage();
+//    return ret;
 }
 
 //
@@ -78,21 +180,34 @@ std::uint16_t HeapPage::Remove( SlotId slotIdEx )
 
     std::uint16_t slotId = slotIdEx.to_uint16();
 
-    const auto length = m_slot[ slotId ].m_length;
-    m_slot[ slotId ].SetInvalid();
+    Slot* slot = get_slot( slotId );
+    const std::uint16_t length = slot->get_length();
+    const std::uint16_t offset = slot->get_offset();
 
-    // Move records to keep them compactly stored (without holes)
-    auto it = m_slot.begin() + slotId + 1;
-    for( ; it < m_slot.end(); ++it )
+    char* dest = get_data() + offset;
+    char* src = dest + length;
+    assert( get_free_space() >= offset + length );
+    const std::size_t count = get_free_space() - offset - length;
+    std::memmove( dest, src, count );
+
+
+    set_free_space( get_free_space() - length );
+    slot->SetInvalid();
+
+    Slot* begin = get_slot_array();
+    Slot* end = begin - get_slot_no();
+    slot = begin;
+
+    for( ; slot != end; slot-- )
     {
-        if( it->IsValid() )
+        if( slot->IsValid() && slot->get_offset() > offset )
         {
-            it->m_offset -= length;
+            slot->dec_offset( length );
         }
     }
 
-    ToPage();
-    return length.GetValue();
+    m_dirty = true;
+    return length;
 }
 
 //
@@ -102,12 +217,12 @@ void HeapPage::CheckSlotId( SlotId slotIdEx ) const
 {
     const std::uint16_t slotId = slotIdEx.to_uint16();
 
-    if( slotId >= m_slot.size() )
+    if( slotId >= get_slot_no() )
     {
         throw std::runtime_error( "HeapPage::CheckSlotId: Slot '" + std::to_string( slotId ) + "' does not exist." );
     }
 
-    if( !m_slot[ slotId ].IsValid() )
+    if( !get_slot( slotId )->IsValid() )
     {
         throw std::runtime_error( "HeapPage::CheckSlotId: Invalid slot." );
     }
@@ -118,101 +233,66 @@ void HeapPage::CheckSlotId( SlotId slotIdEx ) const
 //
 std::uint32_t HeapPage::GetRecordNo() const
 {
-    auto pred = []( const Slot& s ){ return s.IsValid(); };
-    const std::size_t v = std::count_if( m_slot.begin(), m_slot.end(), pred );
-    return static_cast< std::uint32_t >( v );
+    const Slot* begin = get_slot_array();
+    const Slot* end = begin - get_slot_no();
+
+    std::uint32_t ret = 0;
+    for( const Slot* slot = begin; slot != end; slot-- )
+    {
+        if( slot->IsValid() )
+            ret++;
+    }
+    return ret;
 }
 
 //
 // Returns free space on the Heap File
 //
-PageOffset HeapPage::GetFreeSpace() const
+std::uint16_t HeapPage::GetFreeSpace() const
 {
-    std::int32_t ret = DiskBlock::Size;
-    for( const Slot& s : m_slot )
-    {
-        // Size of the record
-        ret -= s.m_length.GetValue();
+    const Slot* begin = get_slot_array();
+    const Slot* slot_end = begin - get_slot_no();
 
+    std::uint16_t ret = DiskBlock::Size;
+
+    // free space
+    ret -= sizeof( std::uint16_t );
+
+    // slot no
+    ret -= sizeof( std::uint16_t );
+
+    for( const Slot* slot = begin; slot != slot_end; slot-- )
+    {
         // Size of the Slot structure
-        ret -= sizeof( s );
-    }
+        ret -= sizeof( Slot );
 
-    // Size of varaiable storing number of slots
-    ret -= sizeof( m_slot.size() );
-
-    assert( ret >= 0 );
-    return PageOffset( ret );
-
-}
-
-//
-//
-//
-void HeapPage::ToPage( )
-{
-    char* p = get_data() + DiskBlock::Size;
-
-    std::size_t size = m_slot.size();
-    p -= sizeof( size );
-    std::memcpy( p, &size, sizeof( size ) );
-
-    for( const Slot& s : m_slot )
-    {
-        s.ToPage( p );
-    }
-    m_dirty = true;
-}
-
-//
-//
-//
-void HeapPage::FromPage()
-{
-    const char* p = get_data() + DiskBlock::Size;
-
-    std::size_t size = 0;
-    p -= sizeof( size );
-    std::memcpy( &size, p, sizeof( size ) );
-
-    for( std::size_t i = 0; i < size; i++ )
-    {
-        const Slot slot = Slot::FromPage( p );
-        m_slot.push_back( slot );
-    }
-}
-
-/*
-//
-//
-//
-void HeapPage::GetRid( std::vector< RecordId >& rid ) const
-{
-    for( std::size_t i = 0; i < m_slot.size(); i++ )
-    {
-        if( m_slot[ i ].IsValid() )
+        if( slot->IsValid() )
         {
-            rid.push_back( RecordId( get_page_id(), SlotId( i ) ) );
+            ret -= slot->get_length();
         }
     }
-}
-*/
+    // For possible new slot
+    ret -= sizeof( Slot );
 
+    return ret;
+}
 
 //
 // Returns maximal allowed record length
 //
 std::uint32_t HeapPage::GetMaxRecordLength()
 {
-    // For details of page format, see the function HeapPage::ToPage
-
     std::size_t maxRecordLength = DiskBlock::Size; // This is the size of the page
 
-    // For storing record, one slot is required. This is the size of the Slot
-    maxRecordLength -= sizeof( Slot );
+    // free space
+    maxRecordLength -= sizeof( std::uint16_t );
 
-    // On the page, always number of records are stored
-    maxRecordLength -= sizeof( std::size_t );
+    // slot no
+    maxRecordLength -= sizeof( std::uint16_t );
+
+    // For storing record, one slot is required. This is the size of the Slot
+    maxRecordLength -= 2 * sizeof( Slot );
+
 
     return static_cast< std::uint32_t >( maxRecordLength );
 }

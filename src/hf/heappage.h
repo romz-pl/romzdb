@@ -47,20 +47,10 @@
 //
 //  End-of-exerpt
 //
-/*
-
-//
-#include "buffer/page.h"
-
-#include "buffer/buffermgr.h"
-#include <vector>
-//
-#include "recordid.h"*/
 
 #include "page.h"
 #include "record.h"
 #include "slotid.h"
-#include "pageoffset.h"
 #include "slot.h"
 #include "recordid.h"
 
@@ -75,20 +65,35 @@ public:
     uint16_t Remove( SlotId slotId );
 
     std::uint32_t GetRecordNo() const;
-
-    PageOffset GetFreeSpace() const;
-    // void GetRid( std::vector< RecordId >& rid ) const;
+    std::uint16_t GetFreeSpace() const;
 
     static std::uint32_t GetMaxRecordLength();
-
 
 private:
     std::size_t GetSlotNo() const;
     Slot GetSlot( SlotId slotId ) const;
     void CheckSlotId( SlotId slotIdEx ) const;
 
-    void ToPage();
-    void FromPage( );
+    std::uint16_t get_free_space() const;
+    void set_free_space( std::uint16_t v );
+
+    std::uint16_t get_slot_no() const;
+    void set_slot_no( std::uint16_t v );
+
+    Slot* get_slot_array();
+    const Slot* get_slot_array() const;
+
+    Slot* get_slot( std::uint16_t slot_id );
+    const Slot* get_slot( std::uint16_t slot_id ) const;
+
+
+    enum Offset
+    {
+        Free_space = DiskBlock::Size - sizeof( std::uint16_t ),
+        Slot_no = Free_space - sizeof( std::uint16_t ),
+        Slot_array = Slot_no - sizeof( Slot )
+
+    };
 
 private:
     std::vector< Slot > m_slot;
