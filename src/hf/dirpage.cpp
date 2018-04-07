@@ -122,24 +122,6 @@ bool DirPage::alloc_page( )
     return false;
 }
 
-//
-//
-//
-bool DirPage::dispose_page( PageId page_id )
-{
-    DirSlot *slot = get_slot();
-    DirSlot * const slot_end = slot + max_slot_no();
-
-    for( ; slot != slot_end; slot++ )
-    {
-        if( slot->dispose_page( page_id ) )
-        {
-            m_dirty = true;
-            return true;
-        }
-    }
-    return false;
-}
 
 //
 //

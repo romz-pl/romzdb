@@ -97,7 +97,7 @@ TEST_F(DirPageFixture, insert_remove_record)
 
 TEST_F(DirPageFixture, insert_failure)
 {
-    const std::uint32_t count = HeapPage::GetMaxRecordLength();
+    const std::uint32_t count = HeapPage::GetMaxRecordLength() - 30;
     const std::string str( count, 'A' );
     const Record rec( str );
 

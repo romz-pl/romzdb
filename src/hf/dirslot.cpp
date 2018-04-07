@@ -5,7 +5,7 @@
 #include "heappage.h"
 
 
-const std::uint32_t DirSlot::m_max_free_space = DiskBlock::Size;
+const std::uint32_t DirSlot::m_max_free_space = HeapPage::GetMaxRecordLength();
 
 
 /*
@@ -69,22 +69,24 @@ bool DirSlot::remove_record( BufferMgr& buffer, RecordId record_id )
         return false;
     }
 
-    if( m_page_id != record_id.get_page_id() )
+    const PageId page_id = record_id.get_page_id();
+
+    if( m_page_id != page_id )
     {
         return false;
     }
 
-    HeapPage hp( buffer, record_id.get_page_id() );
-    const std::uint16_t count = hp.Remove( record_id.get_slot_id() );
-
-    const std::uint32_t space_after_remove = m_free_space + count;
-
-    if( space_after_remove > m_max_free_space )
-    {
-        throw std::runtime_error( "DirSlot::remove_record: More space removed than allocated" );
+    { // Must be in local scope!
+        HeapPage hp( buffer, page_id );
+        hp.Remove( record_id.get_slot_id() );
+        m_free_space = hp.GetFreeSpace();
     }
 
-    m_free_space = space_after_remove;
+    if( is_empty() )
+    {
+        buffer.dispose( page_id );
+        m_valid = false;
+    }
     return true;
 }
 
@@ -106,30 +108,7 @@ bool DirSlot::alloc_page( BufferMgr& buffer )
     return false;
 }
 
-//
-//
-//
-bool DirSlot::dispose_page( PageId page_id )
-{
-    if( !m_valid )
-    {
-        return false;
-    }
 
-    if( !is_empty() )
-    {
-        throw std::runtime_error( "DirSlot::dispose_page: The page is not empty" );
-    }
-
-    if( m_page_id != page_id )
-    {
-        return false;
-    }
-
-    m_valid = false;
-    return true;
-
-}
 
 //
 //

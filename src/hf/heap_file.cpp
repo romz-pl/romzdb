@@ -129,31 +129,6 @@ void HeapFile::alloc_page( )
     }
 }
 
-//
-//
-//
-void HeapFile::dispose_page( PageId page_id )
-{
-    PageId dir_page_id = m_header;
-    while( true )
-    {
-        DirPage dp( m_buffer, dir_page_id );
-        if( dp.dispose_page( page_id ) )
-        {
-            m_buffer.dispose( page_id );
-            return;
-        }
-
-        if( dp.is_next_page() )
-        {
-            dir_page_id = dp.get_next_page();
-        }
-        else
-        {
-            throw std::runtime_error( "HeapFile::free_page: page not found" );
-        }
-    }
-}
 
 //
 //

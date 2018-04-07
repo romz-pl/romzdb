@@ -24,7 +24,6 @@ public:
 
 private:
     void alloc_page( );
-    void dispose_page( PageId page_id );
 
     std::uint64_t get_page_no() const;
 

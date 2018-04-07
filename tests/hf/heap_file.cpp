@@ -114,6 +114,23 @@ TEST_F(HeapFileFixture, insert_too_long)
     EXPECT_ANY_THROW( m_hf->insert( Record( str ) ) );
 }
 
+TEST_F(HeapFileFixture, insert_fixed_length)
+{
+    const int record_no = 300;
+    std::set< RecordId > sset;
+
+    for( int i = 0; i < record_no; i++ )
+    {
+        const std::string str( 1000, 'A' );
+        RecordId record_id = m_hf->insert( Record( str ) );
+        sset.insert( record_id );
+    }
+
+    for( auto v : sset )
+    {
+        EXPECT_NO_THROW( m_hf->remove( v ) );
+    }
+}
 
 TEST_F(HeapFileFixture, get)
 {

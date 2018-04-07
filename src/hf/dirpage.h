@@ -23,7 +23,6 @@ public:
     bool remove_record( RecordId record_id );
 
     bool alloc_page();
-    bool dispose_page( PageId page_id );
 
 
     bool is_next_page() const;

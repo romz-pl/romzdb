@@ -1,7 +1,7 @@
 #include <cassert>
 #include <cstring>
 #include "heappage.h"
-
+#include <iostream>
 
 
 //
@@ -152,9 +152,9 @@ std::uint16_t HeapPage::Remove( SlotId slotIdEx )
 {
     CheckSlotId( slotIdEx );
 
-    std::uint16_t slotId = slotIdEx.to_uint16();
+    const std::uint16_t slot_id = slotIdEx.to_uint16();
 
-    Slot* slot = get_slot( slotId );
+    Slot* slot = get_slot( slot_id );
     const std::uint16_t length = slot->get_length();
     const std::uint16_t offset = slot->get_offset();
 
@@ -168,8 +168,8 @@ std::uint16_t HeapPage::Remove( SlotId slotIdEx )
     set_free_space( get_free_space() - length );
     slot->SetInvalid();
 
-    Slot* begin = get_slot_array();
-    Slot* end = begin - get_slot_no();
+    Slot* const begin = get_slot_array();
+    Slot* const end = begin - get_slot_no();
     slot = begin;
 
     for( ; slot != end; slot-- )
@@ -179,6 +179,22 @@ std::uint16_t HeapPage::Remove( SlotId slotIdEx )
             slot->dec_offset( length );
         }
     }
+
+
+    // Remove slots
+    slot = end + 1;
+    for( ; slot != begin + 1; slot++ )
+    {
+        if( !slot->IsValid()  )
+        {
+            set_slot_no( get_slot_no() - 1 );
+        }
+        else
+        {
+            break;
+        }
+    }
+
 
     m_dirty = true;
     return length;
@@ -265,7 +281,7 @@ std::uint32_t HeapPage::GetMaxRecordLength()
     maxRecordLength -= sizeof( std::uint16_t );
 
     // For storing record, one slot is required. This is the size of the Slot
-    maxRecordLength -= 2 * sizeof( Slot );
+    maxRecordLength -= sizeof( Slot );
 
 
     return static_cast< std::uint32_t >( maxRecordLength );
