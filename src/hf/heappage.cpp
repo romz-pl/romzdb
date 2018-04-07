@@ -1,6 +1,5 @@
 #include <cassert>
 #include <cstring>
-#include <algorithm>
 #include "heappage.h"
 
 
@@ -11,7 +10,7 @@
 HeapPage::HeapPage( BufferMgr& buffer, PageId page_id )
     : Page( buffer, page_id )
 {
-    // FromPage( );
+
 }
 
 //
@@ -144,31 +143,6 @@ SlotId HeapPage::Insert( const Record& rec )
     m_dirty = true;
 
     return SlotId( slot_id );
-
-//    // New record is alway inserted at he end of current records
-//    PageOffset offset( 0 );
-//    for( Slot& s : m_slot )
-//        offset += s.m_length;
-
-//    auto pred = []( const Slot& s ){ return s.IsValid(); };
-//    auto it = std::find_if_not( m_slot.begin(), m_slot.end(), pred );
-//    SlotId ret( 0 );
-//    if( it == m_slot.end() )
-//    {
-//        m_slot.push_back( Slot( offset, recLength ) );
-//        ret = SlotId( m_slot.size() - 1 );
-//    }
-//    else
-//    {
-//        *it = Slot( offset, recLength );
-//        ret = SlotId( it - m_slot.begin() );
-//    }
-
-//    char* p = get_data() + offset.GetValue();
-//    rec.copy_to_page( p );
-
-//    ToPage();
-//    return ret;
 }
 
 //

@@ -62,7 +62,7 @@ public:
 
     Record Get( SlotId slotId );
     SlotId Insert( const Record& rec );
-    uint16_t Remove( SlotId slotId );
+    std::uint16_t Remove( SlotId slotId );
 
     std::uint32_t GetRecordNo() const;
     std::uint16_t GetFreeSpace() const;
@@ -94,10 +94,6 @@ private:
         Slot_array = Slot_no - sizeof( Slot )
 
     };
-
-private:
-    std::vector< Slot > m_slot;
-
 };
 
 #endif
