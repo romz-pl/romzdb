@@ -30,13 +30,6 @@ void DirSlot::make_invalid()
     m_valid = false;
 }
 
-//
-//
-//
-bool DirSlot::is_valid() const
-{
-    return m_valid;
-}
 
 //
 //
