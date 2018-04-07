@@ -22,7 +22,7 @@ public:
 
     PageId get_header_page() const;
 
-// private:
+private:
     PageId alloc_page( );
     void dispose_page( PageId page_id );
 

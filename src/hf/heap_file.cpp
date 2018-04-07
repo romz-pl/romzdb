@@ -86,7 +86,7 @@ void HeapFile::remove( RecordId record_id )
         }
         else
         {
-            throw std::runtime_error( "HeapFile::remove: not removed" );
+            assert( 0 );
         }
     }
 }
