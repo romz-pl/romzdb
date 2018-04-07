@@ -19,9 +19,9 @@ public:
     bool alloc_page( PageId page_id );
     bool dispose_page( PageId page_id );
 
-    void make_invalid();
+    std::uint32_t get_record_no( BufferMgr& buffer ) const;
 
-    PageId get_page_id() const;
+    void make_invalid();
 
     bool is_empty() const;
     bool is_valid() const;

@@ -5,10 +5,6 @@
 #include "heappage.h"
 
 
-//
-// Free space is not corectly ccalculated!!!
-//
-// const std::uint32_t DirSlot::m_max_free_space = HeapPage::GetMaxRecordLength();
 const std::uint32_t DirSlot::m_max_free_space = DiskBlock::Size;
 
 
@@ -136,9 +132,20 @@ bool DirSlot::dispose_page( PageId page_id )
 //
 //
 //
-PageId DirSlot::get_page_id() const
+std::uint32_t DirSlot::get_record_no( BufferMgr& buffer ) const
 {
-    return m_page_id;
+    if( !m_valid )
+    {
+        return 0;
+    }
+
+    if( is_empty() )
+    {
+        return 0;
+    }
+
+    HeapPage hp( buffer, m_page_id );
+    return hp.GetRecordNo();
 }
 
 //

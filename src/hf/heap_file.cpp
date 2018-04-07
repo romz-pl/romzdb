@@ -169,13 +169,8 @@ std::uint32_t HeapFile::get_record_no() const
     while( true )
     {
         DirPage dp( m_buffer, dir_page_id );
-        std::vector< PageId > all_page_id = dp.get_all_page_id();
 
-        for( auto v : all_page_id )
-        {
-            HeapPage hp( m_buffer, v );
-            ret += hp.GetRecordNo();
-        }
+        ret += dp.get_record_no();
 
         if( dp.is_next_page() )
         {

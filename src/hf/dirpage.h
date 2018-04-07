@@ -25,12 +25,12 @@ public:
     bool alloc_page( PageId page_id );
     bool dispose_page( PageId page_id );
 
-    std::vector< PageId > get_all_page_id() const;
-
 
     bool is_next_page() const;
 
     static std::uint32_t max_slot_no();
+
+    std::uint32_t get_record_no() const;
 
 private:
     void init( );
