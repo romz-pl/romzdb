@@ -80,7 +80,7 @@ std::uint16_t HeapPage::Remove( SlotId slotIdEx )
 
     const auto length = m_slot[ slotId ].m_length;
     m_slot[ slotId ].SetInvalid();
-/*
+
     // Move records to keep them compactly stored (without holes)
     auto it = m_slot.begin() + slotId + 1;
     for( ; it < m_slot.end(); ++it )
@@ -90,7 +90,7 @@ std::uint16_t HeapPage::Remove( SlotId slotIdEx )
             it->m_offset -= length;
         }
     }
-    */
+
     ToPage();
     return length.GetValue();
 }
