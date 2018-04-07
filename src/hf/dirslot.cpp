@@ -5,7 +5,7 @@
 
 
 
-const std::uint32_t DirSlot::m_max_free_space = DiskBlock::Size;
+const std::uint32_t DirSlot::m_max_free_space = DiskBlock::Size / 2;
 
 /*
 //
@@ -27,6 +27,14 @@ DirSlot::DirSlot(  )
 void DirSlot::make_invalid()
 {
     m_valid = false;
+}
+
+//
+//
+//
+bool DirSlot::is_valid() const
+{
+    return m_valid;
 }
 
 //

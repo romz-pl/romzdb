@@ -3,17 +3,16 @@
 
 #include <optional>
 #include "buffer/buffermgr.h"
+#include "dirslot.h"
+#include "page.h"
 
 
-
-class DirPage
+class DirPage : public Page
 {
 public:
     explicit DirPage( BufferMgr& buffer );
     DirPage( BufferMgr& buffer, PageId page_id );
-    ~DirPage();
-
-
+    ~DirPage() = default;
 
     PageId get_next_page() const;
     void set_next_page( PageId id );
@@ -24,31 +23,28 @@ public:
     bool alloc_page( PageId page_id );
     bool dispose_page( PageId page_id );
 
+    std::uint32_t get_record_no() const;
+
 
     bool is_next_page() const;
-
-    PageId get_page_id( ) const;
 
 private:
     std::uint32_t max_slot_no() const;
 
     void init( );
+    DirSlot* get_slot();
+    const DirSlot* get_slot() const;
 
 private:
     enum Offset
     {
         Next_page = 0,
-        Array = Next_page + sizeof( PageId )
+        Slot = Next_page + sizeof( PageId )
     };
 
 private:
-    BufferMgr& m_buffer;
 
-    /*const*/ PageId m_page_id;
-
-    DiskBlock* m_block;
-
-    bool m_dirty;
+    static const PageId m_invalid_page_id;
 };
 
 #endif

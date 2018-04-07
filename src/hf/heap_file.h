@@ -11,11 +11,18 @@ class HeapFile
 {
 public:
     explicit HeapFile( BufferMgr& buffer );
-    HeapFile( BufferMgr& buffer, PageId header );
+    HeapFile( BufferMgr& buffe, PageId header_page_id );
     ~HeapFile() = default;
 
-    PageId insert( std::uint32_t count );
-    void remove( PageId page_id, std::uint32_t count );
+    RecordId insert( const Record& rec );
+    void remove( RecordId record_id );
+    Record get( RecordId record_id );
+
+    std::uint32_t get_record_no() const;
+
+
+    void remove_from_dir( PageId page_id, std::uint32_t count );
+    PageId insert_into_dir( std::uint32_t count );
 
     PageId get_header_page() const;
 
@@ -28,10 +35,11 @@ public:
 private:
     void InsertHeapPage();
 
+
 private:
     BufferMgr& m_buffer;
 
-    DirPage m_header;
+    PageId m_header;
 
 };
 

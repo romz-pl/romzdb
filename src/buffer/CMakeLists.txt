@@ -4,7 +4,6 @@ set( LIB_NAME romzdb-buffer )
 add_library( ${LIB_NAME} STATIC
     buffermgr.cpp
     frame.cpp
-    page.cpp
 )
 
 

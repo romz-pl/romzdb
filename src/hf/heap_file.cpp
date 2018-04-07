@@ -1,23 +1,24 @@
-#include "heap_file.h"
-#include <string>
 #include <stdexcept>
-#include <cassert>
+#include "heap_file.h"
+#include "heappage.h"
 
 //
 //
 //
 HeapFile::HeapFile( BufferMgr& buffer )
     : m_buffer( buffer )
-    , m_header( buffer )
+    , m_header( 0, 0 )
 {
+    DirPage dp( buffer ); // Initialize the first page in directory
+    m_header = dp.get_page_id();
 }
 
 //
 //
 //
-HeapFile::HeapFile( BufferMgr& buffer, PageId header )
+HeapFile::HeapFile( BufferMgr& buffer, PageId header_page_id )
     : m_buffer( buffer )
-    , m_header( buffer, header )
+    , m_header( header_page_id )
 {
 
 }
@@ -27,15 +28,32 @@ HeapFile::HeapFile( BufferMgr& buffer, PageId header )
 //
 PageId HeapFile::get_header_page() const
 {
-    return m_header.get_page_id();
+    return m_header;
 }
 
 //
 //
 //
-PageId HeapFile::insert( std::uint32_t count )
+RecordId HeapFile::insert( const Record& rec )
 {
-    PageId dir_page_id = m_header.get_page_id();
+    if( rec.get_length() > HeapPage::GetMaxRecordLength() )
+    {
+        throw std::runtime_error( "HeapFile::insert: record too long" );
+    }
+
+    const PageId page_id = insert_into_dir( rec.get_length() );
+    HeapPage hp( m_buffer, page_id );
+    const SlotId slot_id = hp.Insert( rec );
+
+    return RecordId( page_id, slot_id );
+}
+
+//
+//
+//
+PageId HeapFile::insert_into_dir( std::uint32_t count )
+{
+    PageId dir_page_id = m_header;
     while( true )
     {
         DirPage dp( m_buffer, dir_page_id );
@@ -56,16 +74,27 @@ PageId HeapFile::insert( std::uint32_t count )
     }
 
     alloc_page();
-    return insert( count );
+    return insert_into_dir( count );
+}
+
+//
+//
+//
+void HeapFile::remove( RecordId record_id )
+{
+    HeapPage hp( m_buffer, record_id.get_page_id() );
+    const std::uint16_t count = hp.Remove( record_id.get_slot_id() );
+
+    remove_from_dir( record_id.get_page_id(), count );
 }
 
 
 //
 //
 //
-void HeapFile::remove( PageId page_id, std::uint32_t count )
+void HeapFile::remove_from_dir( PageId page_id, std::uint32_t count )
 {
-    PageId dir_page_id = m_header.get_page_id();
+    PageId dir_page_id = m_header;
     while( true )
     {
         DirPage dp( m_buffer, dir_page_id );
@@ -88,12 +117,21 @@ void HeapFile::remove( PageId page_id, std::uint32_t count )
 //
 //
 //
+Record HeapFile::get( RecordId record_id )
+{
+    HeapPage hp( m_buffer, record_id.get_page_id() );
+    return hp.Get( record_id.get_slot_id() );
+}
+
+//
+//
+//
 PageId HeapFile::alloc_page( )
 {
     const PageId page_id = m_buffer.alloc().first;
     m_buffer.unpin( page_id, true );
 
-    PageId dir_page_id = m_header.get_page_id();
+    PageId dir_page_id = m_header;
     while( true )
     {
         DirPage dp( m_buffer, dir_page_id );
@@ -123,7 +161,7 @@ PageId HeapFile::alloc_page( )
 //
 void HeapFile::dispose_page( PageId page_id )
 {
-    PageId dir_page_id = m_header.get_page_id();
+    PageId dir_page_id = m_header;
     while( true )
     {
         DirPage dp( m_buffer, dir_page_id );
@@ -142,4 +180,29 @@ void HeapFile::dispose_page( PageId page_id )
             throw std::runtime_error( "HeapFile::free_page: page not found" );
         }
     }
+}
+
+//
+//
+//
+std::uint32_t HeapFile::get_record_no() const
+{
+    std::uint32_t ret = 0;
+    PageId dir_page_id = m_header;
+    while( true )
+    {
+        DirPage dp( m_buffer, dir_page_id );
+        ret += dp.get_record_no();
+
+        if( dp.is_next_page() )
+        {
+            dir_page_id = dp.get_next_page();
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    return ret;
 }

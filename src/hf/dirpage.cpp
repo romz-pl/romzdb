@@ -1,25 +1,15 @@
 #include "dirpage.h"
-#include <cassert>
-#include <algorithm>
-#include <stdexcept>
-#include <algorithm>
-#include <string>
-#include <cstring>
-#include <utility>
-#include "dirslot.h"
+#include "heappage.h"
+
+
+const PageId DirPage::m_invalid_page_id = PageId( 0 , 0 );
 
 //
 //
 //
 DirPage::DirPage( BufferMgr& buffer )
-    : m_buffer( buffer )
-    , m_page_id( 0, 0 )
-    , m_block( nullptr )
-    , m_dirty( false )
+    : Page( buffer )
 {
-    auto ret = m_buffer.alloc();
-    m_page_id = ret.first;
-    m_block = ret.second;
 
     init();
 }
@@ -29,28 +19,27 @@ DirPage::DirPage( BufferMgr& buffer )
 //
 //
 DirPage::DirPage( BufferMgr& buffer, PageId page_id )
-    : m_buffer( buffer )
-    , m_page_id( page_id )
-    , m_block( nullptr )
-    , m_dirty( false )
+    : Page( buffer, page_id )
 {
-    m_block = m_buffer.pin( page_id );
+
 }
 
 //
 //
 //
-DirPage::~DirPage()
+DirSlot* DirPage::get_slot()
 {
-    m_buffer.unpin( m_page_id, m_dirty );
+    DirSlot *slot = reinterpret_cast< DirSlot* >( get_data() + Offset::Slot );
+    return slot;
 }
 
 //
 //
 //
-PageId DirPage::get_page_id( ) const
+const DirSlot* DirPage::get_slot() const
 {
-    return m_page_id;
+    const DirSlot *slot = reinterpret_cast< const DirSlot* >( get_data() + Offset::Slot );
+    return slot;
 }
 
 //
@@ -58,11 +47,12 @@ PageId DirPage::get_page_id( ) const
 //
 void DirPage::init( )
 {
-    set_next_page( PageId( 0, 0 ) );
+    set_next_page( m_invalid_page_id );
 
-    DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
+    DirSlot *slot = get_slot();
+    DirSlot * const slot_end = slot + max_slot_no();
 
-    for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
+    for( ; slot != slot_end; slot++ )
     {
         slot->make_invalid( );
     }
@@ -74,9 +64,10 @@ void DirPage::init( )
 //
 std::optional< PageId > DirPage::insert_record( std::uint32_t count )
 {
-    DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
+    DirSlot *slot = get_slot();
+    DirSlot * const slot_end = slot + max_slot_no();
 
-    for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
+    for( ; slot != slot_end; slot++ )
     {
         if( slot->insert_record( count ) )
         {
@@ -92,9 +83,10 @@ std::optional< PageId > DirPage::insert_record( std::uint32_t count )
 //
 bool DirPage::remove_record( PageId page_id, std::uint32_t count )
 {
-    DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
+    DirSlot *slot = get_slot();
+    DirSlot * const slot_end = slot + max_slot_no();
 
-    for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
+    for( ; slot != slot_end; slot++ )
     {
         if( slot->remove_record( page_id, count ) )
         {
@@ -110,9 +102,10 @@ bool DirPage::remove_record( PageId page_id, std::uint32_t count )
 //
 bool DirPage::alloc_page( PageId page_id )
 {
-    DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
+    DirSlot *slot = get_slot();
+    DirSlot * const slot_end = slot + max_slot_no();
 
-    for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
+    for( ; slot != slot_end; slot++ )
     {
         if( slot->alloc_page( page_id ) )
         {
@@ -128,9 +121,10 @@ bool DirPage::alloc_page( PageId page_id )
 //
 bool DirPage::dispose_page( PageId page_id )
 {
-    DirSlot *slot = (DirSlot*)( m_block->GetData() + Offset::Array );
+    DirSlot *slot = get_slot();
+    DirSlot * const slot_end = slot + max_slot_no();
 
-    for( std::uint32_t i = 0; i < max_slot_no(); i++, slot++ )
+    for( ; slot != slot_end; slot++ )
     {
         if( slot->dispose_page( page_id ) )
         {
@@ -141,15 +135,34 @@ bool DirPage::dispose_page( PageId page_id )
     return false;
 }
 
+//
+//
+//
+std::uint32_t DirPage::get_record_no() const
+{
+    std::uint32_t ret = 0;
+    const DirSlot *slot = get_slot();
+    const DirSlot * const slot_end = slot + max_slot_no();
+
+    for( ; slot != slot_end; slot++ )
+    {
+        if( slot->is_valid() )
+        {
+            const PageId page_id = slot->get_page_id();
+            HeapPage hp( m_buffer, page_id );
+            ret += hp.GetRecordNo();
+        }
+    }
+    return ret;
+}
+
 
 //
 //
 //
 std::uint32_t DirPage::max_slot_no() const
 {
-    constexpr std::uint32_t v =
-        ( DiskBlock::Size - sizeof( PageId ) - sizeof( std::uint32_t ) )
-         / ( sizeof( DirSlot ) );
+    constexpr std::uint32_t v = ( DiskBlock::Size - sizeof( PageId ) ) / ( sizeof( DirSlot ) );
 
     return v;
 }
@@ -160,9 +173,9 @@ std::uint32_t DirPage::max_slot_no() const
 //
 bool DirPage::is_next_page() const
 {
-    PageId *p = (PageId*)( m_block->GetData() + Offset::Next_page );
+    const PageId *p = reinterpret_cast< const PageId* >( get_data() + Offset::Next_page );
     const PageId id = *p;
-    return ( id != PageId( 0, 0 ) );
+    return ( id != m_invalid_page_id );
 }
 
 
@@ -171,7 +184,7 @@ bool DirPage::is_next_page() const
 //
 PageId DirPage::get_next_page() const
 {
-    PageId *p = (PageId*)( m_block->GetData() + Offset::Next_page );
+    const PageId *p = reinterpret_cast< const PageId* >( get_data() + Offset::Next_page );
     const PageId id = *p;
     return id;
 }
@@ -181,7 +194,7 @@ PageId DirPage::get_next_page() const
 //
 void DirPage::set_next_page( PageId id )
 {
-    PageId *p = (PageId*)( m_block->GetData() + Offset::Next_page );
+    PageId *p = reinterpret_cast< PageId* >( get_data() + Offset::Next_page );
     *p = id;
     m_dirty = true;
 }

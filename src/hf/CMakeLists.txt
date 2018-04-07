@@ -7,12 +7,13 @@ add_library( ${LIB_NAME} STATIC
     dirpage.cpp
     dirslot.cpp
     heap_file.cpp
-    #heappage.cpp
-    #pageoffset.cpp
+    heappage.cpp
+    page.cpp
+    pageoffset.cpp
     record.cpp
     recordid.cpp
     #scaner.cpp
-    #slot.cpp
+    slot.cpp
     slotid.cpp
 )
 

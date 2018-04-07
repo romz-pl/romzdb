@@ -6,7 +6,7 @@ add_executable( ${TEST_NAME}
     # dirpage.cpp
     #dir.cpp
     heap_file.cpp
-    #heappage.cpp
+    heap_page.cpp
     main.cpp
     # record.cpp
     recordid.cpp
