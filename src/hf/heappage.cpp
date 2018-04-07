@@ -209,7 +209,7 @@ std::uint32_t HeapPage::GetMaxRecordLength()
     std::size_t maxRecordLength = DiskBlock::Size; // This is the size of the page
 
     // For storing record, one slot is required. This is the size of the Slot
-    maxRecordLength -= - sizeof( Slot );
+    maxRecordLength -= sizeof( Slot );
 
     // On the page, always number of records are stored
     maxRecordLength -= sizeof( std::size_t );
