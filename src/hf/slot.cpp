@@ -1,24 +1,32 @@
-#include "slot.h"
 #include <cstring>
+#include <limits>
+#include "slot.h"
 
 
 //
 //
 //
-Slot::Slot( PageOffset offset, PageOffset length )
+const std::uint16_t Slot::m_invalid = std::numeric_limits< std::uint16_t >::max();
+
+
+//
+//
+//
+Slot::Slot( std::uint16_t offset, std::uint16_t length )
     : m_offset( offset )
     , m_length( length )
 {
-
+    assert( m_offset != m_invalid );
 }
+
 
 //
 //
 //
 void Slot::SetInvalid()
 {
-    m_offset.SetInvalid();
-    m_length = PageOffset( 0 );
+    m_offset = m_invalid;
+    m_length = 0;
 }
 
 //
@@ -26,33 +34,41 @@ void Slot::SetInvalid()
 //
 bool Slot::IsValid() const
 {
-    return m_offset.IsValid();
+    return ( m_offset != m_invalid );
 }
 
 //
 //
 //
-void Slot::ToPage( char *& dest ) const
+Record Slot::get_record( const char* data ) const
 {
-    dest -= sizeof( m_offset );
-    std::memcpy( dest, &m_offset, sizeof( m_offset ) );
-
-    dest -= sizeof( m_length );
-    std::memcpy( dest, &m_length, sizeof( m_length ) );
+    const char* p = data + m_offset;
+    return Record( p, m_length );
 }
 
 //
 //
 //
-Slot Slot::FromPage( const char *& src )
+std::uint16_t Slot::get_length() const
 {
-    PageOffset offset( 0 );
-    src -= sizeof( offset );
-    std::memcpy( &offset, src, sizeof( offset ) );
+    assert( IsValid() );
+    return m_length;
+}
 
-    PageOffset length( 0 );
-    src -= sizeof( length );
-    std::memcpy( &length, src, sizeof( length ) );
+//
+//
+//
+std::uint16_t Slot::get_offset() const
+{
+    assert( IsValid() );
+    return m_offset;
+}
 
-    return Slot( offset, length );
+//
+//
+//
+void Slot::dec_offset( std::uint16_t v )
+{
+    assert( m_offset >= v );
+    m_offset -= v;
 }

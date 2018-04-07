@@ -6,15 +6,6 @@
 //
 //
 //
-Record::Record( const std::vector< char >& data )
-    : m_data( data )
-{
-
-}
-
-//
-//
-//
 Record::Record( const std::string& str )
     : m_data( str.c_str(), str.c_str() + str.size() )
 {

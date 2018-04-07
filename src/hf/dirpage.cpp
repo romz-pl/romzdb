@@ -62,17 +62,23 @@ void DirPage::init( )
 //
 //
 //
-std::optional< PageId > DirPage::insert_record( std::uint32_t count )
+std::optional< RecordId > DirPage::insert_record( const Record& rec )
 {
+    if( rec.get_length() > HeapPage::GetMaxRecordLength() )
+    {
+        throw std::runtime_error( "DirPage::insert_record: record too long" );
+    }
+
     DirSlot *slot = get_slot();
     DirSlot * const slot_end = slot + max_slot_no();
 
     for( ; slot != slot_end; slot++ )
     {
-        if( slot->insert_record( count ) )
+        auto ret = slot->insert_record( m_buffer, rec );
+        if( ret.has_value() )
         {
             m_dirty = true;
-            return slot->get_page_id();
+            return ret.value();
         }
     }
     return std::nullopt;
@@ -81,14 +87,14 @@ std::optional< PageId > DirPage::insert_record( std::uint32_t count )
 //
 //
 //
-bool DirPage::remove_record( PageId page_id, std::uint32_t count )
+bool DirPage::remove_record( RecordId record_id )
 {
     DirSlot *slot = get_slot();
     DirSlot * const slot_end = slot + max_slot_no();
 
     for( ; slot != slot_end; slot++ )
     {
-        if( slot->remove_record( page_id, count ) )
+        if( slot->remove_record( m_buffer, record_id ) )
         {
             m_dirty = true;
             return true;
@@ -100,14 +106,14 @@ bool DirPage::remove_record( PageId page_id, std::uint32_t count )
 //
 //
 //
-bool DirPage::alloc_page( PageId page_id )
+bool DirPage::alloc_page( )
 {
     DirSlot *slot = get_slot();
     DirSlot * const slot_end = slot + max_slot_no();
 
     for( ; slot != slot_end; slot++ )
     {
-        if( slot->alloc_page( page_id ) )
+        if( slot->alloc_page( m_buffer ) )
         {
             m_dirty = true;
             return true;
@@ -116,24 +122,6 @@ bool DirPage::alloc_page( PageId page_id )
     return false;
 }
 
-//
-//
-//
-bool DirPage::dispose_page( PageId page_id )
-{
-    DirSlot *slot = get_slot();
-    DirSlot * const slot_end = slot + max_slot_no();
-
-    for( ; slot != slot_end; slot++ )
-    {
-        if( slot->dispose_page( page_id ) )
-        {
-            m_dirty = true;
-            return true;
-        }
-    }
-    return false;
-}
 
 //
 //
@@ -146,12 +134,7 @@ std::uint32_t DirPage::get_record_no() const
 
     for( ; slot != slot_end; slot++ )
     {
-        if( slot->is_valid() )
-        {
-            const PageId page_id = slot->get_page_id();
-            HeapPage hp( m_buffer, page_id );
-            ret += hp.GetRecordNo();
-        }
+        ret += slot->get_record_no( m_buffer );
     }
     return ret;
 }
@@ -160,7 +143,7 @@ std::uint32_t DirPage::get_record_no() const
 //
 //
 //
-std::uint32_t DirPage::max_slot_no() const
+std::uint32_t DirPage::max_slot_no()
 {
     constexpr std::uint32_t v = ( DiskBlock::Size - sizeof( PageId ) ) / ( sizeof( DirSlot ) );
 

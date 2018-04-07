@@ -20,15 +20,10 @@ public:
 
     std::uint32_t get_record_no() const;
 
-
-    void remove_from_dir( PageId page_id, std::uint32_t count );
-    PageId insert_into_dir( std::uint32_t count );
-
     PageId get_header_page() const;
 
-// private:
-    PageId alloc_page( );
-    void dispose_page( PageId page_id );
+private:
+    void alloc_page( );
 
     std::uint64_t get_page_no() const;
 

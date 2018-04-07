@@ -3,12 +3,12 @@ set( TEST_NAME test-hf )
 
 add_executable( ${TEST_NAME}
     #    db.cpp
-    # dirpage.cpp
+    dir_page.cpp
     #dir.cpp
     heap_file.cpp
     heap_page.cpp
     main.cpp
-    # record.cpp
+    record.cpp
     recordid.cpp
     #scaner.cpp
     slotid.cpp

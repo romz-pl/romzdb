@@ -61,6 +61,8 @@ TEST_F(HeapPageFixture, insert_remove)
         sset.insert( slot_id );
     }
 
+    EXPECT_TRUE( m_hp->GetRecordNo() == record_no );
+
 
     std::uint32_t rem_no = 0, cnt = 0;
     for( auto v : sset )
@@ -73,11 +75,16 @@ TEST_F(HeapPageFixture, insert_remove)
         cnt++;
     }
 
+    EXPECT_TRUE( m_hp->GetRecordNo() == record_no - rem_no );
+
+
     for( int i = 0; i < record_no; i++ )
     {
         const std::string str = random_string( 5 );
         EXPECT_NO_THROW( m_hp->Insert( Record( str ) ) );
     }
+
+    EXPECT_TRUE( m_hp->GetRecordNo() == 2 * record_no - rem_no );
 }
 
 TEST_F(HeapPageFixture, insert_too_long)
@@ -106,6 +113,8 @@ TEST_F(HeapPageFixture, get)
 
         mmap.insert( std::make_pair( slot_id, rec ) );
     }
+
+    EXPECT_TRUE( m_hp->GetRecordNo() == record_no );
 
     for( auto v : mmap )
     {

@@ -2,26 +2,32 @@
 #define ROMZDB_SLOT_H
 
 #include "page.h"
-#include "pageoffset.h"
+#include "record.h"
 
 class Slot
 {
 public:
-    Slot( PageOffset offset, PageOffset length );
+    Slot( std::uint16_t offset, std::uint16_t length );
     ~Slot() = default;
 
-    void ToPage( char *& dest ) const;
-    static Slot FromPage(const char *& src );
+    Record get_record( const char* data ) const;
 
     void SetInvalid();
     bool IsValid() const;
 
-// private:
+    std::uint16_t get_length() const;
+    std::uint16_t get_offset() const;
+
+    void dec_offset( std::uint16_t v );
+
+private:
     // Record offset
-    PageOffset m_offset;
+    std::uint16_t m_offset;
 
     // Record length
-    PageOffset m_length;
+    std::uint16_t m_length;
+
+    static const std::uint16_t m_invalid;
 };
 
 #endif
