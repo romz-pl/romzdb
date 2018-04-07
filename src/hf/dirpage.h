@@ -29,9 +29,9 @@ public:
 
     bool is_next_page() const;
 
-private:
-    std::uint32_t max_slot_no() const;
+    static std::uint32_t max_slot_no();
 
+private:
     void init( );
     DirSlot* get_slot();
     const DirSlot* get_slot() const;

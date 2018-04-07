@@ -2,10 +2,15 @@
 #include <stdexcept>
 #include "dirslot.h"
 #include "disk/diskblock.h"
+#include "heappage.h"
 
 
-
+//
+// Free space is not corectly ccalculated!!!
+//
+// const std::uint32_t DirSlot::m_max_free_space = HeapPage::GetMaxRecordLength();
 const std::uint32_t DirSlot::m_max_free_space = DiskBlock::Size / 2;
+
 
 /*
 //

@@ -2,6 +2,7 @@
 #include "gtest/gtest.h"
 #include "hf/dirpage.h"
 #include "util/temp_path.h"
+#include "hf/heappage.h"
 
 class DirPageFixture : public ::testing::Test
 {
@@ -69,7 +70,7 @@ TEST_F(DirPageFixture, alloc_dispose_page)
 
 TEST_F(DirPageFixture, insert_remove_record)
 {
-    const std::uint32_t count = 20;
+    const std::uint32_t count = 2;
 
     EXPECT_FALSE( m_dp->insert_record( count ).has_value() );
 
@@ -77,10 +78,10 @@ TEST_F(DirPageFixture, insert_remove_record)
     m_buffer->unpin( ret.first, true );
     m_dp->alloc_page( ret.first );
 
-    const int record_no = 30;
+    const int record_no = DirPage::max_slot_no() / 3;
     for( int i = 0; i < record_no; i++ )
     {
-        EXPECT_NO_THROW( m_dp->insert_record( count ) );
+        EXPECT_TRUE( m_dp->insert_record( count ).has_value() );
     }
 
     std::set< PageId > sset;
@@ -93,9 +94,30 @@ TEST_F(DirPageFixture, insert_remove_record)
 
     for( auto v : sset )
     {
-        EXPECT_NO_THROW( m_dp->remove_record( v, count ) );
+        EXPECT_TRUE( m_dp->remove_record( v, count ) );
     }
 }
+
+/*
+TEST_F(DirPageFixture, insert_failure)
+{
+    const std::uint32_t count = HeapPage::GetMaxRecordLength();
+
+    EXPECT_FALSE( m_dp->insert_record( count ).has_value() );
+
+    const int record_no = DirPage::max_slot_no();
+    for( int i = 0; i < record_no; i++ )
+    {
+        auto ret = m_buffer->alloc();
+        m_buffer->unpin( ret.first, true );
+        EXPECT_TRUE( m_dp->alloc_page( ret.first ) );
+
+        EXPECT_TRUE( m_dp->insert_record( count ) );
+    }
+
+    EXPECT_FALSE( m_dp->insert_record( count ) );
+}
+*/
 
 
 TEST_F(DirPageFixture, insert_record_too_long)

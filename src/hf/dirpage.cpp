@@ -166,7 +166,7 @@ std::vector< PageId > DirPage::get_all_page_id() const
 //
 //
 //
-std::uint32_t DirPage::max_slot_no() const
+std::uint32_t DirPage::max_slot_no()
 {
     constexpr std::uint32_t v = ( DiskBlock::Size - sizeof( PageId ) ) / ( sizeof( DirSlot ) );
 
