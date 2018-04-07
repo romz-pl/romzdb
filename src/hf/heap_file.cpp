@@ -36,6 +36,11 @@ PageId HeapFile::get_header_page() const
 //
 RecordId HeapFile::insert( const Record& rec )
 {
+    if( rec.get_length() > HeapPage::GetMaxRecordLength() )
+    {
+        throw std::runtime_error( "HeapFile::insert: record too long" );
+    }
+
     const PageId page_id = insert_into_dir( rec.get_length() );
     HeapPage hp( m_buffer, page_id );
     const SlotId slot_id = hp.Insert( rec );

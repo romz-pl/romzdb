@@ -196,6 +196,7 @@ void HeapPage::GetRid( std::vector< RecordId >& rid ) const
         }
     }
 }
+*/
 
 
 //
@@ -216,5 +217,5 @@ std::uint32_t HeapPage::GetMaxRecordLength()
     return static_cast< std::uint32_t >( maxRecordLength );
 }
 
-*/
+
 
