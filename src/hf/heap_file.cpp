@@ -103,16 +103,14 @@ Record HeapFile::get( RecordId record_id )
 //
 //
 //
-PageId HeapFile::alloc_page( )
+void HeapFile::alloc_page( )
 {
-    const PageId page_id = m_buffer.alloc().first;
-    m_buffer.unpin( page_id, true );
 
     PageId dir_page_id = m_header;
     while( true )
     {
         DirPage dp( m_buffer, dir_page_id );
-        if( dp.alloc_page( page_id ) )
+        if( dp.alloc_page( ) )
         {
             break;
         }
@@ -124,13 +122,11 @@ PageId HeapFile::alloc_page( )
         else
         {
             DirPage new_dir_page( m_buffer );
-            new_dir_page.alloc_page( page_id );
+            new_dir_page.alloc_page( );
             dp.set_next_page( new_dir_page.get_page_id() );
             break;
         }
     }
-
-    return page_id;
 }
 
 //

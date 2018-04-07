@@ -56,19 +56,10 @@ TEST_F(DirPageFixture, get_set_next_page)
 
 }
 
-TEST_F(DirPageFixture, alloc_dispose_page)
+TEST_F(DirPageFixture, alloc_page)
 {
-    auto ret = m_buffer->alloc();
-    const PageId page_id = ret.first;
-    m_buffer->unpin( page_id, true );
-
-    EXPECT_TRUE( m_dp->alloc_page( page_id ) );
+    EXPECT_TRUE( m_dp->alloc_page( ) );
     EXPECT_TRUE( m_dp->get_record_no() == 0 );
-
-    EXPECT_TRUE( m_dp->dispose_page( page_id ) );
-    EXPECT_TRUE( m_dp->get_record_no() == 0 );
-
-    EXPECT_FALSE( m_dp->dispose_page( page_id ) );
 }
 
 
@@ -78,9 +69,7 @@ TEST_F(DirPageFixture, insert_remove_record)
 
     EXPECT_FALSE( m_dp->insert_record( rec ).has_value() );
 
-    auto ret = m_buffer->alloc();
-    m_buffer->unpin( ret.first, true );
-    m_dp->alloc_page( ret.first );
+    m_dp->alloc_page(  );
 
     const std::uint32_t record_no = DirPage::max_slot_no() / 3;
     for( std::uint32_t i = 0; i < record_no; i++ )
@@ -117,9 +106,7 @@ TEST_F(DirPageFixture, insert_failure)
     const int record_no = DirPage::max_slot_no();
     for( int i = 0; i < record_no; i++ )
     {
-        auto ret = m_buffer->alloc();
-        m_buffer->unpin( ret.first, true );
-        EXPECT_TRUE( m_dp->alloc_page( ret.first ) );
+        EXPECT_TRUE( m_dp->alloc_page( ) );
 
         EXPECT_TRUE( m_dp->insert_record( rec ) );
     }

@@ -106,14 +106,14 @@ bool DirPage::remove_record( RecordId record_id )
 //
 //
 //
-bool DirPage::alloc_page( PageId page_id )
+bool DirPage::alloc_page( )
 {
     DirSlot *slot = get_slot();
     DirSlot * const slot_end = slot + max_slot_no();
 
     for( ; slot != slot_end; slot++ )
     {
-        if( slot->alloc_page( page_id ) )
+        if( slot->alloc_page( m_buffer ) )
         {
             m_dirty = true;
             return true;

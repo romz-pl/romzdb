@@ -91,11 +91,13 @@ bool DirSlot::remove_record( BufferMgr& buffer, RecordId record_id )
 //
 //
 //
-bool DirSlot::alloc_page( PageId page_id )
+bool DirSlot::alloc_page( BufferMgr& buffer )
 {
     if( !m_valid )
     {
-        m_page_id = page_id;
+        m_page_id = buffer.alloc().first;
+        buffer.unpin( m_page_id, true );
+
         m_free_space = m_max_free_space;
         m_valid = true;
         return true;

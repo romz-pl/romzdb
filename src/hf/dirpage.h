@@ -22,7 +22,7 @@ public:
     std::optional< RecordId > insert_record( const Record &rec );
     bool remove_record( RecordId record_id );
 
-    bool alloc_page( PageId page_id );
+    bool alloc_page();
     bool dispose_page( PageId page_id );
 
 

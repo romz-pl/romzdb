@@ -16,7 +16,7 @@ public:
     std::optional< RecordId > insert_record( BufferMgr &buffer, const Record &rec );
     bool remove_record( BufferMgr& buffer, RecordId record_id );
 
-    bool alloc_page( PageId page_id );
+    bool alloc_page( BufferMgr& buffer);
     bool dispose_page( PageId page_id );
 
     std::uint32_t get_record_no( BufferMgr& buffer ) const;
