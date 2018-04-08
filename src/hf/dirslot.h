@@ -23,6 +23,7 @@ public:
     void make_invalid();
 
     void get_all_records( BufferMgr& buffer, std::vector< Record>& all ) const;
+    void get_all_rids( BufferMgr& buffer, std::vector< RecordId >& all ) const;
 
 private:
     bool is_empty() const;

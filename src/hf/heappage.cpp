@@ -293,7 +293,7 @@ std::uint32_t HeapPage::GetMaxRecordLength()
 //
 //
 //
-void HeapPage::get_all_records( std::vector< Record>& all ) const
+void HeapPage::get_all_records( std::vector< Record >& all ) const
 {
     for( auto it = begin(); it != end(); ++it )
     {
@@ -301,6 +301,22 @@ void HeapPage::get_all_records( std::vector< Record>& all ) const
         {
             const Record rec = it->get_record( get_data() );
             all.push_back( rec );
+        }
+    }
+}
+
+//
+//
+//
+void HeapPage::get_all_rids( std::vector< RecordId >& all ) const
+{
+    std::uint16_t slot_id = 0;
+    for( auto it = begin(); it != end(); ++it, ++slot_id )
+    {
+        if( it->IsValid() )
+        {
+            const RecordId rid( get_page_id(), SlotId( slot_id ) );
+            all.push_back( rid );
         }
     }
 }

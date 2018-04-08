@@ -72,6 +72,7 @@ public:
     static std::uint32_t GetMaxRecordLength();
 
     void get_all_records( std::vector< Record>& all ) const;
+    void get_all_rids( std::vector< RecordId >& all ) const;
 
     class iterator
     {

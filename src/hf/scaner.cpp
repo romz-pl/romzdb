@@ -1,28 +1,9 @@
 #include "scaner.h"
 
-/*
 //
 //
 //
 Scaner::Scaner( const HeapFile& hf )
-    : m_hf( hf )
 {
-
+    hf.get_all_rids( m_rid );
 }
-
-//
-//
-//
-Scaner::const_iterator Scaner::begin() const
-{
-    return const_iterator( m_hf.get_header_page() );
-}
-
-//
-//
-//
-Scaner::const_iterator Scaner::end() const
-{
-    return const_iterator( PageId( 0, 0 ) );
-}
-*/

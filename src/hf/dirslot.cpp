@@ -133,7 +133,7 @@ bool DirSlot::is_empty() const
 //
 //
 //
-void DirSlot::get_all_records( BufferMgr& buffer, std::vector< Record>& all ) const
+void DirSlot::get_all_records( BufferMgr& buffer, std::vector< Record >& all ) const
 {
     if( !m_valid || is_empty() )
     {
@@ -142,4 +142,18 @@ void DirSlot::get_all_records( BufferMgr& buffer, std::vector< Record>& all ) co
 
     HeapPage hp( buffer, m_page_id );
     hp.get_all_records( all );
+}
+
+//
+//
+//
+void DirSlot::get_all_rids( BufferMgr& buffer, std::vector< RecordId >& all ) const
+{
+    if( !m_valid || is_empty() )
+    {
+        return;
+    }
+
+    HeapPage hp( buffer, m_page_id );
+    hp.get_all_rids( all );
 }

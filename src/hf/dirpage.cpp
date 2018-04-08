@@ -127,11 +127,22 @@ std::uint32_t DirPage::get_record_no() const
 //
 //
 //
-void DirPage::get_all_records( std::vector< Record>& all ) const
+void DirPage::get_all_records( std::vector< Record >& all ) const
 {
     for( auto it = begin(); it != end(); ++it )
     {
         it->get_all_records( m_buffer, all );
+    }
+}
+
+//
+//
+//
+void DirPage::get_all_rids( std::vector< RecordId >& all ) const
+{
+    for( auto it = begin(); it != end(); ++it )
+    {
+        it->get_all_rids( m_buffer, all );
     }
 }
 
