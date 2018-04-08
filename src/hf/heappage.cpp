@@ -105,8 +105,7 @@ Record HeapPage::Get( SlotId slotIdEx )
 //
 SlotId HeapPage::Insert( const Record& rec )
 {
-    const std::uint16_t recLength = rec.get_length();
-    if( GetFreeSpace() < recLength )
+    if( GetFreeSpace() < rec.get_length() )
     {
         throw std::runtime_error( "HeapPage::Insert: Not enought space" );
     }
@@ -125,13 +124,13 @@ SlotId HeapPage::Insert( const Record& rec )
         }
     }
 
-    const std::uint16_t offset = get_free_space();
-    const std::uint16_t length = rec.get_length();
-
     if( !found )
     {
         set_slot_no( get_slot_no() + 1 );
     }
+
+    const std::uint16_t offset = get_free_space();
+    const std::uint16_t length = rec.get_length();
 
     *slot = Slot( offset, length );
     const std::uint32_t slot_id = begin - slot;
@@ -158,6 +157,19 @@ std::uint16_t HeapPage::Remove( SlotId slotIdEx )
     const std::uint16_t length = slot->get_length();
     const std::uint16_t offset = slot->get_offset();
 
+    shift_data( offset, length );
+
+    slot->SetInvalid();
+
+    decrease_slot_offset( offset, length );
+    remove_slots();
+
+    m_dirty = true;
+    return length;
+}
+
+void HeapPage::shift_data( std::uint16_t offset, std::uint16_t length )
+{
     char* dest = get_data() + offset;
     char* src = dest + length;
     assert( get_free_space() >= offset + length );
@@ -166,24 +178,35 @@ std::uint16_t HeapPage::Remove( SlotId slotIdEx )
 
 
     set_free_space( get_free_space() - length );
-    slot->SetInvalid();
+}
 
+//
+//
+//
+void HeapPage::decrease_slot_offset( std::uint16_t offset, std::uint16_t length )
+{
     Slot* const begin = get_slot_array();
     Slot* const end = begin - get_slot_no();
-    slot = begin;
 
-    for( ; slot != end; slot-- )
+    for( Slot* slot = begin; slot != end; slot-- )
     {
         if( slot->IsValid() && slot->get_offset() > offset )
         {
             slot->dec_offset( length );
         }
     }
+}
+
+//
+// Remove non valid slots if they are at the end of slot array
+//
+void HeapPage::remove_slots()
+{
+    Slot* const begin = get_slot_array();
+    Slot* const end = begin - get_slot_no();
 
 
-    // Remove slots
-    slot = end + 1;
-    for( ; slot != begin + 1; slot++ )
+    for( Slot* slot = end + 1; slot != begin + 1; slot++ )
     {
         if( !slot->IsValid()  )
         {
@@ -194,10 +217,6 @@ std::uint16_t HeapPage::Remove( SlotId slotIdEx )
             break;
         }
     }
-
-
-    m_dirty = true;
-    return length;
 }
 
 //

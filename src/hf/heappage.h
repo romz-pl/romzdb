@@ -86,6 +86,11 @@ private:
     Slot* get_slot( std::uint16_t slot_id );
     const Slot* get_slot( std::uint16_t slot_id ) const;
 
+    void shift_data( std::uint16_t offset, std::uint16_t length );
+    void decrease_slot_offset( std::uint16_t offset, std::uint16_t length );
+    void remove_slots();
+
+
 
     enum Offset
     {
