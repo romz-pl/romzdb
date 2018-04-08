@@ -22,6 +22,8 @@ public:
 
     PageId get_header_page() const;
 
+    void get_all_records( std::vector< Record>& all ) const;
+
 private:
     void alloc_page( );
 

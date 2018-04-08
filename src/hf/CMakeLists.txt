@@ -12,7 +12,7 @@ add_library( ${LIB_NAME} STATIC
     #pageoffset.cpp
     record.cpp
     recordid.cpp
-    #scaner.cpp
+    scaner.cpp
     slot.cpp
     slotid.cpp
 )

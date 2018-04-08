@@ -124,6 +124,17 @@ std::uint32_t DirPage::get_record_no() const
     return ret;
 }
 
+//
+//
+//
+void DirPage::get_all_records( std::vector< Record>& all ) const
+{
+    for( auto it = begin(); it != end(); ++it )
+    {
+        it->get_all_records( m_buffer, all );
+    }
+}
+
 
 //
 //
@@ -199,3 +210,5 @@ DirPage::const_iterator DirPage::end() const
 {
     return const_iterator( get_slot() + max_slot_no() );
 }
+
+

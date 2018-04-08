@@ -71,6 +71,8 @@ public:
 
     static std::uint32_t GetMaxRecordLength();
 
+    void get_all_records( std::vector< Record>& all ) const;
+
     class iterator
     {
     public:

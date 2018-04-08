@@ -129,3 +129,22 @@ bool DirSlot::is_empty() const
 {
     return m_free_space == m_max_free_space;
 }
+
+//
+//
+//
+void DirSlot::get_all_records( BufferMgr& buffer, std::vector< Record>& all ) const
+{
+    if( !m_valid )
+    {
+        return;
+    }
+
+    if( is_empty() )
+    {
+        return;
+    }
+
+    HeapPage hp( buffer, m_page_id );
+    hp.get_all_records( all );
+}

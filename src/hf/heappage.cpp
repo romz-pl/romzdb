@@ -293,6 +293,21 @@ std::uint32_t HeapPage::GetMaxRecordLength()
 //
 //
 //
+void HeapPage::get_all_records( std::vector< Record>& all ) const
+{
+    for( auto it = begin(); it != end(); ++it )
+    {
+        if( it->IsValid() )
+        {
+            const Record rec = it->get_record( get_data() );
+            all.push_back( rec );
+        }
+    }
+}
+
+//
+//
+//
 HeapPage::iterator HeapPage::begin()
 {
     return iterator( get_slot_array() - get_slot_no() + 1 );

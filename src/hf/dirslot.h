@@ -22,6 +22,8 @@ public:
 
     void make_invalid();
 
+    void get_all_records( BufferMgr& buffer, std::vector< Record>& all ) const;
+
 private:
     bool is_empty() const;
 

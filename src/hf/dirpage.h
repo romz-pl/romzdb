@@ -31,6 +31,8 @@ public:
 
     std::uint32_t get_record_no() const;
 
+    void get_all_records( std::vector< Record>& all ) const;
+
 
     class iterator
     {
