@@ -48,11 +48,13 @@
 //  End-of-exerpt
 //
 
+#include <iterator>
 #include "page.h"
 #include "record.h"
 #include "slotid.h"
 #include "slot.h"
 #include "recordid.h"
+// #include "hp_iterator.h"
 
 class HeapPage : public Page
 {
@@ -68,6 +70,163 @@ public:
     std::uint16_t GetFreeSpace() const;
 
     static std::uint32_t GetMaxRecordLength();
+
+    void get_all_records( std::vector< Record>& all ) const;
+    void get_all_rids( std::vector< RecordId >& all ) const;
+
+    class iterator
+    {
+    public:
+        typedef std::ptrdiff_t  difference_type;
+        typedef Slot            value_type;
+        typedef Slot&           reference;
+        typedef Slot*           pointer;
+
+        typedef std::bidirectional_iterator_tag iterator_category;
+
+    public:
+        iterator( Slot* slot ) : m_slot( slot )
+        {
+        }
+
+        ~iterator() = default;
+
+        iterator& operator++()
+        {
+            ++m_slot;
+            return *this;
+        }
+
+        iterator operator++( int )
+        {
+            iterator retval = *this;
+            ++( *this );
+            return retval;
+        }
+
+        iterator& operator--()
+        {
+            --m_slot;
+            return *this;
+        }
+
+        iterator operator--( int )
+        {
+            iterator retval = *this;
+            --( *this );
+            return retval;
+        }
+
+        bool operator==( const iterator& other) const
+        {
+            return m_slot == other.m_slot;
+        }
+
+        bool operator!=( const iterator& other) const
+        {
+            return !( *this == other );
+        }
+
+        reference operator*() const
+        {
+            return *m_slot;
+        }
+
+        pointer operator->() const
+        {
+            return m_slot;
+        }
+
+    private:
+        Slot* m_slot;
+
+
+    };
+
+    class const_iterator
+    {
+    public:
+        typedef std::ptrdiff_t  difference_type;
+        typedef Slot            value_type;
+        typedef const Slot&     reference;
+        typedef const Slot*     pointer;
+
+        typedef std::bidirectional_iterator_tag iterator_category;
+
+    public:
+        const_iterator( const Slot* slot ) : m_slot( slot )
+        {
+        }
+
+        ~const_iterator() = default;
+
+        const_iterator& operator++()
+        {
+            ++m_slot;
+            return *this;
+        }
+
+        const_iterator operator++( int )
+        {
+            const_iterator retval = *this;
+            ++( *this );
+            return retval;
+        }
+
+        const_iterator& operator--()
+        {
+            --m_slot;
+            return *this;
+        }
+
+        const_iterator operator--( int )
+        {
+            const_iterator retval = *this;
+            --( *this );
+            return retval;
+        }
+
+        bool operator==( const const_iterator& other) const
+        {
+            return m_slot == other.m_slot;
+        }
+
+        bool operator!=( const const_iterator& other) const
+        {
+            return !( *this == other );
+        }
+
+        reference operator*() const
+        {
+            return *m_slot;
+        }
+
+        pointer operator->() const
+        {
+            return m_slot;
+        }
+
+    private:
+        const Slot* m_slot;
+
+
+    };
+
+    typedef std::reverse_iterator< iterator >       reverse_iterator;
+    typedef std::reverse_iterator< const_iterator > const_reverse_iterator;
+
+
+    iterator begin();
+    const_iterator begin() const;
+
+    iterator end();
+    const_iterator end() const;
+
+    reverse_iterator rbegin();
+    const_reverse_iterator rbegin() const;
+
+    reverse_iterator rend();
+    const_reverse_iterator rend() const;
 
 private:
     std::size_t GetSlotNo() const;
@@ -85,6 +244,11 @@ private:
 
     Slot* get_slot( std::uint16_t slot_id );
     const Slot* get_slot( std::uint16_t slot_id ) const;
+
+    void shift_data( std::uint16_t offset, std::uint16_t length );
+    void decrease_slot_offset( std::uint16_t offset, std::uint16_t length );
+    void remove_slots();
+
 
 
     enum Offset

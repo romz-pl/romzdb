@@ -155,3 +155,49 @@ std::uint32_t HeapFile::get_record_no() const
 
     return ret;
 }
+
+//
+//
+//
+void HeapFile::get_all_records( std::vector< Record >& all ) const
+{
+    PageId dir_page_id = m_header;
+    while( true )
+    {
+        DirPage dp( m_buffer, dir_page_id );
+
+        dp.get_all_records( all );
+
+        if( dp.is_next_page() )
+        {
+            dir_page_id = dp.get_next_page();
+        }
+        else
+        {
+            break;
+        }
+    }
+}
+
+//
+//
+//
+void HeapFile::get_all_rids( std::vector< RecordId >& all ) const
+{
+    PageId dir_page_id = m_header;
+    while( true )
+    {
+        DirPage dp( m_buffer, dir_page_id );
+
+        dp.get_all_rids( all );
+
+        if( dp.is_next_page() )
+        {
+            dir_page_id = dp.get_next_page();
+        }
+        else
+        {
+            break;
+        }
+    }
+}

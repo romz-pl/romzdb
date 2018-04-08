@@ -10,7 +10,7 @@ add_executable( ${TEST_NAME}
     main.cpp
     record.cpp
     recordid.cpp
-    #scaner.cpp
+    scaner.cpp
     slotid.cpp
 )
 

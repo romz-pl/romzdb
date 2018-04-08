@@ -215,3 +215,27 @@ TEST_F(HeapFileFixture, remove_non_existing)
     const RecordId rid ( PageId( 0, 0 ), SlotId( 0 ) );
     EXPECT_ANY_THROW( m_hf->remove( rid ) );
 }
+
+TEST_F(HeapFileFixture, record)
+{
+    std::vector< Record > vec;
+
+    const std::uint32_t count = 200;
+    const int record_no = 50000;
+
+    for( int i = 0; i < record_no; i++ )
+    {
+        const std::string str = random_string( count );
+        const Record rec( str );
+        EXPECT_NO_THROW( m_hf->insert( rec ) );
+        vec.push_back( rec );
+    }
+
+    std::vector< Record > dump;
+    EXPECT_NO_THROW( m_hf->get_all_records( dump ) );
+
+    std::sort( vec.begin(), vec.end() );
+    std::sort( dump.begin(), dump.end() );
+
+    EXPECT_TRUE( vec == dump );
+}
