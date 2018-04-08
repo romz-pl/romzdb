@@ -24,12 +24,10 @@ public:
        const std::size_t frameNo = 3;
        m_buffer = new BufferMgr( *m_space, frameNo );
        m_hf = new HeapFile( *m_buffer);
-       m_scaner = new Scaner( *m_hf );
    }
 
    void TearDown( )
    {
-       delete m_scaner;
        delete m_hf;
        delete m_buffer;
        delete m_space;
@@ -47,7 +45,6 @@ public:
    Space *m_space;
    BufferMgr *m_buffer;
    HeapFile *m_hf;
-   Scaner *m_scaner;
 };
 
 
@@ -67,12 +64,14 @@ TEST_F(ScanerFixture, iterate)
         sset.insert( record_id );
     }
 
-    for( auto it = m_scaner->begin(); it != m_scaner->end(); ++it )
+    Scaner scaner( *m_hf );
+
+    for( auto it = scaner.begin(); it != scaner.end(); ++it )
     {
         EXPECT_TRUE( sset.find( *it ) != sset.end() );
     }
 
-    for( auto v : *m_scaner )
+    for( auto v : scaner )
     {
         EXPECT_TRUE( sset.find( v ) != sset.end() );
     }
