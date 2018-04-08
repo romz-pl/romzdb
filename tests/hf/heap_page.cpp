@@ -134,3 +134,44 @@ TEST_F(HeapPageFixture, get)
         EXPECT_ANY_THROW( m_hp->Get( v.first ) );
     }
 }
+
+TEST_F(HeapPageFixture, interator)
+{
+    const int record_no = 30;
+    for( int i = 0; i < record_no; i++ )
+    {
+        const std::string str = random_string( 5 );
+        const Record rec( str );
+        EXPECT_NO_THROW( m_hp->Insert( rec ) );
+    }
+
+    const HeapPage *chp = const_cast< const HeapPage* >( m_hp );
+
+    int cnt = 0;
+    for( auto it = m_hp->begin(); it != m_hp->end(); ++it, cnt++ )
+    {
+        EXPECT_TRUE( it->IsValid() );
+    }
+    EXPECT_TRUE( cnt == record_no );
+
+    cnt = 0;
+    for( auto it = chp->begin(); it != chp->end(); ++it, cnt++ )
+    {
+        EXPECT_TRUE( it->IsValid() );
+    }
+    EXPECT_TRUE( cnt == record_no );
+
+    cnt = 0;
+    for( auto it = m_hp->rbegin(); it != m_hp->rend(); ++it, cnt++ )
+    {
+        EXPECT_TRUE( it->IsValid() );
+    }
+    EXPECT_TRUE( cnt == record_no );
+
+    cnt = 0;
+    for( auto it = chp->rbegin(); it != chp->rend(); ++it, cnt++ )
+    {
+        EXPECT_TRUE( it->IsValid() );
+    }
+    EXPECT_TRUE( cnt == record_no );
+}

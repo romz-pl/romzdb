@@ -115,7 +115,7 @@ SlotId HeapPage::Insert( const Record& rec )
 
     bool found = false;
     std::uint32_t slot_id = 0;
-    for( auto it = begin(); it != end(); --it, slot_id++ )
+    for( auto it = rbegin(); it != rend(); ++it, slot_id++ )
     {
         if( !it->IsValid() )
         {
@@ -127,7 +127,7 @@ SlotId HeapPage::Insert( const Record& rec )
 
     if( !found )
     {
-        *end() = Slot( offset, length );
+        *( rend() ) = Slot( offset, length );
         set_slot_no( get_slot_no() + 1 );
     }
 
@@ -181,7 +181,7 @@ void HeapPage::shift_data( std::uint16_t offset, std::uint16_t length )
 //
 void HeapPage::decrease_slot_offset( std::uint16_t offset, std::uint16_t length )
 {
-    for( auto it = begin(); it != end(); --it )
+    for( auto it = begin(); it != end(); ++it )
     {
         if( it->IsValid() && it->get_offset() > offset )
         {
@@ -195,7 +195,7 @@ void HeapPage::decrease_slot_offset( std::uint16_t offset, std::uint16_t length 
 //
 void HeapPage::remove_slots()
 {
-    for( auto it = rbegin(); it != rend(); ++it )
+    for( auto it = begin(); it != end(); ++it )
     {
         if( !it->IsValid()  )
         {
@@ -232,7 +232,7 @@ void HeapPage::CheckSlotId( SlotId slotIdEx ) const
 std::uint32_t HeapPage::GetRecordNo() const
 {
     std::uint32_t ret = 0;
-    for( auto it = begin(); it != end(); --it )
+    for( auto it = begin(); it != end(); ++it )
     {
         if( it->IsValid() )
             ret++;
@@ -254,7 +254,7 @@ std::uint16_t HeapPage::GetFreeSpace() const
     // slot no
     ret -= sizeof( std::uint16_t );
 
-    for( auto it = begin(); it != end(); --it )
+    for( auto it = begin(); it != end(); ++it )
     {
         // Size of the Slot structure
         ret -= sizeof( Slot );
@@ -295,7 +295,7 @@ std::uint32_t HeapPage::GetMaxRecordLength()
 //
 HeapPage::iterator HeapPage::begin()
 {
-    return iterator( get_slot_array() );
+    return iterator( get_slot_array() - get_slot_no() + 1 );
 }
 
 //
@@ -303,7 +303,7 @@ HeapPage::iterator HeapPage::begin()
 //
 HeapPage::const_iterator HeapPage::begin() const
 {
-    return const_iterator( get_slot_array() );
+    return const_iterator( get_slot_array() - get_slot_no() + 1 );
 }
 
 //
@@ -311,7 +311,7 @@ HeapPage::const_iterator HeapPage::begin() const
 //
 HeapPage::iterator HeapPage::end()
 {
-    return iterator( get_slot_array() - get_slot_no() );
+    return iterator( get_slot_array() + 1 );
 }
 
 //
@@ -319,7 +319,7 @@ HeapPage::iterator HeapPage::end()
 //
 HeapPage::const_iterator HeapPage::end() const
 {
-    return const_iterator( get_slot_array() - get_slot_no() );
+    return const_iterator( get_slot_array() + 1 );
 }
 
 //
@@ -353,3 +353,4 @@ HeapPage::const_reverse_iterator HeapPage::rend() const
 {
     return const_reverse_iterator( begin() );
 }
+
