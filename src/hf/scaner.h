@@ -4,9 +4,10 @@
 #include "record.h"
 #include "disk/pageid.h"
 #include "heap_file.h"
-
+#include "heappage.h"
 
 /*
+
 class Scaner
 {
 public:
@@ -25,29 +26,69 @@ public:
         typedef std::forward_iterator_tag iterator_category;
 
     public:
-        const_iterator( PageId dir_page_id ) : m_dir_page_id( dir_page_id )
+        const_iterator( PageId dir_page_id )
+            : m_dir_page_id( dir_page_id )
         {
+            m_dp = new DirPage( buffer, dir_page_id );
+            m_dp_iterator = m_dp->begin();
+
+            m_hp = HeapPage( buffer, m_dp_iterator->m_page_id );
+            m_hp_iterator = m_hp->begin();
         }
 
-        ~const_iterator() = default;
+        ~const_iterator()
+        {
+            delete m_dp;
+            delete m_hp;
+        }
 
         const_iterator& operator++()
         {
-            //++m_slot;
-
-            ++m_dir_page_iterator;
-            if( m_dir_page_iterator == m_dp->end() )
+            while( true )
             {
-                if( !m_dp->is_next_page() )
+                ++m_hp_iterator;
+                if( m_hp_iterator == m_hp->end() )
                 {
-                    delete m_dp;
-                    return const_iterator;
+                    delete m_hp;
+                    m_hp = nullptr;
+                    break;
                 }
-                m_dir_page_id = m_dp->get_next_page();
 
-                delete m_dp;
-                m_dp = new DirPage( m_dir_page_id );
+                if( m_hp_iterator->IsValid() )
+                {
+                    return *this;
+                }
             }
+
+            while( true )
+            {
+                ++m_dp_iterator;
+                if( m_dp_iterator == m_dp->end() )
+                {
+                    if( !m_dp->is_next_page() )
+                    {
+                        delete m_dp;
+                        m_dp = nullptr;
+                        return *this;
+                    }
+                    else
+                    {
+                        const PageId m_dir_page_id = m_dp->get_next_page();
+                        delete m_dp;
+                        m_dp = new DirPage( buffer, m_dir_page_id );
+                        m_dp_iterator = m_dp->begin();
+                    }
+                }
+
+                if( m_dp_iterator->m_valid() && !m_dp_iterator->is_empty() )
+                {
+                    m_hp = new HeapPage( buffer, m_dp_iterator->m_page_id );
+                    m_hp_iterator = m_hp->begin();
+                    return *this;
+                }
+            }
+
+
             return *this;
         }
 
@@ -80,8 +121,12 @@ public:
 
     private:
         PageId m_dir_page_id;
+
         DirPage* m_dp;
-        DirPage::iterator m_dir_page_iterator;
+        DirPage::iterator m_dp_iterator;
+
+        HeapPage* m_hp;
+        HeapPage::iterator m_hp_iterator;
     };
 
     const_iterator begin() const;

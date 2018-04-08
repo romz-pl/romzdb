@@ -220,8 +220,8 @@ TEST_F(HeapFileFixture, record)
 {
     std::vector< Record > vec;
 
-    const std::uint32_t count = 20;
-    const int record_no = 5000;
+    const std::uint32_t count = 200;
+    const int record_no = 50000;
 
     for( int i = 0; i < record_no; i++ )
     {

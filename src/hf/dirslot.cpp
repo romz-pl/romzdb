@@ -135,12 +135,7 @@ bool DirSlot::is_empty() const
 //
 void DirSlot::get_all_records( BufferMgr& buffer, std::vector< Record>& all ) const
 {
-    if( !m_valid )
-    {
-        return;
-    }
-
-    if( is_empty() )
+    if( !m_valid || is_empty() )
     {
         return;
     }
