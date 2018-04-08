@@ -179,7 +179,7 @@ void HeapPage::shift_data( std::uint16_t offset, std::uint16_t length )
 
     set_free_space( get_free_space() - length );
 }
-
+/*
 //
 //
 //
@@ -196,7 +196,23 @@ void HeapPage::decrease_slot_offset( std::uint16_t offset, std::uint16_t length 
         }
     }
 }
+*/
 
+//
+//
+//
+void HeapPage::decrease_slot_offset( std::uint16_t offset, std::uint16_t length )
+{
+    for( iterator it = begin(); it != end(); --it )
+    {
+        if( it->IsValid() && it->get_offset() > offset )
+        {
+            it->dec_offset( length );
+        }
+    }
+}
+
+/*
 //
 // Remove non valid slots if they are at the end of slot array
 //
@@ -209,6 +225,25 @@ void HeapPage::remove_slots()
     for( Slot* slot = end + 1; slot != begin + 1; slot++ )
     {
         if( !slot->IsValid()  )
+        {
+            set_slot_no( get_slot_no() - 1 );
+        }
+        else
+        {
+            break;
+        }
+    }
+}
+*/
+
+//
+// Remove non valid slots if they are at the end of slot array
+//
+void HeapPage::remove_slots()
+{
+    for( auto it = rbegin(); it != rend(); ++it )
+    {
+        if( !it->IsValid()  )
         {
             set_slot_no( get_slot_no() - 1 );
         }
@@ -242,8 +277,8 @@ void HeapPage::CheckSlotId( SlotId slotIdEx ) const
 //
 std::uint32_t HeapPage::GetRecordNo() const
 {
-    const Slot* begin = get_slot_array();
-    const Slot* end = begin - get_slot_no();
+    const Slot* const begin = get_slot_array();
+    const Slot* const end = begin - get_slot_no();
 
     std::uint32_t ret = 0;
     for( const Slot* slot = begin; slot != end; slot-- )
@@ -254,13 +289,14 @@ std::uint32_t HeapPage::GetRecordNo() const
     return ret;
 }
 
+
 //
 // Returns free space on the Heap File
 //
 std::uint16_t HeapPage::GetFreeSpace() const
 {
-    const Slot* begin = get_slot_array();
-    const Slot* slot_end = begin - get_slot_no();
+    const Slot* const begin = get_slot_array();
+    const Slot* const slot_end = begin - get_slot_no();
 
     std::uint16_t ret = DiskBlock::Size;
 
@@ -306,5 +342,66 @@ std::uint32_t HeapPage::GetMaxRecordLength()
     return static_cast< std::uint32_t >( maxRecordLength );
 }
 
+//
+//
+//
+HeapPage::iterator HeapPage::begin()
+{
+    return iterator( get_slot_array() );
+}
 
+//
+//
+//
+HeapPage::const_iterator HeapPage::begin() const
+{
+    return const_iterator( get_slot_array() );
+}
 
+//
+//
+//
+HeapPage::iterator HeapPage::end()
+{
+    return iterator( get_slot_array() - get_slot_no() );
+}
+
+//
+//
+//
+HeapPage::const_iterator HeapPage::end() const
+{
+    return const_iterator( get_slot_array() - get_slot_no() );
+}
+
+//
+//
+//
+HeapPage::reverse_iterator HeapPage::rbegin()
+{
+    return reverse_iterator( end() );
+}
+
+//
+//
+//
+HeapPage::const_reverse_iterator HeapPage::rbegin() const
+{
+    return const_reverse_iterator( end() );
+}
+
+//
+//
+//
+HeapPage::reverse_iterator HeapPage::rend()
+{
+    return reverse_iterator( begin() );
+}
+
+//
+//
+//
+HeapPage::const_reverse_iterator HeapPage::rend() const
+{
+    return const_reverse_iterator( begin() );
+}
