@@ -150,6 +150,7 @@ TEST_F(HeapPageFixture, interator)
     int cnt = 0;
     for( auto it = m_hp->begin(); it != m_hp->end(); ++it, cnt++ )
     {
+        EXPECT_TRUE( (*it).IsValid() );
         EXPECT_TRUE( it->IsValid() );
     }
     EXPECT_TRUE( cnt == record_no );
@@ -157,6 +158,7 @@ TEST_F(HeapPageFixture, interator)
     cnt = 0;
     for( auto it = chp->begin(); it != chp->end(); ++it, cnt++ )
     {
+        EXPECT_TRUE( (*it).IsValid() );
         EXPECT_TRUE( it->IsValid() );
     }
     EXPECT_TRUE( cnt == record_no );
@@ -164,6 +166,7 @@ TEST_F(HeapPageFixture, interator)
     cnt = 0;
     for( auto it = m_hp->rbegin(); it != m_hp->rend(); ++it, cnt++ )
     {
+        EXPECT_TRUE( (*it).IsValid() );
         EXPECT_TRUE( it->IsValid() );
     }
     EXPECT_TRUE( cnt == record_no );
@@ -171,6 +174,7 @@ TEST_F(HeapPageFixture, interator)
     cnt = 0;
     for( auto it = chp->rbegin(); it != chp->rend(); ++it, cnt++ )
     {
+        EXPECT_TRUE( (*it).IsValid() );
         EXPECT_TRUE( it->IsValid() );
     }
     EXPECT_TRUE( cnt == record_no );
