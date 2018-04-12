@@ -26,10 +26,10 @@ target_link_libraries( ${TEST_NAME}
     -fprofile-arcs 
     gtest 
     gtest_main 
-    pthread 
-    romzdb-disk 
-    romzdb-buffer 
+    pthread
     romzdb-hf
+    romzdb-buffer
+    romzdb-disk
     romzdb-util
 )
 
