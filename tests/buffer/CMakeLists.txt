@@ -20,8 +20,8 @@ target_link_libraries( ${TEST_NAME}
     gtest 
     gtest_main 
     pthread 
-    romzdb-disk 
-    romzdb-buffer
+    romzdb-buffer 
+    romzdb-disk
     romzdb-util
 )
 

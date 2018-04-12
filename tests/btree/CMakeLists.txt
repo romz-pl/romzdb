@@ -1,17 +1,9 @@
 
-set( TEST_NAME test-hf )
+set( TEST_NAME test-btree )
 
 add_executable( ${TEST_NAME}
-    #    db.cpp
-    dir_page.cpp
-    #dir.cpp
-    heap_file.cpp
-    heap_page.cpp
     main.cpp
-    record.cpp
-    recordid.cpp
-    scaner.cpp
-    slotid.cpp
+    root_page.cpp
 )
 
 target_compile_options( ${TEST_NAME} PRIVATE ${ROMZDB_CXX_FLAGS} )
@@ -27,13 +19,15 @@ target_link_libraries( ${TEST_NAME}
     gtest 
     gtest_main 
     pthread
-    romzdb-hf
-    romzdb-buffer
+   romzdb-btree 
+    romzdb-hf 
+    romzdb-buffer 
     romzdb-disk
     romzdb-util
 )
 
+
 add_test( NAME ${TEST_NAME} COMMAND ${TEST_NAME} )
 
-set_tests_properties ( ${TEST_NAME} PROPERTIES DEPENDS test-buffer )
+set_tests_properties ( ${TEST_NAME} PROPERTIES DEPENDS test-hf )
 
