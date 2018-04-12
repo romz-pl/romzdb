@@ -3,51 +3,35 @@
 
 #include <optional>
 #include <vector>
-//#include "buffer/buffermgr.h"
+#include "buffer/buffermgr.h"
 //#include "dirslot.h"
-//#include "page.h"
+#include "hf/page.h"
 //#include "recordid.h"
 
+#include "hf/slot.h"
+#include "hf/slotid.h"
 
-class Root_page //: public Page
+class root_page : public Page
 {
-    /*
+
 public:
-    explicit DirPage( BufferMgr& buffer );
-    DirPage( BufferMgr& buffer, PageId page_id );
-    ~DirPage() = default;
-
-    PageId get_next_page() const;
-    void set_next_page( PageId id );
-
-    std::optional< RecordId > insert_record( const Record &rec );
-    bool remove_record( RecordId record_id );
-
-    bool alloc_page();
-
-
-    bool is_next_page() const;
-
-    static std::uint32_t max_slot_no();
-
-    std::uint32_t get_record_no() const;
-
-    void get_all_records( std::vector< Record>& all ) const;
-    void get_all_rids( std::vector< RecordId >& all ) const;
+    explicit root_page( BufferMgr& buffer );
+    root_page( BufferMgr& buffer, PageId page_id );
+    ~root_page() = default;
 
 
     class iterator
     {
     public:
         typedef std::ptrdiff_t  difference_type;
-        typedef DirSlot         value_type;
-        typedef DirSlot&        reference;
-        typedef DirSlot*        pointer;
+        typedef Slot            value_type;
+        typedef Slot&           reference;
+        typedef Slot*           pointer;
 
-        typedef std::forward_iterator_tag iterator_category;
+        typedef std::bidirectional_iterator_tag iterator_category;
 
     public:
-        iterator( DirSlot* slot ) : m_slot( slot )
+        iterator( Slot* slot ) : m_slot( slot )
         {
         }
 
@@ -63,6 +47,19 @@ public:
         {
             iterator retval = *this;
             ++( *this );
+            return retval;
+        }
+
+        iterator& operator--()
+        {
+            --m_slot;
+            return *this;
+        }
+
+        iterator operator--( int )
+        {
+            iterator retval = *this;
+            --( *this );
             return retval;
         }
 
@@ -87,24 +84,23 @@ public:
         }
 
     private:
-        DirSlot* m_slot;
+        Slot* m_slot;
 
 
     };
-
 
     class const_iterator
     {
     public:
         typedef std::ptrdiff_t  difference_type;
-        typedef DirSlot         value_type;
-        typedef const DirSlot&  reference;
-        typedef const DirSlot*  pointer;
+        typedef Slot            value_type;
+        typedef const Slot&     reference;
+        typedef const Slot*     pointer;
 
-        typedef std::forward_iterator_tag iterator_category;
+        typedef std::bidirectional_iterator_tag iterator_category;
 
     public:
-        const_iterator( const DirSlot* slot ) : m_slot( slot )
+        const_iterator( const Slot* slot ) : m_slot( slot )
         {
         }
 
@@ -120,6 +116,19 @@ public:
         {
             const_iterator retval = *this;
             ++( *this );
+            return retval;
+        }
+
+        const_iterator& operator--()
+        {
+            --m_slot;
+            return *this;
+        }
+
+        const_iterator operator--( int )
+        {
+            const_iterator retval = *this;
+            --( *this );
             return retval;
         }
 
@@ -144,10 +153,14 @@ public:
         }
 
     private:
-        const DirSlot* m_slot;
+        const Slot* m_slot;
 
 
     };
+
+    typedef std::reverse_iterator< iterator >       reverse_iterator;
+    typedef std::reverse_iterator< const_iterator > const_reverse_iterator;
+
 
     iterator begin();
     const_iterator begin() const;
@@ -155,23 +168,45 @@ public:
     iterator end();
     const_iterator end() const;
 
+    reverse_iterator rbegin();
+    const_reverse_iterator rbegin() const;
+
+    reverse_iterator rend();
+    const_reverse_iterator rend() const;
+
+
+
 
 private:
-    void init( );
-    DirSlot* get_slot();
-    const DirSlot* get_slot() const;
 
-private:
+    Slot get_slot( SlotId slotId ) const;
+    void check_slot_id( SlotId slotIdEx ) const;
+
+    std::uint16_t get_free_space() const;
+    void set_free_space( std::uint16_t v );
+
+    std::uint16_t get_slot_no() const;
+    void set_slot_no( std::uint16_t v );
+
+    Slot* get_slot_array();
+    const Slot* get_slot_array() const;
+
+    Slot* get_slot( std::uint16_t slot_id );
+    const Slot* get_slot( std::uint16_t slot_id ) const;
+
+    void shift_data( std::uint16_t offset, std::uint16_t length );
+    void decrease_slot_offset( std::uint16_t offset, std::uint16_t length );
+    void remove_slots();
+
+
+
     enum Offset
     {
-        Next_page = 0,
-        Slot = Next_page + sizeof( PageId )
+        Free_space = DiskBlock::Size - sizeof( std::uint16_t ),
+        Slot_no = Free_space - sizeof( std::uint16_t ),
+        Slot_array = Slot_no - sizeof( Slot )
+
     };
-
-private:
-
-    static const PageId m_invalid_page_id;
-*/
 };
 
 #endif
